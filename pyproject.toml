@@ -1,0 +1,11 @@
+[project]
+name = "litestartadmin"
+version = "1.0.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "litestar[standard]>=2.21.1",
+    "loguru>=0.7.3",
+    "pydantic>=2.12.5",
+]

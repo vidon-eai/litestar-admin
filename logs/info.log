@@ -1,0 +1,996 @@
+2026-04-02 09:14:53.358 | INFO     | uvicorn.config:__init__:324 - Will watch for changes in these directories: ['C:\\Users\\tung.ma\\Documents\\GitHub\\ai-development\\LitestartAdmin']
+2026-04-02 09:14:53.436 | INFO     | uvicorn.config:bind_socket:545 - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-04-02 09:14:53.437 | INFO     | uvicorn.supervisors.basereload:startup:79 - Started reloader process [35572] using WatchFiles
+2026-04-02 09:15:02.487 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:15:04.204 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:15:04.206 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:15:04.215 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:15:04.216 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:15:04.899 | INFO     | uvicorn.server:_serve:92 - Started server process [34556]
+2026-04-02 09:15:04.900 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:15:04.935 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:15:04.937 | INFO     | main:on_startup:26 - PostController:delete_user_by_id    -  DELETE /api/v1/posts/{userId:int}
+2026-04-02 09:15:04.937 | INFO     | main:on_startup:26 - <locals>:options_handler      - OPTIONS /api/v1/posts/{userId:int}
+2026-04-02 09:15:04.938 | INFO     | main:on_startup:26 - PostController:get_user_by_id       -     GET /api/v1/posts/{userId:int}
+2026-04-02 09:15:04.938 | INFO     | main:on_startup:26 - <locals>:options_handler      - OPTIONS /api/v1/posts
+2026-04-02 09:15:04.939 | INFO     | main:on_startup:26 - PostController:get_users            -     GET /api/v1/posts
+2026-04-02 09:15:04.939 | INFO     | main:on_startup:26 - UserController:create_user          -    POST /api/v1/users
+2026-04-02 09:15:04.940 | INFO     | main:on_startup:26 - <locals>:options_handler      - OPTIONS /api/v1/users
+2026-04-02 09:15:04.941 | INFO     | main:on_startup:26 - UserController:get_users            -     GET /api/v1/users
+2026-04-02 09:15:04.941 | INFO     | main:on_startup:26 - <locals>:options_handler      - OPTIONS /api/v1/users/{userId:int}
+2026-04-02 09:15:04.941 | INFO     | main:on_startup:26 - UserController:get_user_by_id       -     GET /api/v1/users/{userId:int}
+2026-04-02 09:15:04.942 | INFO     | main:on_startup:28 - Application startup complete.
+2026-04-02 09:15:04.952 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:32:21.883 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:32:22.023 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:32:22.171 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:32:22.197 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:32:22.213 | INFO     | uvicorn.server:_serve:102 - Finished server process [34556]
+2026-04-02 09:32:24.738 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:32:25.012 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:32:25.013 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:32:25.016 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:32:25.016 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:32:25.259 | INFO     | uvicorn.server:_serve:92 - Started server process [27308]
+2026-04-02 09:32:25.259 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:32:25.269 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:32:25.270 | INFO     | main:on_startup:25 - <locals>:options_handler      - OPTIONS /api/v1/posts/{userId:int}
+2026-04-02 09:32:25.270 | INFO     | main:on_startup:25 - PostController:delete_user_by_id    - DELETE  /api/v1/posts/{userId:int}
+2026-04-02 09:32:25.270 | INFO     | main:on_startup:25 - PostController:get_user_by_id       - GET     /api/v1/posts/{userId:int}
+2026-04-02 09:32:25.270 | INFO     | main:on_startup:25 - PostController:get_users            - GET     /api/v1/posts
+2026-04-02 09:32:25.270 | INFO     | main:on_startup:25 - <locals>:options_handler      - OPTIONS /api/v1/posts
+2026-04-02 09:32:25.271 | INFO     | main:on_startup:25 - UserController:get_users            - GET     /api/v1/users
+2026-04-02 09:32:25.271 | INFO     | main:on_startup:25 - <locals>:options_handler      - OPTIONS /api/v1/users
+2026-04-02 09:32:25.271 | INFO     | main:on_startup:25 - UserController:create_user          - POST    /api/v1/users
+2026-04-02 09:32:25.272 | INFO     | main:on_startup:25 - <locals>:options_handler      - OPTIONS /api/v1/users/{userId:int}
+2026-04-02 09:32:25.272 | INFO     | main:on_startup:25 - UserController:get_user_by_id       - GET     /api/v1/users/{userId:int}
+2026-04-02 09:32:25.272 | INFO     | main:on_startup:29 - Application startup complete.
+2026-04-02 09:32:25.272 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:32:31.985 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:32:32.004 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:32:32.110 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:32:32.111 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:32:32.111 | INFO     | uvicorn.server:_serve:102 - Finished server process [27308]
+2026-04-02 09:32:33.244 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:32:33.364 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:32:33.365 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:32:33.367 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:32:33.367 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:32:33.485 | INFO     | uvicorn.server:_serve:92 - Started server process [29332]
+2026-04-02 09:32:33.486 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:32:33.491 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:32:33.492 | INFO     | main:on_startup:25 - PostController:delete_user_by_id    - DELETE  /api/v1/posts/{userId:int}
+2026-04-02 09:32:33.492 | INFO     | main:on_startup:25 - PostController:get_user_by_id       - GET     /api/v1/posts/{userId:int}
+2026-04-02 09:32:33.492 | INFO     | main:on_startup:25 - <locals>:options_handler      - OPTIONS /api/v1/posts/{userId:int}
+2026-04-02 09:32:33.492 | INFO     | main:on_startup:25 - PostController:get_users            - GET     /api/v1/posts
+2026-04-02 09:32:33.492 | INFO     | main:on_startup:25 - <locals>:options_handler      - OPTIONS /api/v1/posts
+2026-04-02 09:32:33.493 | INFO     | main:on_startup:25 - UserController:get_users            - GET     /api/v1/users
+2026-04-02 09:32:33.493 | INFO     | main:on_startup:25 - UserController:create_user          - POST    /api/v1/users
+2026-04-02 09:32:33.493 | INFO     | main:on_startup:25 - <locals>:options_handler      - OPTIONS /api/v1/users
+2026-04-02 09:32:33.493 | INFO     | main:on_startup:25 - <locals>:options_handler      - OPTIONS /api/v1/users/{userId:int}
+2026-04-02 09:32:33.493 | INFO     | main:on_startup:25 - UserController:get_user_by_id       - GET     /api/v1/users/{userId:int}
+2026-04-02 09:32:33.493 | INFO     | main:on_startup:29 - Application startup complete.
+2026-04-02 09:32:33.493 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:32:36.903 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:32:36.926 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:32:37.032 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:32:37.032 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:32:37.032 | INFO     | uvicorn.server:_serve:102 - Finished server process [29332]
+2026-04-02 09:32:38.113 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:32:38.248 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:32:38.248 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:32:38.251 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:32:38.251 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:32:38.366 | INFO     | uvicorn.server:_serve:92 - Started server process [33024]
+2026-04-02 09:32:38.366 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:32:38.372 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:32:38.372 | INFO     | main:on_startup:25 - PostController:   delete_user_by_id - DELETE  /api/v1/posts/{userId:int}
+2026-04-02 09:32:38.373 | INFO     | main:on_startup:25 - <locals>:     options_handler - OPTIONS /api/v1/posts/{userId:int}
+2026-04-02 09:32:38.373 | INFO     | main:on_startup:25 - PostController:      get_user_by_id - GET     /api/v1/posts/{userId:int}
+2026-04-02 09:32:38.373 | INFO     | main:on_startup:25 - <locals>:     options_handler - OPTIONS /api/v1/posts
+2026-04-02 09:32:38.373 | INFO     | main:on_startup:25 - PostController:           get_users - GET     /api/v1/posts
+2026-04-02 09:32:38.373 | INFO     | main:on_startup:25 - UserController:         create_user - POST    /api/v1/users
+2026-04-02 09:32:38.373 | INFO     | main:on_startup:25 - UserController:           get_users - GET     /api/v1/users
+2026-04-02 09:32:38.373 | INFO     | main:on_startup:25 - <locals>:     options_handler - OPTIONS /api/v1/users
+2026-04-02 09:32:38.374 | INFO     | main:on_startup:25 - <locals>:     options_handler - OPTIONS /api/v1/users/{userId:int}
+2026-04-02 09:32:38.374 | INFO     | main:on_startup:25 - UserController:      get_user_by_id - GET     /api/v1/users/{userId:int}
+2026-04-02 09:32:38.374 | INFO     | main:on_startup:29 - Application startup complete.
+2026-04-02 09:32:38.374 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:32:49.501 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:32:49.595 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:32:49.702 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:32:49.703 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:32:49.703 | INFO     | uvicorn.server:_serve:102 - Finished server process [33024]
+2026-04-02 09:32:50.795 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:32:50.920 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:32:50.920 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:32:50.922 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:32:50.922 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:32:51.033 | INFO     | uvicorn.server:_serve:92 - Started server process [37544]
+2026-04-02 09:32:51.033 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:32:51.038 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:32:51.038 | INFO     | main:on_startup:25 - PostController:   delete_user_by_id -  DELETE /api/v1/posts/{userId:int}
+2026-04-02 09:32:51.039 | INFO     | main:on_startup:25 - <locals>:     options_handler - OPTIONS /api/v1/posts/{userId:int}
+2026-04-02 09:32:51.039 | INFO     | main:on_startup:25 - PostController:      get_user_by_id -     GET /api/v1/posts/{userId:int}
+2026-04-02 09:32:51.039 | INFO     | main:on_startup:25 - PostController:           get_users -     GET /api/v1/posts
+2026-04-02 09:32:51.039 | INFO     | main:on_startup:25 - <locals>:     options_handler - OPTIONS /api/v1/posts
+2026-04-02 09:32:51.039 | INFO     | main:on_startup:25 - UserController:         create_user -    POST /api/v1/users
+2026-04-02 09:32:51.040 | INFO     | main:on_startup:25 - UserController:           get_users -     GET /api/v1/users
+2026-04-02 09:32:51.040 | INFO     | main:on_startup:25 - <locals>:     options_handler - OPTIONS /api/v1/users
+2026-04-02 09:32:51.040 | INFO     | main:on_startup:25 - UserController:      get_user_by_id -     GET /api/v1/users/{userId:int}
+2026-04-02 09:32:51.040 | INFO     | main:on_startup:25 - <locals>:     options_handler - OPTIONS /api/v1/users/{userId:int}
+2026-04-02 09:32:51.041 | INFO     | main:on_startup:29 - Application startup complete.
+2026-04-02 09:32:51.041 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:32:57.374 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:32:57.404 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:32:57.510 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:32:57.511 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:32:57.511 | INFO     | uvicorn.server:_serve:102 - Finished server process [37544]
+2026-04-02 09:32:58.541 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:32:58.673 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:32:58.673 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:32:58.675 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:32:58.675 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:32:58.785 | INFO     | uvicorn.server:_serve:92 - Started server process [29892]
+2026-04-02 09:32:58.785 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:32:58.790 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:32:58.790 | INFO     | main:on_startup:25 - <locals>:options_handler - OPTIONS /api/v1/posts/{userId:int}
+2026-04-02 09:32:58.791 | INFO     | main:on_startup:25 - PostController:get_user_by_id -     GET /api/v1/posts/{userId:int}
+2026-04-02 09:32:58.791 | INFO     | main:on_startup:25 - PostController:delete_user_by_id -  DELETE /api/v1/posts/{userId:int}
+2026-04-02 09:32:58.792 | INFO     | main:on_startup:25 - <locals>:options_handler - OPTIONS /api/v1/posts
+2026-04-02 09:32:58.792 | INFO     | main:on_startup:25 - PostController:get_users -     GET /api/v1/posts
+2026-04-02 09:32:58.792 | INFO     | main:on_startup:25 - UserController:create_user -    POST /api/v1/users
+2026-04-02 09:32:58.792 | INFO     | main:on_startup:25 - <locals>:options_handler - OPTIONS /api/v1/users
+2026-04-02 09:32:58.793 | INFO     | main:on_startup:25 - UserController:get_users -     GET /api/v1/users
+2026-04-02 09:32:58.793 | INFO     | main:on_startup:25 - UserController:get_user_by_id -     GET /api/v1/users/{userId:int}
+2026-04-02 09:32:58.793 | INFO     | main:on_startup:25 - <locals>:options_handler - OPTIONS /api/v1/users/{userId:int}
+2026-04-02 09:32:58.793 | INFO     | main:on_startup:29 - Application startup complete.
+2026-04-02 09:32:58.793 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:33:11.911 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:33:11.937 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:33:12.043 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:33:12.043 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:33:12.044 | INFO     | uvicorn.server:_serve:102 - Finished server process [29892]
+2026-04-02 09:33:13.090 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:33:13.211 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:33:13.212 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:33:13.214 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:33:13.214 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:33:13.321 | INFO     | uvicorn.server:_serve:92 - Started server process [37108]
+2026-04-02 09:33:13.322 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:33:13.327 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:33:13.327 | INFO     | main:on_startup:25 - PostController:delete_user_by_id                                  -  DELETE /api/v1/posts/{userId:int}
+2026-04-02 09:33:13.328 | INFO     | main:on_startup:25 - <locals>:options_handler                                    - OPTIONS /api/v1/posts/{userId:int}
+2026-04-02 09:33:13.328 | INFO     | main:on_startup:25 - PostController:get_user_by_id                                     -     GET /api/v1/posts/{userId:int}
+2026-04-02 09:33:13.328 | INFO     | main:on_startup:25 - PostController:get_users                                          -     GET /api/v1/posts
+2026-04-02 09:33:13.329 | INFO     | main:on_startup:25 - <locals>:options_handler                                    - OPTIONS /api/v1/posts
+2026-04-02 09:33:13.329 | INFO     | main:on_startup:25 - UserController:create_user                                        -    POST /api/v1/users
+2026-04-02 09:33:13.329 | INFO     | main:on_startup:25 - <locals>:options_handler                                    - OPTIONS /api/v1/users
+2026-04-02 09:33:13.329 | INFO     | main:on_startup:25 - UserController:get_users                                          -     GET /api/v1/users
+2026-04-02 09:33:13.329 | INFO     | main:on_startup:25 - <locals>:options_handler                                    - OPTIONS /api/v1/users/{userId:int}
+2026-04-02 09:33:13.329 | INFO     | main:on_startup:25 - UserController:get_user_by_id                                     -     GET /api/v1/users/{userId:int}
+2026-04-02 09:33:13.329 | INFO     | main:on_startup:29 - Application startup complete.
+2026-04-02 09:33:13.330 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:33:18.429 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:33:18.482 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:33:18.588 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:33:18.589 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:33:18.589 | INFO     | uvicorn.server:_serve:102 - Finished server process [37108]
+2026-04-02 09:33:19.734 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:33:19.868 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:33:19.868 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:33:19.870 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:33:19.871 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:33:19.987 | INFO     | uvicorn.server:_serve:92 - Started server process [27972]
+2026-04-02 09:33:19.988 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:33:19.995 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:33:19.995 | INFO     | main:on_startup:25 - PostController:get_user_by_id                 -     GET /api/v1/posts/{userId:int}
+2026-04-02 09:33:19.995 | INFO     | main:on_startup:25 - PostController:delete_user_by_id              -  DELETE /api/v1/posts/{userId:int}
+2026-04-02 09:33:19.996 | INFO     | main:on_startup:25 - <locals>:options_handler                - OPTIONS /api/v1/posts/{userId:int}
+2026-04-02 09:33:19.996 | INFO     | main:on_startup:25 - <locals>:options_handler                - OPTIONS /api/v1/posts
+2026-04-02 09:33:19.996 | INFO     | main:on_startup:25 - PostController:get_users                      -     GET /api/v1/posts
+2026-04-02 09:33:19.996 | INFO     | main:on_startup:25 - <locals>:options_handler                - OPTIONS /api/v1/users
+2026-04-02 09:33:19.997 | INFO     | main:on_startup:25 - UserController:get_users                      -     GET /api/v1/users
+2026-04-02 09:33:19.997 | INFO     | main:on_startup:25 - UserController:create_user                    -    POST /api/v1/users
+2026-04-02 09:33:19.997 | INFO     | main:on_startup:25 - <locals>:options_handler                - OPTIONS /api/v1/users/{userId:int}
+2026-04-02 09:33:19.997 | INFO     | main:on_startup:25 - UserController:get_user_by_id                 -     GET /api/v1/users/{userId:int}
+2026-04-02 09:33:19.997 | INFO     | main:on_startup:29 - Application startup complete.
+2026-04-02 09:33:19.997 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:33:26.543 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:33:26.635 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:33:26.742 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:33:26.742 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:33:26.743 | INFO     | uvicorn.server:_serve:102 - Finished server process [27972]
+2026-04-02 09:33:27.807 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:33:27.923 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:33:27.923 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:33:27.926 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:33:27.926 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:33:28.037 | INFO     | uvicorn.server:_serve:92 - Started server process [15500]
+2026-04-02 09:33:28.038 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:33:28.042 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:33:28.043 | INFO     | main:on_startup:25 - <locals>:options_handler                OPTIONS /api/v1/posts/{userId:int}
+2026-04-02 09:33:28.043 | INFO     | main:on_startup:25 - PostController:get_user_by_id                     GET /api/v1/posts/{userId:int}
+2026-04-02 09:33:28.043 | INFO     | main:on_startup:25 - PostController:delete_user_by_id               DELETE /api/v1/posts/{userId:int}
+2026-04-02 09:33:28.043 | INFO     | main:on_startup:25 - PostController:get_users                          GET /api/v1/posts
+2026-04-02 09:33:28.043 | INFO     | main:on_startup:25 - <locals>:options_handler                OPTIONS /api/v1/posts
+2026-04-02 09:33:28.043 | INFO     | main:on_startup:25 - UserController:create_user                       POST /api/v1/users
+2026-04-02 09:33:28.043 | INFO     | main:on_startup:25 - <locals>:options_handler                OPTIONS /api/v1/users
+2026-04-02 09:33:28.043 | INFO     | main:on_startup:25 - UserController:get_users                          GET /api/v1/users
+2026-04-02 09:33:28.043 | INFO     | main:on_startup:25 - <locals>:options_handler                OPTIONS /api/v1/users/{userId:int}
+2026-04-02 09:33:28.043 | INFO     | main:on_startup:25 - UserController:get_user_by_id                     GET /api/v1/users/{userId:int}
+2026-04-02 09:33:28.045 | INFO     | main:on_startup:29 - Application startup complete.
+2026-04-02 09:33:28.045 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:33:40.706 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:33:40.750 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:33:40.856 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:33:40.858 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:33:40.858 | INFO     | uvicorn.server:_serve:102 - Finished server process [15500]
+2026-04-02 09:33:41.901 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:33:42.020 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:33:42.020 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:33:42.023 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:33:42.023 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:33:42.133 | INFO     | uvicorn.server:_serve:92 - Started server process [33752]
+2026-04-02 09:33:42.133 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:33:42.138 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:33:42.138 | INFO     | main:on_startup:25 -  DELETE /api/v1/posts/{userId:int}
+2026-04-02 09:33:42.138 | INFO     | main:on_startup:25 -     GET /api/v1/posts/{userId:int}
+2026-04-02 09:33:42.138 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts/{userId:int}
+2026-04-02 09:33:42.139 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts
+2026-04-02 09:33:42.139 | INFO     | main:on_startup:25 -     GET /api/v1/posts
+2026-04-02 09:33:42.139 | INFO     | main:on_startup:25 -    POST /api/v1/users
+2026-04-02 09:33:42.139 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users
+2026-04-02 09:33:42.139 | INFO     | main:on_startup:25 -     GET /api/v1/users
+2026-04-02 09:33:42.140 | INFO     | main:on_startup:25 -     GET /api/v1/users/{userId:int}
+2026-04-02 09:33:42.140 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users/{userId:int}
+2026-04-02 09:33:42.140 | INFO     | main:on_startup:27 - Application startup complete.
+2026-04-02 09:33:42.140 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:33:49.838 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:33:49.935 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:33:50.042 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:33:50.043 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:33:50.043 | INFO     | uvicorn.server:_serve:102 - Finished server process [33752]
+2026-04-02 09:33:51.058 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:33:51.182 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:33:51.183 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:33:51.185 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:33:51.186 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:33:51.290 | INFO     | uvicorn.server:_serve:92 - Started server process [36560]
+2026-04-02 09:33:51.290 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:33:51.295 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:33:51.295 | INFO     | main:on_startup:25 - GET     /api/v1/posts/{userId:int}
+2026-04-02 09:33:51.296 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts/{userId:int}
+2026-04-02 09:33:51.296 | INFO     | main:on_startup:25 - DELETE  /api/v1/posts/{userId:int}
+2026-04-02 09:33:51.297 | INFO     | main:on_startup:25 - GET     /api/v1/posts
+2026-04-02 09:33:51.297 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts
+2026-04-02 09:33:51.297 | INFO     | main:on_startup:25 - POST    /api/v1/users
+2026-04-02 09:33:51.297 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users
+2026-04-02 09:33:51.297 | INFO     | main:on_startup:25 - GET     /api/v1/users
+2026-04-02 09:33:51.297 | INFO     | main:on_startup:25 - GET     /api/v1/users/{userId:int}
+2026-04-02 09:33:51.297 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users/{userId:int}
+2026-04-02 09:33:51.298 | INFO     | main:on_startup:27 - Application startup complete.
+2026-04-02 09:33:51.298 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:33:59.941 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:33:59.958 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:34:00.065 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:34:00.065 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:34:00.065 | INFO     | uvicorn.server:_serve:102 - Finished server process [36560]
+2026-04-02 09:34:01.082 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:34:01.203 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:34:01.203 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:34:01.206 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:34:01.206 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:34:01.312 | INFO     | uvicorn.server:_serve:92 - Started server process [27492]
+2026-04-02 09:34:01.312 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:34:01.318 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:34:01.318 | INFO     | main:on_startup:25 - DELETE  /api/v1/posts/{userId:int} - PostController:delete_user_by_id              
+2026-04-02 09:34:01.319 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts/{userId:int} - <locals>:options_handler                
+2026-04-02 09:34:01.319 | INFO     | main:on_startup:25 - GET     /api/v1/posts/{userId:int} - PostController:get_user_by_id                 
+2026-04-02 09:34:01.319 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts - <locals>:options_handler                
+2026-04-02 09:34:01.319 | INFO     | main:on_startup:25 - GET     /api/v1/posts - PostController:get_users                      
+2026-04-02 09:34:01.320 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users - <locals>:options_handler                
+2026-04-02 09:34:01.320 | INFO     | main:on_startup:25 - GET     /api/v1/users - UserController:get_users                      
+2026-04-02 09:34:01.320 | INFO     | main:on_startup:25 - POST    /api/v1/users - UserController:create_user                    
+2026-04-02 09:34:01.320 | INFO     | main:on_startup:25 - GET     /api/v1/users/{userId:int} - UserController:get_user_by_id                 
+2026-04-02 09:34:01.320 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users/{userId:int} - <locals>:options_handler                
+2026-04-02 09:34:01.320 | INFO     | main:on_startup:29 - Application startup complete.
+2026-04-02 09:34:01.320 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:34:21.678 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:34:21.694 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:34:21.800 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:34:21.800 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:34:21.801 | INFO     | uvicorn.server:_serve:102 - Finished server process [27492]
+2026-04-02 09:34:22.863 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:34:22.987 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:34:22.987 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:34:22.989 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:34:22.989 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:34:23.106 | INFO     | uvicorn.server:_serve:92 - Started server process [30008]
+2026-04-02 09:34:23.106 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:34:23.111 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:34:23.111 | INFO     | main:on_startup:25 - GET     /api/v1/posts/{userId:int} - PostController:get_user_by_id 
+2026-04-02 09:34:23.111 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts/{userId:int} - <locals>:options_handler 
+2026-04-02 09:34:23.111 | INFO     | main:on_startup:25 - DELETE  /api/v1/posts/{userId:int} - PostController:delete_user_by_id 
+2026-04-02 09:34:23.112 | INFO     | main:on_startup:25 - GET            /api/v1/posts - PostController:get_users 
+2026-04-02 09:34:23.112 | INFO     | main:on_startup:25 - OPTIONS        /api/v1/posts - <locals>:options_handler 
+2026-04-02 09:34:23.112 | INFO     | main:on_startup:25 - GET            /api/v1/users - UserController:get_users 
+2026-04-02 09:34:23.112 | INFO     | main:on_startup:25 - OPTIONS        /api/v1/users - <locals>:options_handler 
+2026-04-02 09:34:23.112 | INFO     | main:on_startup:25 - POST           /api/v1/users - UserController:create_user 
+2026-04-02 09:34:23.112 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users/{userId:int} - <locals>:options_handler 
+2026-04-02 09:34:23.113 | INFO     | main:on_startup:25 - GET     /api/v1/users/{userId:int} - UserController:get_user_by_id 
+2026-04-02 09:34:23.113 | INFO     | main:on_startup:29 - Application startup complete.
+2026-04-02 09:34:23.113 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:34:27.879 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:34:27.942 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:34:28.048 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:34:28.049 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:34:28.049 | INFO     | uvicorn.server:_serve:102 - Finished server process [30008]
+2026-04-02 09:34:29.146 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:34:29.277 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:34:29.277 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:34:29.279 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:34:29.279 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:34:29.389 | INFO     | uvicorn.server:_serve:92 - Started server process [30024]
+2026-04-02 09:34:29.389 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:34:29.393 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:34:29.393 | INFO     | main:on_startup:25 - DELETE  /api/v1/posts/{userId:int} - PostController:delete_user_by_id 
+2026-04-02 09:34:29.393 | INFO     | main:on_startup:25 - GET     /api/v1/posts/{userId:int} - PostController:get_user_by_id 
+2026-04-02 09:34:29.395 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts/{userId:int} - <locals>:options_handler 
+2026-04-02 09:34:29.395 | INFO     | main:on_startup:25 - GET     /api/v1/posts        - PostController:get_users 
+2026-04-02 09:34:29.395 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts        - <locals>:options_handler 
+2026-04-02 09:34:29.395 | INFO     | main:on_startup:25 - GET     /api/v1/users        - UserController:get_users 
+2026-04-02 09:34:29.395 | INFO     | main:on_startup:25 - POST    /api/v1/users        - UserController:create_user 
+2026-04-02 09:34:29.396 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users        - <locals>:options_handler 
+2026-04-02 09:34:29.396 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users/{userId:int} - <locals>:options_handler 
+2026-04-02 09:34:29.396 | INFO     | main:on_startup:25 - GET     /api/v1/users/{userId:int} - UserController:get_user_by_id 
+2026-04-02 09:34:29.396 | INFO     | main:on_startup:29 - Application startup complete.
+2026-04-02 09:34:29.396 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:34:32.502 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:34:32.521 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:34:32.628 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:34:32.629 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:34:32.629 | INFO     | uvicorn.server:_serve:102 - Finished server process [30024]
+2026-04-02 09:34:33.650 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:34:33.767 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:34:33.767 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:34:33.769 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:34:33.770 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:34:33.871 | INFO     | uvicorn.server:_serve:92 - Started server process [32328]
+2026-04-02 09:34:33.872 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:34:33.878 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:34:33.878 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts/{userId:int}     - <locals>:options_handler 
+2026-04-02 09:34:33.878 | INFO     | main:on_startup:25 - GET     /api/v1/posts/{userId:int}     - PostController:get_user_by_id 
+2026-04-02 09:34:33.879 | INFO     | main:on_startup:25 - DELETE  /api/v1/posts/{userId:int}     - PostController:delete_user_by_id 
+2026-04-02 09:34:33.879 | INFO     | main:on_startup:25 - GET     /api/v1/posts                  - PostController:get_users 
+2026-04-02 09:34:33.879 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts                  - <locals>:options_handler 
+2026-04-02 09:34:33.879 | INFO     | main:on_startup:25 - GET     /api/v1/users                  - UserController:get_users 
+2026-04-02 09:34:33.879 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users                  - <locals>:options_handler 
+2026-04-02 09:34:33.879 | INFO     | main:on_startup:25 - POST    /api/v1/users                  - UserController:create_user 
+2026-04-02 09:34:33.880 | INFO     | main:on_startup:25 - GET     /api/v1/users/{userId:int}     - UserController:get_user_by_id 
+2026-04-02 09:34:33.880 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users/{userId:int}     - <locals>:options_handler 
+2026-04-02 09:34:33.880 | INFO     | main:on_startup:29 - Application startup complete.
+2026-04-02 09:34:33.881 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:35:24.179 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:35:24.241 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:35:24.347 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:35:24.348 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:35:24.349 | INFO     | uvicorn.server:_serve:102 - Finished server process [32328]
+2026-04-02 09:35:25.384 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:35:25.507 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:35:25.507 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:35:25.510 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:35:25.510 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:35:25.627 | INFO     | uvicorn.server:_serve:92 - Started server process [14320]
+2026-04-02 09:35:25.627 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:35:25.633 | INFO     | main:on_startup:19 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:35:25.633 | INFO     | main:on_startup:25 - GET     /api/v1/posts/{userId:int}     - PostController:get_user_by_id 
+2026-04-02 09:35:25.633 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts/{userId:int}     - <locals>:options_handler 
+2026-04-02 09:35:25.634 | INFO     | main:on_startup:25 - DELETE  /api/v1/posts/{userId:int}     - PostController:delete_user_by_id 
+2026-04-02 09:35:25.634 | INFO     | main:on_startup:25 - GET     /api/v1/posts                  - PostController:get_users 
+2026-04-02 09:35:25.634 | INFO     | main:on_startup:25 - OPTIONS /api/v1/posts                  - <locals>:options_handler 
+2026-04-02 09:35:25.634 | INFO     | main:on_startup:25 - POST    /api/v1/users                  - UserController:create_user 
+2026-04-02 09:35:25.634 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users                  - <locals>:options_handler 
+2026-04-02 09:35:25.635 | INFO     | main:on_startup:25 - GET     /api/v1/users                  - UserController:get_users 
+2026-04-02 09:35:25.635 | INFO     | main:on_startup:25 - GET     /api/v1/users/{userId:int}     - UserController:get_user_by_id 
+2026-04-02 09:35:25.635 | INFO     | main:on_startup:25 - OPTIONS /api/v1/users/{userId:int}     - <locals>:options_handler 
+2026-04-02 09:35:25.636 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:41:23.672 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:41:23.699 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:41:23.804 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:41:23.867 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:41:23.867 | INFO     | uvicorn.server:_serve:102 - Finished server process [14320]
+2026-04-02 09:41:26.444 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:41:26.676 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:41:26.677 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:41:26.680 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:41:26.681 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:41:26.885 | INFO     | uvicorn.server:_serve:92 - Started server process [22484]
+2026-04-02 09:41:26.885 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:41:26.895 | INFO     | main:on_startup:10 - === Litestar 路由與 Controller 對應關係 ===
+2026-04-02 09:41:26.896 | INFO     | main:on_startup:16 - GET     /api/v1/posts/{userId:int}     - PostController:get_user_by_id 
+2026-04-02 09:41:26.896 | INFO     | main:on_startup:16 - DELETE  /api/v1/posts/{userId:int}     - PostController:delete_user_by_id 
+2026-04-02 09:41:26.897 | INFO     | main:on_startup:16 - OPTIONS /api/v1/posts/{userId:int}     - <locals>:options_handler 
+2026-04-02 09:41:26.897 | INFO     | main:on_startup:16 - GET     /api/v1/posts                  - PostController:get_users 
+2026-04-02 09:41:26.897 | INFO     | main:on_startup:16 - OPTIONS /api/v1/posts                  - <locals>:options_handler 
+2026-04-02 09:41:26.898 | INFO     | main:on_startup:16 - GET     /api/v1/users                  - UserController:get_users 
+2026-04-02 09:41:26.898 | INFO     | main:on_startup:16 - OPTIONS /api/v1/users                  - <locals>:options_handler 
+2026-04-02 09:41:26.898 | INFO     | main:on_startup:16 - POST    /api/v1/users                  - UserController:create_user 
+2026-04-02 09:41:26.898 | INFO     | main:on_startup:16 - GET     /api/v1/users/{userId:int}     - UserController:get_user_by_id 
+2026-04-02 09:41:26.899 | INFO     | main:on_startup:16 - OPTIONS /api/v1/users/{userId:int}     - <locals>:options_handler 
+2026-04-02 09:41:26.900 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:41:39.342 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:41:39.369 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:41:39.477 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:41:39.477 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:41:39.478 | INFO     | uvicorn.server:_serve:102 - Finished server process [22484]
+2026-04-02 09:41:41.117 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:41:41.362 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:41:41.363 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:41:41.366 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:41:41.366 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:41:41.529 | INFO     | uvicorn.server:_serve:92 - Started server process [19584]
+2026-04-02 09:41:41.529 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:41:41.537 | INFO     | main:on_startup:11 - DELETE  /api/v1/posts/{userId:int}     - PostController:delete_user_by_id 
+2026-04-02 09:41:41.538 | INFO     | main:on_startup:11 - GET     /api/v1/posts/{userId:int}     - PostController:get_user_by_id 
+2026-04-02 09:41:41.538 | INFO     | main:on_startup:11 - OPTIONS /api/v1/posts/{userId:int}     - <locals>:options_handler 
+2026-04-02 09:41:41.538 | INFO     | main:on_startup:11 - GET     /api/v1/posts                  - PostController:get_users 
+2026-04-02 09:41:41.538 | INFO     | main:on_startup:11 - OPTIONS /api/v1/posts                  - <locals>:options_handler 
+2026-04-02 09:41:41.539 | INFO     | main:on_startup:11 - POST    /api/v1/users                  - UserController:create_user 
+2026-04-02 09:41:41.540 | INFO     | main:on_startup:11 - OPTIONS /api/v1/users                  - <locals>:options_handler 
+2026-04-02 09:41:41.540 | INFO     | main:on_startup:11 - GET     /api/v1/users                  - UserController:get_users 
+2026-04-02 09:41:41.540 | INFO     | main:on_startup:11 - GET     /api/v1/users/{userId:int}     - UserController:get_user_by_id 
+2026-04-02 09:41:41.540 | INFO     | main:on_startup:11 - OPTIONS /api/v1/users/{userId:int}     - <locals>:options_handler 
+2026-04-02 09:41:41.541 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:41:54.389 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:41:54.402 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:41:54.503 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:41:54.504 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:41:54.505 | INFO     | uvicorn.server:_serve:102 - Finished server process [19584]
+2026-04-02 09:41:56.208 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:41:56.411 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:41:56.413 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:41:56.416 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:41:56.417 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:41:56.597 | INFO     | uvicorn.server:_serve:92 - Started server process [13344]
+2026-04-02 09:41:56.598 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:41:56.608 | INFO     | main:on_startup:11 - [DELETE ] /api/v1/posts/{userId:int}     - PostController:delete_user_by_id
+2026-04-02 09:41:56.608 | INFO     | main:on_startup:11 - [OPTIONS] /api/v1/posts/{userId:int}     - <locals>:options_handler
+2026-04-02 09:41:56.609 | INFO     | main:on_startup:11 - [GET    ] /api/v1/posts/{userId:int}     - PostController:get_user_by_id
+2026-04-02 09:41:56.609 | INFO     | main:on_startup:11 - [GET    ] /api/v1/posts                  - PostController:get_users
+2026-04-02 09:41:56.609 | INFO     | main:on_startup:11 - [OPTIONS] /api/v1/posts                  - <locals>:options_handler
+2026-04-02 09:41:56.609 | INFO     | main:on_startup:11 - [GET    ] /api/v1/users                  - UserController:get_users
+2026-04-02 09:41:56.609 | INFO     | main:on_startup:11 - [OPTIONS] /api/v1/users                  - <locals>:options_handler
+2026-04-02 09:41:56.610 | INFO     | main:on_startup:11 - [POST   ] /api/v1/users                  - UserController:create_user
+2026-04-02 09:41:56.610 | INFO     | main:on_startup:11 - [GET    ] /api/v1/users/{userId:int}     - UserController:get_user_by_id
+2026-04-02 09:41:56.610 | INFO     | main:on_startup:11 - [OPTIONS] /api/v1/users/{userId:int}     - <locals>:options_handler
+2026-04-02 09:41:56.611 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:42:19.097 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:42:19.193 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:42:19.302 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:42:19.303 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:42:19.303 | INFO     | uvicorn.server:_serve:102 - Finished server process [13344]
+2026-04-02 09:42:21.100 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:42:21.298 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:42:21.299 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:42:21.302 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:42:21.302 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:42:21.480 | INFO     | uvicorn.server:_serve:92 - Started server process [28084]
+2026-04-02 09:42:21.481 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:42:21.490 | INFO     | main:on_startup:13 - [DELETE ] /api/v1/posts/{userId:int}     - PostController:delete_user_by_id
+2026-04-02 09:42:21.490 | INFO     | main:on_startup:13 - [GET    ] /api/v1/posts/{userId:int}     - PostController:get_user_by_id
+2026-04-02 09:42:21.491 | INFO     | main:on_startup:13 - [GET    ] /api/v1/posts                  - PostController:get_users
+2026-04-02 09:42:21.491 | INFO     | main:on_startup:13 - [POST   ] /api/v1/users                  - UserController:create_user
+2026-04-02 09:42:21.491 | INFO     | main:on_startup:13 - [GET    ] /api/v1/users                  - UserController:get_users
+2026-04-02 09:42:21.491 | INFO     | main:on_startup:13 - [GET    ] /api/v1/users/{userId:int}     - UserController:get_user_by_id
+2026-04-02 09:42:21.492 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:43:12.730 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:43:12.741 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:43:12.857 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:43:12.857 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:43:12.858 | INFO     | uvicorn.server:_serve:102 - Finished server process [28084]
+2026-04-02 09:43:14.685 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:43:14.891 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:43:14.893 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:43:14.896 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:43:14.897 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:43:15.068 | INFO     | uvicorn.server:_serve:92 - Started server process [36644]
+2026-04-02 09:43:15.069 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:43:15.076 | INFO     | main:on_startup:13 - [DELETE ] /api/v1/posts/{userId:int}     - PostController:delete_user_by_id
+2026-04-02 09:43:15.077 | INFO     | main:on_startup:13 - [GET    ] /api/v1/posts/{userId:int}     - PostController:get_user_by_id
+2026-04-02 09:43:15.077 | INFO     | main:on_startup:13 - [GET    ] /api/v1/posts                  - PostController:get_users
+2026-04-02 09:43:15.078 | INFO     | main:on_startup:13 - [GET    ] /api/v1/users                  - UserController:get_users
+2026-04-02 09:43:15.078 | INFO     | main:on_startup:13 - [POST   ] /api/v1/users                  - UserController:create_user
+2026-04-02 09:43:15.078 | INFO     | main:on_startup:13 - [GET    ] /api/v1/users/{userId:int}     - UserController:get_user_by_id
+2026-04-02 09:43:15.078 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:43:52.692 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:43:52.765 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:43:52.867 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:43:52.868 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:43:52.869 | INFO     | uvicorn.server:_serve:102 - Finished server process [36644]
+2026-04-02 09:43:54.678 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:43:54.872 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:43:54.873 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:43:54.876 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:43:54.876 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:43:55.065 | INFO     | uvicorn.server:_serve:92 - Started server process [9020]
+2026-04-02 09:43:55.066 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:43:55.074 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}     - PostController:delete_user_by_id
+2026-04-02 09:43:55.075 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}     - PostController:get_user_by_id
+2026-04-02 09:43:55.075 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                  - PostController:get_users
+2026-04-02 09:43:55.075 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                  - UserController:create_user
+2026-04-02 09:43:55.076 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                  - UserController:get_users
+2026-04-02 09:43:55.076 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}     - UserController:get_user_by_id
+2026-04-02 09:43:55.077 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 09:44:39.147 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:44:39.255 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 09:44:39.364 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 09:44:39.365 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 09:44:39.365 | INFO     | uvicorn.server:_serve:102 - Finished server process [9020]
+2026-04-02 09:44:39.901 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 09:44:42.037 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 09:44:42.263 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 09:44:42.264 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 09:44:42.268 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 09:44:42.268 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 09:44:42.462 | INFO     | uvicorn.server:_serve:92 - Started server process [37104]
+2026-04-02 09:44:42.463 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 09:44:42.472 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                  - PostController:get_users
+2026-04-02 09:44:42.472 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}     - PostController:delete_user_by_id
+2026-04-02 09:44:42.472 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}     - PostController:get_user_by_id
+2026-04-02 09:44:42.472 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                  - UserController:create_user
+2026-04-02 09:44:42.473 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                  - UserController:get_users
+2026-04-02 09:44:42.473 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}     - UserController:get_user_by_id
+2026-04-02 09:44:42.474 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 10:30:57.041 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 10:30:57.188 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 10:30:57.333 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 10:30:57.373 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 10:30:57.448 | INFO     | uvicorn.server:_serve:102 - Finished server process [37104]
+2026-04-02 10:31:01.247 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: post
+2026-04-02 10:31:01.671 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: PostController (path = /posts)
+2026-04-02 10:31:01.672 | INFO     | src.api.register_routers:register_routers:17 - 正在加載控制器: user
+2026-04-02 10:31:01.680 | INFO     | src.api.register_routers:register_routers:39 - ✅ 成功載入控制器: UserController (path = /users)
+2026-04-02 10:31:01.681 | INFO     | src.api.register_routers:register_routers:48 - 已加載控制器: 2 個
+2026-04-02 10:31:02.065 | INFO     | uvicorn.server:_serve:92 - Started server process [6196]
+2026-04-02 10:31:02.066 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 10:31:02.081 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                  - PostController:get_users
+2026-04-02 10:31:02.081 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}     - PostController:delete_user_by_id
+2026-04-02 10:31:02.081 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}     - PostController:get_user_by_id
+2026-04-02 10:31:02.082 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                  - UserController:create_user
+2026-04-02 10:31:02.082 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                  - UserController:get_users
+2026-04-02 10:31:02.082 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}     - UserController:get_user_by_id
+2026-04-02 10:31:02.082 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:06:12.411 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:06:12.476 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:06:12.622 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:06:12.646 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:06:12.661 | INFO     | uvicorn.server:_serve:102 - Finished server process [6196]
+2026-04-02 11:06:16.154 | INFO     | src.api.register_routers:register_routers:17 - Loading controller: post
+2026-04-02 11:06:16.620 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:06:16.621 | INFO     | src.api.register_routers:register_routers:17 - Loading controller: user
+2026-04-02 11:06:16.626 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:06:16.627 | INFO     | src.api.register_routers:register_routers:48 - Loaded controllers: 2 controllers
+2026-04-02 11:06:17.000 | INFO     | uvicorn.server:_serve:92 - Started server process [19756]
+2026-04-02 11:06:17.001 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:06:17.015 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                  - PostController:get_users
+2026-04-02 11:06:17.016 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}     - PostController:delete_user_by_id
+2026-04-02 11:06:17.016 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}     - PostController:get_user_by_id
+2026-04-02 11:06:17.017 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                  - UserController:get_users
+2026-04-02 11:06:17.017 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                  - UserController:create_user
+2026-04-02 11:06:17.018 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}     - UserController:get_user_by_id
+2026-04-02 11:06:17.019 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:07:11.810 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:07:11.885 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:07:11.991 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:07:11.993 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:07:11.993 | INFO     | uvicorn.server:_serve:102 - Finished server process [19756]
+2026-04-02 11:07:14.058 | INFO     | src.api.register_routers:register_routers:17 - 📌 Loading controller: post
+2026-04-02 11:07:14.326 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:07:14.327 | INFO     | src.api.register_routers:register_routers:17 - 📌 Loading controller: user
+2026-04-02 11:07:14.331 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:07:14.331 | INFO     | src.api.register_routers:register_routers:48 - Loaded controllers: 2 controllers
+2026-04-02 11:07:14.551 | INFO     | uvicorn.server:_serve:92 - Started server process [13984]
+2026-04-02 11:07:14.552 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:07:14.562 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                  - PostController:get_users
+2026-04-02 11:07:14.562 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}     - PostController:delete_user_by_id
+2026-04-02 11:07:14.562 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}     - PostController:get_user_by_id
+2026-04-02 11:07:14.563 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                  - UserController:get_users
+2026-04-02 11:07:14.563 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                  - UserController:create_user
+2026-04-02 11:07:14.563 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}     - UserController:get_user_by_id
+2026-04-02 11:07:14.564 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:08:02.549 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:08:02.614 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:08:02.720 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:08:02.721 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:08:02.722 | INFO     | uvicorn.server:_serve:102 - Finished server process [13984]
+2026-04-02 11:08:04.985 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:08:04.991 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:08:04.992 | INFO     | src.api.register_routers:register_routers:47 - Loaded controllers: 2 controllers
+2026-04-02 11:08:05.170 | INFO     | uvicorn.server:_serve:92 - Started server process [38836]
+2026-04-02 11:08:05.171 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:08:05.179 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                  - PostController:get_users
+2026-04-02 11:08:05.180 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}     - PostController:delete_user_by_id
+2026-04-02 11:08:05.180 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}     - PostController:get_user_by_id
+2026-04-02 11:08:05.181 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                  - UserController:create_user
+2026-04-02 11:08:05.181 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                  - UserController:get_users
+2026-04-02 11:08:05.182 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}     - UserController:get_user_by_id
+2026-04-02 11:08:05.182 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:08:30.710 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:08:30.790 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:08:30.896 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:08:30.897 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:08:30.898 | INFO     | uvicorn.server:_serve:102 - Finished server process [38836]
+2026-04-02 11:08:33.182 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:08:33.188 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:08:33.189 | INFO     | src.api.register_routers:register_routers:47 - ✅ Loaded controllers: 2 controllers
+2026-04-02 11:08:33.375 | INFO     | uvicorn.server:_serve:92 - Started server process [10808]
+2026-04-02 11:08:33.376 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:08:33.385 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                  - PostController:get_users
+2026-04-02 11:08:33.385 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}     - PostController:get_user_by_id
+2026-04-02 11:08:33.386 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}     - PostController:delete_user_by_id
+2026-04-02 11:08:33.386 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                  - UserController:create_user
+2026-04-02 11:08:33.386 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                  - UserController:get_users
+2026-04-02 11:08:33.387 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}     - UserController:get_user_by_id
+2026-04-02 11:08:33.394 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:18:18.661 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 11:18:18.702 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:18:18.810 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:18:18.876 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:18:18.876 | INFO     | uvicorn.server:_serve:102 - Finished server process [10808]
+2026-04-02 11:18:21.264 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:18:21.271 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:18:21.271 | INFO     | src.api.register_routers:register_routers:47 - ✅ Loaded controllers: 2 controllers
+2026-04-02 11:18:21.526 | INFO     | uvicorn.server:_serve:92 - Started server process [35832]
+2026-04-02 11:18:21.526 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:18:21.539 | INFO     | main:on_startup:14 - PostController - GET: get_users
+2026-04-02 11:18:21.540 | INFO     | main:on_startup:14 - PostController - GET: get_user_by_id
+2026-04-02 11:18:21.540 | INFO     | main:on_startup:14 - PostController - DELETE: delete_user_by_id
+2026-04-02 11:18:21.540 | INFO     | main:on_startup:14 - UserController - POST: create_user
+2026-04-02 11:18:21.541 | INFO     | main:on_startup:14 - UserController - GET: get_users
+2026-04-02 11:18:21.541 | INFO     | main:on_startup:14 - UserController - GET: get_user_by_id
+2026-04-02 11:18:21.542 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:18:53.775 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 11:18:53.861 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:18:53.968 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:18:53.969 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:18:53.970 | INFO     | uvicorn.server:_serve:102 - Finished server process [35832]
+2026-04-02 11:18:55.971 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:18:55.977 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:18:55.977 | INFO     | src.api.register_routers:register_routers:47 - ✅ Loaded controllers: 2 controllers
+2026-04-02 11:18:56.149 | INFO     | uvicorn.server:_serve:92 - Started server process [37764]
+2026-04-02 11:18:56.150 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:18:56.159 | INFO     | main:on_startup:14 - PostController - GET: /api/v1/posts  (get_users)
+2026-04-02 11:18:56.159 | INFO     | main:on_startup:14 - PostController - GET: /api/v1/posts/{userId:int}  (get_user_by_id)
+2026-04-02 11:18:56.159 | INFO     | main:on_startup:14 - PostController - DELETE: /api/v1/posts/{userId:int}  (delete_user_by_id)
+2026-04-02 11:18:56.160 | INFO     | main:on_startup:14 - UserController - POST: /api/v1/users  (create_user)
+2026-04-02 11:18:56.160 | INFO     | main:on_startup:14 - UserController - GET: /api/v1/users  (get_users)
+2026-04-02 11:18:56.160 | INFO     | main:on_startup:14 - UserController - GET: /api/v1/users/{userId:int}  (get_user_by_id)
+2026-04-02 11:18:56.161 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:19:02.666 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 11:19:02.765 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:19:02.871 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:19:02.872 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:19:02.872 | INFO     | uvicorn.server:_serve:102 - Finished server process [37764]
+2026-04-02 11:19:04.939 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:19:04.946 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:19:04.946 | INFO     | src.api.register_routers:register_routers:47 - ✅ Loaded controllers: 2 controllers
+2026-04-02 11:19:05.136 | INFO     | uvicorn.server:_serve:92 - Started server process [14340]
+2026-04-02 11:19:05.136 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:19:05.146 | INFO     | main:on_startup:14 - PostController - GET: /api/v1/posts(get_users)
+2026-04-02 11:19:05.146 | INFO     | main:on_startup:14 - PostController - GET: /api/v1/posts/{userId:int}(get_user_by_id)
+2026-04-02 11:19:05.146 | INFO     | main:on_startup:14 - PostController - DELETE: /api/v1/posts/{userId:int}(delete_user_by_id)
+2026-04-02 11:19:05.147 | INFO     | main:on_startup:14 - UserController - POST: /api/v1/users(create_user)
+2026-04-02 11:19:05.147 | INFO     | main:on_startup:14 - UserController - GET: /api/v1/users(get_users)
+2026-04-02 11:19:05.147 | INFO     | main:on_startup:14 - UserController - GET: /api/v1/users/{userId:int}(get_user_by_id)
+2026-04-02 11:19:05.148 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:19:22.577 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\modules\user copy\controller.py'. Reloading...
+2026-04-02 11:19:22.683 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:19:22.789 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:19:22.790 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:19:22.791 | INFO     | uvicorn.server:_serve:102 - Finished server process [14340]
+2026-04-02 11:19:25.006 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:19:25.013 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:19:25.018 | WARNING  | src.api.register_routers:register_routers:31 - Duplicate path found: /users (controller: UserController)
+2026-04-02 11:19:25.019 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:19:25.019 | INFO     | src.api.register_routers:register_routers:47 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:19:36.970 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\modules\product\controller.py'. Reloading...
+2026-04-02 11:19:38.952 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:19:38.968 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:19:38.972 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:19:38.973 | INFO     | src.api.register_routers:register_routers:47 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:19:39.162 | INFO     | uvicorn.server:_serve:92 - Started server process [35024]
+2026-04-02 11:19:39.162 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:19:39.170 | INFO     | main:on_startup:14 - PostController - GET: /api/v1/posts(get_users)
+2026-04-02 11:19:39.171 | INFO     | main:on_startup:14 - PostController - GET: /api/v1/posts/{userId:int}(get_user_by_id)
+2026-04-02 11:19:39.171 | INFO     | main:on_startup:14 - PostController - DELETE: /api/v1/posts/{userId:int}(delete_user_by_id)
+2026-04-02 11:19:39.172 | INFO     | main:on_startup:14 - ProductController - POST: /api/v1/products(create_user)
+2026-04-02 11:19:39.172 | INFO     | main:on_startup:14 - ProductController - GET: /api/v1/products(get_users)
+2026-04-02 11:19:39.173 | INFO     | main:on_startup:14 - ProductController - GET: /api/v1/products/{userId:int}(get_user_by_id)
+2026-04-02 11:19:39.173 | INFO     | main:on_startup:14 - UserController - POST: /api/v1/users(create_user)
+2026-04-02 11:19:39.173 | INFO     | main:on_startup:14 - UserController - GET: /api/v1/users(get_users)
+2026-04-02 11:19:39.174 | INFO     | main:on_startup:14 - UserController - GET: /api/v1/users/{userId:int}(get_user_by_id)
+2026-04-02 11:19:39.174 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:19:57.103 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 11:19:57.139 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:19:57.246 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:19:57.247 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:19:57.247 | INFO     | uvicorn.server:_serve:102 - Finished server process [35024]
+2026-04-02 11:19:59.193 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:19:59.199 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:19:59.202 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:19:59.202 | INFO     | src.api.register_routers:register_routers:47 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:19:59.376 | INFO     | uvicorn.server:_serve:92 - Started server process [39000]
+2026-04-02 11:19:59.377 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:19:59.385 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                  - PostController:get_users
+2026-04-02 11:19:59.385 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}     - PostController:get_user_by_id
+2026-04-02 11:19:59.386 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}     - PostController:delete_user_by_id
+2026-04-02 11:19:59.386 | INFO     | main:on_startup:14 - [POST   ] /api/v1/products               - ProductController:create_user
+2026-04-02 11:19:59.386 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products               - ProductController:get_users
+2026-04-02 11:19:59.386 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products/{userId:int}  - ProductController:get_user_by_id
+2026-04-02 11:19:59.387 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                  - UserController:create_user
+2026-04-02 11:19:59.387 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                  - UserController:get_users
+2026-04-02 11:19:59.387 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}     - UserController:get_user_by_id
+2026-04-02 11:19:59.387 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:20:27.064 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\modules\product\controller.py'. Reloading...
+2026-04-02 11:20:27.120 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:20:27.225 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:20:27.226 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:20:27.227 | INFO     | uvicorn.server:_serve:102 - Finished server process [39000]
+2026-04-02 11:20:29.234 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:20:29.250 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:20:29.254 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:20:29.254 | INFO     | src.api.register_routers:register_routers:47 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:20:29.432 | INFO     | uvicorn.server:_serve:92 - Started server process [31340]
+2026-04-02 11:20:29.432 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:20:29.441 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                  - PostController:get_users
+2026-04-02 11:20:29.441 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}     - PostController:get_user_by_id
+2026-04-02 11:20:29.442 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}     - PostController:delete_user_by_id
+2026-04-02 11:20:29.442 | INFO     | main:on_startup:14 - [POST   ] /api/v1/products               - ProductController:create_user
+2026-04-02 11:20:29.442 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products               - ProductController:get_users
+2026-04-02 11:20:29.443 | INFO     | main:on_startup:14 - [PATCH  ] /api/v1/products/{productId:int} - ProductController:update_product
+2026-04-02 11:20:29.443 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products/{userId:int}  - ProductController:get_user_by_id
+2026-04-02 11:20:29.443 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                  - UserController:get_users
+2026-04-02 11:20:29.444 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                  - UserController:create_user
+2026-04-02 11:20:29.444 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}     - UserController:get_user_by_id
+2026-04-02 11:20:29.444 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:20:49.138 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-02 11:20:49.196 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:20:49.303 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:20:49.304 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:20:49.304 | INFO     | uvicorn.server:_serve:102 - Finished server process [31340]
+2026-04-02 11:20:51.377 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:20:51.384 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:20:51.387 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:20:51.388 | INFO     | src.api.register_routers:register_routers:47 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:20:51.571 | INFO     | uvicorn.server:_serve:92 - Started server process [23172]
+2026-04-02 11:20:51.571 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:20:51.579 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                       - PostController:get_users
+2026-04-02 11:20:51.579 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}          - PostController:delete_user_by_id
+2026-04-02 11:20:51.580 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}          - PostController:get_user_by_id
+2026-04-02 11:20:51.580 | INFO     | main:on_startup:14 - [POST   ] /api/v1/products                    - ProductController:create_user
+2026-04-02 11:20:51.581 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products                    - ProductController:get_users
+2026-04-02 11:20:51.581 | INFO     | main:on_startup:14 - [PATCH  ] /api/v1/products/{productId:int}    - ProductController:update_product
+2026-04-02 11:20:51.581 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products/{userId:int}       - ProductController:get_user_by_id
+2026-04-02 11:20:51.582 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                       - UserController:create_user
+2026-04-02 11:20:51.582 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                       - UserController:get_users
+2026-04-02 11:20:51.583 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-02 11:20:51.583 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:21:00.419 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:21:00.526 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:21:00.527 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:21:00.528 | INFO     | uvicorn.server:_serve:102 - Finished server process [23172]
+2026-04-02 11:21:43.876 | INFO     | uvicorn.config:__init__:324 - Will watch for changes in these directories: ['C:\\Users\\tung.ma\\Documents\\GitHub\\ai-development\\LitestartAdmin']
+2026-04-02 11:21:43.884 | INFO     | uvicorn.config:bind_socket:545 - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-04-02 11:21:43.884 | INFO     | uvicorn.supervisors.basereload:startup:79 - Started reloader process [39580] using WatchFiles
+2026-04-02 11:21:45.665 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:21:45.671 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:21:45.675 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:21:45.675 | INFO     | src.api.register_routers:register_routers:47 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:21:45.876 | INFO     | uvicorn.server:_serve:92 - Started server process [38524]
+2026-04-02 11:21:45.877 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:21:45.885 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                       - PostController:get_users
+2026-04-02 11:21:45.885 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}          - PostController:get_user_by_id
+2026-04-02 11:21:45.886 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}          - PostController:delete_user_by_id
+2026-04-02 11:21:45.886 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products                    - ProductController:get_users
+2026-04-02 11:21:45.886 | INFO     | main:on_startup:14 - [POST   ] /api/v1/products                    - ProductController:create_user
+2026-04-02 11:21:45.886 | INFO     | main:on_startup:14 - [PATCH  ] /api/v1/products/{productId:int}    - ProductController:update_product
+2026-04-02 11:21:45.886 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products/{userId:int}       - ProductController:get_user_by_id
+2026-04-02 11:21:45.888 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                       - UserController:create_user
+2026-04-02 11:21:45.888 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                       - UserController:get_users
+2026-04-02 11:21:45.888 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-02 11:21:45.889 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:27:19.450 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:27:19.547 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:27:19.653 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:27:19.655 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:27:19.655 | INFO     | uvicorn.server:_serve:102 - Finished server process [38524]
+2026-04-02 11:27:21.769 | INFO     | src.api.register_routers:register_routers:18 - Loading module: src.modules.post.controller
+2026-04-02 11:27:21.771 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:27:21.775 | INFO     | src.api.register_routers:register_routers:18 - Loading module: src.modules.product.controller
+2026-04-02 11:27:21.776 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:27:21.780 | INFO     | src.api.register_routers:register_routers:18 - Loading module: src.modules.user.controller
+2026-04-02 11:27:21.780 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:27:21.781 | INFO     | src.api.register_routers:register_routers:48 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:27:22.010 | INFO     | uvicorn.server:_serve:92 - Started server process [20572]
+2026-04-02 11:27:22.011 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:27:22.021 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                       - PostController:get_users
+2026-04-02 11:27:22.022 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}          - PostController:delete_user_by_id
+2026-04-02 11:27:22.022 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}          - PostController:get_user_by_id
+2026-04-02 11:27:22.022 | INFO     | main:on_startup:14 - [POST   ] /api/v1/products                    - ProductController:create_user
+2026-04-02 11:27:22.022 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products                    - ProductController:get_users
+2026-04-02 11:27:22.023 | INFO     | main:on_startup:14 - [PATCH  ] /api/v1/products/{productId:int}    - ProductController:update_product
+2026-04-02 11:27:22.023 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products/{userId:int}       - ProductController:get_user_by_id
+2026-04-02 11:27:22.023 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                       - UserController:get_users
+2026-04-02 11:27:22.023 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                       - UserController:create_user
+2026-04-02 11:27:22.023 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-02 11:27:22.024 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:28:13.561 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:28:13.573 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:28:13.680 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:28:13.681 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:28:13.682 | INFO     | uvicorn.server:_serve:102 - Finished server process [20572]
+2026-04-02 11:28:15.748 | INFO     | src.api.register_routers:register_routers:18 - Loading module: ['BaseController', 'Controller', 'HTTPException', 'HTTP_404_NOT_FOUND', 'PostController', 'Provide', 'QueryFilter', 'UnifiedResponse', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'delete', 'get', 'log']
+2026-04-02 11:28:15.751 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:28:15.754 | INFO     | src.api.register_routers:register_routers:18 - Loading module: ['Controller', 'HTTPException', 'HTTP_404_NOT_FOUND', 'ProductController', 'Provide', 'QueryFilter', 'UnifiedResponse', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'get', 'log', 'patch', 'post']
+2026-04-02 11:28:15.755 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:28:15.759 | INFO     | src.api.register_routers:register_routers:18 - Loading module: ['Controller', 'HTTPException', 'HTTP_404_NOT_FOUND', 'Provide', 'QueryFilter', 'UnifiedResponse', 'UserController', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'get', 'log', 'post']
+2026-04-02 11:28:15.759 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:28:15.760 | INFO     | src.api.register_routers:register_routers:48 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:28:15.950 | INFO     | uvicorn.server:_serve:92 - Started server process [39088]
+2026-04-02 11:28:15.950 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:28:15.959 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                       - PostController:get_users
+2026-04-02 11:28:15.959 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}          - PostController:get_user_by_id
+2026-04-02 11:28:15.960 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}          - PostController:delete_user_by_id
+2026-04-02 11:28:15.960 | INFO     | main:on_startup:14 - [POST   ] /api/v1/products                    - ProductController:create_user
+2026-04-02 11:28:15.960 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products                    - ProductController:get_users
+2026-04-02 11:28:15.960 | INFO     | main:on_startup:14 - [PATCH  ] /api/v1/products/{productId:int}    - ProductController:update_product
+2026-04-02 11:28:15.960 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products/{userId:int}       - ProductController:get_user_by_id
+2026-04-02 11:28:15.961 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                       - UserController:create_user
+2026-04-02 11:28:15.961 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                       - UserController:get_users
+2026-04-02 11:28:15.962 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-02 11:28:15.962 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:29:03.692 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:29:03.781 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:29:03.886 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:29:03.887 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:29:03.888 | INFO     | uvicorn.server:_serve:102 - Finished server process [39088]
+2026-04-02 11:29:06.169 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:29:06.177 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:29:06.185 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:29:06.187 | INFO     | src.api.register_routers:register_routers:48 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:29:06.361 | INFO     | uvicorn.server:_serve:92 - Started server process [14060]
+2026-04-02 11:29:06.361 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:29:06.369 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                       - PostController:get_users
+2026-04-02 11:29:06.369 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}          - PostController:delete_user_by_id
+2026-04-02 11:29:06.369 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}          - PostController:get_user_by_id
+2026-04-02 11:29:06.370 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products                    - ProductController:get_users
+2026-04-02 11:29:06.370 | INFO     | main:on_startup:14 - [POST   ] /api/v1/products                    - ProductController:create_user
+2026-04-02 11:29:06.370 | INFO     | main:on_startup:14 - [PATCH  ] /api/v1/products/{productId:int}    - ProductController:update_product
+2026-04-02 11:29:06.370 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products/{userId:int}       - ProductController:get_user_by_id
+2026-04-02 11:29:06.371 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                       - UserController:create_user
+2026-04-02 11:29:06.371 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                       - UserController:get_users
+2026-04-02 11:29:06.372 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-02 11:29:06.372 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:29:53.057 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:29:53.145 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:29:53.253 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:29:53.254 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:29:53.254 | INFO     | uvicorn.server:_serve:102 - Finished server process [14060]
+2026-04-02 11:29:55.621 | INFO     | src.api.register_routers:register_routers:41 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:29:55.628 | INFO     | src.api.register_routers:register_routers:41 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:29:55.631 | INFO     | src.api.register_routers:register_routers:41 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:29:55.631 | INFO     | src.api.register_routers:register_routers:50 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:29:55.800 | INFO     | uvicorn.server:_serve:92 - Started server process [4624]
+2026-04-02 11:29:55.801 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:29:55.808 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                       - PostController:get_users
+2026-04-02 11:29:55.809 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}          - PostController:get_user_by_id
+2026-04-02 11:29:55.809 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}          - PostController:delete_user_by_id
+2026-04-02 11:29:55.810 | INFO     | main:on_startup:14 - [POST   ] /api/v1/products                    - ProductController:create_user
+2026-04-02 11:29:55.810 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products                    - ProductController:get_users
+2026-04-02 11:29:55.810 | INFO     | main:on_startup:14 - [PATCH  ] /api/v1/products/{productId:int}    - ProductController:update_product
+2026-04-02 11:29:55.811 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products/{userId:int}       - ProductController:get_user_by_id
+2026-04-02 11:29:55.811 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                       - UserController:get_users
+2026-04-02 11:29:55.811 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                       - UserController:create_user
+2026-04-02 11:29:55.811 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-02 11:29:55.812 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:30:08.350 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:30:08.455 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:30:08.561 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:30:08.562 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:30:08.563 | INFO     | uvicorn.server:_serve:102 - Finished server process [4624]
+2026-04-02 11:30:09.032 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:30:11.055 | INFO     | src.api.register_routers:register_routers:41 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:30:11.060 | INFO     | src.api.register_routers:register_routers:41 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:30:11.064 | INFO     | src.api.register_routers:register_routers:41 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:30:11.064 | INFO     | src.api.register_routers:register_routers:50 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:30:11.230 | INFO     | uvicorn.server:_serve:92 - Started server process [40400]
+2026-04-02 11:30:11.231 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:30:11.239 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                       - PostController:get_users
+2026-04-02 11:30:11.240 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}          - PostController:get_user_by_id
+2026-04-02 11:30:11.240 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}          - PostController:delete_user_by_id
+2026-04-02 11:30:11.240 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products                    - ProductController:get_users
+2026-04-02 11:30:11.241 | INFO     | main:on_startup:14 - [POST   ] /api/v1/products                    - ProductController:create_user
+2026-04-02 11:30:11.242 | INFO     | main:on_startup:14 - [PATCH  ] /api/v1/products/{productId:int}    - ProductController:update_product
+2026-04-02 11:30:11.242 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products/{userId:int}       - ProductController:get_user_by_id
+2026-04-02 11:30:11.243 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                       - UserController:create_user
+2026-04-02 11:30:11.243 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                       - UserController:get_users
+2026-04-02 11:30:11.243 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-02 11:30:11.244 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:30:22.569 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:30:22.649 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:30:22.756 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:30:22.757 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:30:22.758 | INFO     | uvicorn.server:_serve:102 - Finished server process [40400]
+2026-04-02 11:30:24.757 | INFO     | src.api.register_routers:register_routers:41 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:30:24.763 | INFO     | src.api.register_routers:register_routers:41 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:30:24.769 | INFO     | src.api.register_routers:register_routers:41 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:30:24.770 | INFO     | src.api.register_routers:register_routers:50 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:30:24.971 | INFO     | uvicorn.server:_serve:92 - Started server process [39804]
+2026-04-02 11:30:24.972 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:30:24.980 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                       - PostController:get_users
+2026-04-02 11:30:24.981 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}          - PostController:get_user_by_id
+2026-04-02 11:30:24.981 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}          - PostController:delete_user_by_id
+2026-04-02 11:30:24.981 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products                    - ProductController:get_users
+2026-04-02 11:30:24.981 | INFO     | main:on_startup:14 - [POST   ] /api/v1/products                    - ProductController:create_user
+2026-04-02 11:30:24.982 | INFO     | main:on_startup:14 - [PATCH  ] /api/v1/products/{productId:int}    - ProductController:update_product
+2026-04-02 11:30:24.982 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products/{userId:int}       - ProductController:get_user_by_id
+2026-04-02 11:30:24.982 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                       - UserController:create_user
+2026-04-02 11:30:24.982 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                       - UserController:get_users
+2026-04-02 11:30:24.983 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-02 11:30:24.983 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:34:11.072 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:34:11.129 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:34:11.235 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:34:11.270 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:34:11.270 | INFO     | uvicorn.server:_serve:102 - Finished server process [39804]
+2026-04-02 11:34:14.055 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:34:14.061 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:34:14.066 | INFO     | src.api.register_routers:register_routers:39 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:34:14.067 | INFO     | src.api.register_routers:register_routers:48 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:34:14.298 | INFO     | uvicorn.server:_serve:92 - Started server process [14252]
+2026-04-02 11:34:14.299 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:34:14.309 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                       - PostController:get_users
+2026-04-02 11:34:14.309 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}          - PostController:get_user_by_id
+2026-04-02 11:34:14.309 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}          - PostController:delete_user_by_id
+2026-04-02 11:34:14.310 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products                    - ProductController:get_users
+2026-04-02 11:34:14.310 | INFO     | main:on_startup:14 - [POST   ] /api/v1/products                    - ProductController:create_user
+2026-04-02 11:34:14.310 | INFO     | main:on_startup:14 - [PATCH  ] /api/v1/products/{productId:int}    - ProductController:update_product
+2026-04-02 11:34:14.311 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products/{userId:int}       - ProductController:get_user_by_id
+2026-04-02 11:34:14.311 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                       - UserController:create_user
+2026-04-02 11:34:14.311 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                       - UserController:get_users
+2026-04-02 11:34:14.312 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-02 11:34:14.313 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:36:05.301 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-02 11:36:05.357 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:36:05.464 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:36:05.465 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:36:05.466 | INFO     | uvicorn.server:_serve:102 - Finished server process [14252]
+2026-04-02 11:36:07.675 | INFO     | src.api.register_routers:register_routers:37 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:36:07.709 | INFO     | src.api.register_routers:register_routers:37 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:36:07.712 | INFO     | src.api.register_routers:register_routers:37 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:36:07.713 | INFO     | src.api.register_routers:register_routers:46 - ✅ Loaded controllers: 3 controllers
+2026-04-02 11:36:07.949 | INFO     | uvicorn.server:_serve:92 - Started server process [41164]
+2026-04-02 11:36:07.950 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-02 11:36:07.960 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts                       - PostController:get_users
+2026-04-02 11:36:07.961 | INFO     | main:on_startup:14 - [DELETE ] /api/v1/posts/{userId:int}          - PostController:delete_user_by_id
+2026-04-02 11:36:07.962 | INFO     | main:on_startup:14 - [GET    ] /api/v1/posts/{userId:int}          - PostController:get_user_by_id
+2026-04-02 11:36:07.962 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products                    - ProductController:get_users
+2026-04-02 11:36:07.964 | INFO     | main:on_startup:14 - [POST   ] /api/v1/products                    - ProductController:create_user
+2026-04-02 11:36:07.971 | INFO     | main:on_startup:14 - [PATCH  ] /api/v1/products/{productId:int}    - ProductController:update_product
+2026-04-02 11:36:07.972 | INFO     | main:on_startup:14 - [GET    ] /api/v1/products/{userId:int}       - ProductController:get_user_by_id
+2026-04-02 11:36:07.972 | INFO     | main:on_startup:14 - [POST   ] /api/v1/users                       - UserController:create_user
+2026-04-02 11:36:07.975 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users                       - UserController:get_users
+2026-04-02 11:36:07.976 | INFO     | main:on_startup:14 - [GET    ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-02 11:36:07.976 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-02 11:36:26.981 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\modules\user copy\controller.py'. Reloading...
+2026-04-02 11:36:27.028 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-02 11:36:27.135 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-02 11:36:27.135 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-02 11:36:27.136 | INFO     | uvicorn.server:_serve:102 - Finished server process [41164]
+2026-04-02 11:36:29.423 | INFO     | src.api.register_routers:register_routers:37 - ✅ Loaded controller: PostController (path = /posts)
+2026-04-02 11:36:29.429 | INFO     | src.api.register_routers:register_routers:37 - ✅ Loaded controller: ProductController (path = /products)
+2026-04-02 11:36:29.433 | INFO     | src.api.register_routers:register_routers:37 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:36:29.437 | INFO     | src.api.register_routers:register_routers:37 - ✅ Loaded controller: UserController (path = /users)
+2026-04-02 11:36:29.438 | INFO     | src.api.register_routers:register_routers:46 - ✅ Loaded controllers: 4 controllers
+2026-04-02 13:02:18.775 | INFO     | uvicorn.supervisors.basereload:shutdown:115 - Stopping reloader process [39580]
