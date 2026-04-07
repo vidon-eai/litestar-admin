@@ -4,15 +4,19 @@ from litestar import Litestar
 async def on_startup(app: Litestar) -> None:
     from src.core.logger import log
 
-    sorted_routes = sorted(app.route_handler_method_map.items())
+    sorted_routes = app.route_handler_method_map.items()
     for route_path, method_map in sorted_routes:
+
+        if route_path == "/api/v1/schema" or route_path.startswith("/api/v1/schema"):
+            continue
+
         for http_method, handler in method_map.items():
             if http_method == "OPTIONS":
                 continue
             controller_part, handler_name = str(handler).rsplit(".", 1)
             controller_name = controller_part.rsplit(".", 1)[-1]
             log.info(
-                f"[{http_method:<7}] {route_path:<35} - {controller_name}:{handler_name}"
+                f"[{http_method:<6}] {route_path:<35} - {controller_name}:{handler_name}"
             )
 
 
@@ -26,7 +30,6 @@ def create_app() -> Litestar:
         path="/api/v1",
         route_handlers=api_routers,
         on_startup=[on_startup],
-        openapi_config=None,
     )
 
 

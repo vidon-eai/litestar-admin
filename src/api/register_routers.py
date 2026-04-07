@@ -24,10 +24,7 @@ def register_routers() -> list[type[Controller]]:
                         and attr != Controller
                         and attr.__module__ == module_name
                     ):
-                        # 獲取 controller 的 path
                         controller_id = id(attr)
-
-                        # 檢測路徑是否重複
                         if controller_id in registered_controller_ids:
                             log.warning(f"Duplicate controller found: {attr.__name__}")
                         else:
