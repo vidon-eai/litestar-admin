@@ -1,4 +1,4 @@
-from litestar import Litestar
+from litestar import Litestar, Router
 
 
 async def on_startup(app: Litestar) -> None:
@@ -25,10 +25,15 @@ def create_app() -> Litestar:
     from src.api.register_routers import register_routers
 
     setup_logging()
-    api_routers = register_routers()
+    system_routers = register_routers()
+    plugin_routers = register_routers("plugins")
+
     return Litestar(
         path="/api/v1",
-        route_handlers=api_routers,
+        route_handlers=[
+            *system_routers,
+            Router(path="/plugins", route_handlers=plugin_routers),
+        ],
         on_startup=[on_startup],
     )
 

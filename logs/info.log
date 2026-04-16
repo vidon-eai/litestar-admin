@@ -1,91 +1,93 @@
-2026-04-07 22:22:27.469 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
-2026-04-07 22:22:27.872 | INFO     | src.api.register_routers:register_routers:34 - ✅ Loaded controller: UserController (path = /users)
-2026-04-07 22:22:27.872 | INFO     | src.api.register_routers:register_routers:43 - ✅ Loaded controllers: 1 controllers
-2026-04-07 22:22:27.896 | INFO     | uvicorn.server:_serve:92 - Started server process [88107]
-2026-04-07 22:22:27.896 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
-2026-04-07 22:22:27.903 | INFO     | main:on_startup:14 - [POST  ] /api/v1/users                       - UserController:create_user
-2026-04-07 22:22:27.903 | INFO     | main:on_startup:14 - [GET   ] /api/v1/users                       - UserController:get_users
-2026-04-07 22:22:27.903 | INFO     | main:on_startup:14 - [GET   ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
-2026-04-07 22:22:27.904 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/openapi.json         - <locals>:_handler
-2026-04-07 22:22:27.904 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/openapi.yaml         - <locals>:_handler
-2026-04-07 22:22:27.904 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/openapi.yml          - <locals>:_handler
-2026-04-07 22:22:27.904 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/swagger              - <locals>:_handler
-2026-04-07 22:22:27.904 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/redoc                - <locals>:_handler
-2026-04-07 22:22:27.904 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema                      - <locals>:_handler
-2026-04-07 22:22:27.904 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/elements             - <locals>:_handler
-2026-04-07 22:22:27.904 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/rapidoc              - <locals>:_handler
-2026-04-07 22:22:27.904 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/{path:str}           - plugin:handle_schema_path_not_found
-2026-04-07 22:22:27.904 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/oauth2-redirect.html - SwaggerRenderPlugin:render_oauth2_redirect
-2026-04-07 22:22:27.904 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
-2026-04-07 22:27:56.986 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
-2026-04-07 22:27:56.998 | INFO     | uvicorn.server:shutdown:272 - Shutting down
-2026-04-07 22:27:57.101 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
-2026-04-07 22:27:57.102 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
-2026-04-07 22:27:57.102 | INFO     | uvicorn.server:_serve:102 - Finished server process [88107]
-2026-04-07 22:27:57.317 | INFO     | src.api.register_routers:register_routers:34 - ✅ Loaded controller: UserController (path = /users)
-2026-04-07 22:27:57.317 | INFO     | src.api.register_routers:register_routers:43 - ✅ Loaded controllers: 1 controllers
-2026-04-07 22:27:57.338 | INFO     | uvicorn.server:_serve:92 - Started server process [89581]
-2026-04-07 22:27:57.338 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [GET   ] /api/v1/users                       - UserController:get_users
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [POST  ] /api/v1/users                       - UserController:create_user
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [GET   ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [GET   ] /api/v1/schema/openapi.yaml         - <locals>:_handler
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [GET   ] /api/v1/schema/openapi.yml          - <locals>:_handler
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [GET   ] /api/v1/schema/rapidoc              - <locals>:_handler
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [GET   ] /api/v1/schema/elements             - <locals>:_handler
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [GET   ] /api/v1/schema/openapi.json         - <locals>:_handler
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [GET   ] /api/v1/schema/swagger              - <locals>:_handler
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [GET   ] /api/v1/schema                      - <locals>:_handler
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [GET   ] /api/v1/schema/redoc                - <locals>:_handler
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [GET   ] /api/v1/schema/{path:str}           - plugin:handle_schema_path_not_found
-2026-04-07 22:27:57.346 | INFO     | main:on_startup:15 - [GET   ] /api/v1/schema/oauth2-redirect.html - SwaggerRenderPlugin:render_oauth2_redirect
-2026-04-07 22:27:57.346 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
-2026-04-07 22:28:32.880 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
-2026-04-07 22:28:32.912 | INFO     | uvicorn.server:shutdown:272 - Shutting down
-2026-04-07 22:28:33.014 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
-2026-04-07 22:28:33.015 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
-2026-04-07 22:28:33.015 | INFO     | uvicorn.server:_serve:102 - Finished server process [89581]
-2026-04-07 22:28:33.184 | INFO     | src.api.register_routers:register_routers:34 - ✅ Loaded controller: UserController (path = /users)
-2026-04-07 22:28:33.184 | INFO     | src.api.register_routers:register_routers:43 - ✅ Loaded controllers: 1 controllers
-2026-04-07 22:28:33.200 | INFO     | uvicorn.server:_serve:92 - Started server process [90009]
-2026-04-07 22:28:33.200 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [GET   ] /api/v1/users                       - UserController:get_users
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [POST  ] /api/v1/users                       - UserController:create_user
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [GET   ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/openapi.yml          - <locals>:_handler
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/openapi.yaml         - <locals>:_handler
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/swagger              - <locals>:_handler
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/rapidoc              - <locals>:_handler
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/openapi.json         - <locals>:_handler
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/elements             - <locals>:_handler
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema                      - <locals>:_handler
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/redoc                - <locals>:_handler
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/{path:str}           - plugin:handle_schema_path_not_found
-2026-04-07 22:28:33.207 | INFO     | main:on_startup:14 - [GET   ] /api/v1/schema/oauth2-redirect.html - SwaggerRenderPlugin:render_oauth2_redirect
-2026-04-07 22:28:33.207 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
-2026-04-07 22:29:33.934 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
-2026-04-07 22:29:33.942 | INFO     | uvicorn.server:shutdown:272 - Shutting down
-2026-04-07 22:29:34.044 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
-2026-04-07 22:29:34.044 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
-2026-04-07 22:29:34.045 | INFO     | uvicorn.server:_serve:102 - Finished server process [90009]
-2026-04-07 22:29:34.255 | INFO     | src.api.register_routers:register_routers:34 - ✅ Loaded controller: UserController (path = /users)
-2026-04-07 22:29:34.256 | INFO     | src.api.register_routers:register_routers:43 - ✅ Loaded controllers: 1 controllers
-2026-04-07 22:29:34.276 | INFO     | uvicorn.server:_serve:92 - Started server process [90291]
-2026-04-07 22:29:34.276 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
-2026-04-07 22:29:34.284 | INFO     | main:on_startup:16 - [POST  ] /api/v1/users                       - UserController:create_user
-2026-04-07 22:29:34.284 | INFO     | main:on_startup:16 - [GET   ] /api/v1/users                       - UserController:get_users
-2026-04-07 22:29:34.284 | INFO     | main:on_startup:16 - [GET   ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
-2026-04-07 22:29:34.284 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
-2026-04-07 22:29:51.666 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
-2026-04-07 22:29:51.755 | INFO     | uvicorn.server:shutdown:272 - Shutting down
-2026-04-07 22:29:51.856 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
-2026-04-07 22:29:51.857 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
-2026-04-07 22:29:51.857 | INFO     | uvicorn.server:_serve:102 - Finished server process [90291]
-2026-04-07 22:29:52.013 | INFO     | src.api.register_routers:register_routers:34 - ✅ Loaded controller: UserController (path = /users)
-2026-04-07 22:29:52.013 | INFO     | src.api.register_routers:register_routers:43 - ✅ Loaded controllers: 1 controllers
-2026-04-07 22:29:52.030 | INFO     | uvicorn.server:_serve:92 - Started server process [90392]
-2026-04-07 22:29:52.030 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
-2026-04-07 22:29:52.037 | INFO     | main:on_startup:18 - [POST  ] /api/v1/users                       - UserController:create_user
-2026-04-07 22:29:52.037 | INFO     | main:on_startup:18 - [GET   ] /api/v1/users                       - UserController:get_users
-2026-04-07 22:29:52.037 | INFO     | main:on_startup:18 - [GET   ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
-2026-04-07 22:29:52.037 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-16 15:03:11.845 | INFO     | uvicorn.config:__init__:324 - Will watch for changes in these directories: ['C:\\Users\\tung.ma\\Documents\\GitHub\\ai-development\\LitestartAdmin']
+2026-04-16 15:03:11.850 | INFO     | uvicorn.config:bind_socket:545 - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-04-16 15:03:11.850 | INFO     | uvicorn.supervisors.basereload:startup:79 - Started reloader process [64236] using WatchFiles
+2026-04-16 15:03:12.655 | INFO     | src.api.register_routers:register_routers:13 - === Searching for controllers in [modules] ===
+2026-04-16 15:03:12.784 | INFO     | src.api.register_routers:register_routers:38 - ✅ Loaded controller: UserController (path = src.modules.system.user.controller)
+2026-04-16 15:03:12.784 | INFO     | src.api.register_routers:register_routers:44 - ✅️ Registered modules: 1 controllers
+2026-04-16 15:03:12.784 | INFO     | src.api.register_routers:register_routers:13 - === Searching for controllers in [plugins] ===
+2026-04-16 15:03:12.785 | INFO     | src.api.register_routers:register_routers:44 - ✅️ Registered plugins: 0 controllers
+2026-04-16 15:03:12.925 | INFO     | uvicorn.server:_serve:92 - Started server process [54624]
+2026-04-16 15:03:12.926 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-16 15:03:12.933 | INFO     | main:on_startup:18 - [POST  ] /api/v1/users                       - UserController:create_user
+2026-04-16 15:03:12.933 | INFO     | main:on_startup:18 - [GET   ] /api/v1/users                       - UserController:get_users
+2026-04-16 15:03:12.933 | INFO     | main:on_startup:18 - [GET   ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-16 15:03:12.934 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-16 15:04:20.745 | INFO     | uvicorn.protocols.http.httptools_impl:send:483 - 127.0.0.1:60638 - "GET /api/v1/schema/swagger HTTP/1.1" 200
+2026-04-16 15:04:38.356 | INFO     | src.modules.system.user.controller:get_users:21 - Getting users
+2026-04-16 15:04:38.357 | INFO     | uvicorn.protocols.http.httptools_impl:send:483 - 127.0.0.1:65227 - "GET /api/v1/users?page=1&limit=10&orderBy=id&sortBy=desc HTTP/1.1" 200
+2026-04-16 15:05:22.615 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-16 15:05:22.665 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-16 15:05:22.771 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-16 15:05:22.772 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-16 15:05:22.774 | INFO     | uvicorn.server:_serve:102 - Finished server process [54624]
+2026-04-16 15:05:23.966 | INFO     | src.api.register_routers:register_routers:21 - === Searching for controllers in [modules] ===
+2026-04-16 15:05:24.113 | INFO     | src.api.register_routers:register_routers:46 - ✅ Loaded controller: UserController (path = src.modules.system.user.controller)
+2026-04-16 15:05:24.113 | INFO     | src.api.register_routers:register_routers:52 - ✅️ Registered modules: 1 controllers
+2026-04-16 15:05:24.114 | INFO     | src.api.register_routers:register_routers:21 - === Searching for controllers in [plugins] ===
+2026-04-16 15:05:24.115 | INFO     | src.api.register_routers:register_routers:52 - ✅️ Registered plugins: 0 controllers
+2026-04-16 15:05:24.254 | INFO     | uvicorn.server:_serve:92 - Started server process [61876]
+2026-04-16 15:05:24.254 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-16 15:05:24.259 | INFO     | main:on_startup:18 - [GET   ] /api/v1/users                       - UserController:get_users
+2026-04-16 15:05:24.260 | INFO     | main:on_startup:18 - [POST  ] /api/v1/users                       - UserController:create_user
+2026-04-16 15:05:24.260 | INFO     | main:on_startup:18 - [GET   ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-16 15:05:24.260 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-16 15:06:35.670 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'src\api\register_routers.py'. Reloading...
+2026-04-16 15:06:35.712 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-16 15:06:35.819 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-16 15:06:35.820 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-16 15:06:35.821 | INFO     | uvicorn.server:_serve:102 - Finished server process [61876]
+2026-04-16 15:06:37.061 | INFO     | src.api.register_routers:register_routers:21 - 🚀 Starting to search for controllers in [modules]
+2026-04-16 15:06:37.219 | INFO     | src.api.register_routers:register_routers:46 - ✅ Loaded controller: UserController (path = src.modules.system.user.controller)
+2026-04-16 15:06:37.219 | INFO     | src.api.register_routers:register_routers:52 - ✅️ Registered modules: 1 controllers
+2026-04-16 15:06:37.220 | INFO     | src.api.register_routers:register_routers:21 - 🚀 Starting to search for controllers in [plugins]
+2026-04-16 15:06:37.220 | INFO     | src.api.register_routers:register_routers:52 - ✅️ Registered plugins: 0 controllers
+2026-04-16 15:06:37.343 | INFO     | uvicorn.server:_serve:92 - Started server process [52072]
+2026-04-16 15:06:37.344 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-16 15:06:37.348 | INFO     | main:on_startup:18 - [POST  ] /api/v1/users                       - UserController:create_user
+2026-04-16 15:06:37.349 | INFO     | main:on_startup:18 - [GET   ] /api/v1/users                       - UserController:get_users
+2026-04-16 15:06:37.349 | INFO     | main:on_startup:18 - [GET   ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-16 15:06:37.350 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-16 16:05:06.570 | INFO     | uvicorn.protocols.http.httptools_impl:send:483 - 127.0.0.1:59035 - "GET /api/v1/schema/swagger HTTP/1.1" 200
+2026-04-16 16:05:36.487 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-16 16:05:36.538 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-16 16:05:36.647 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-16 16:05:36.667 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-16 16:05:36.670 | INFO     | uvicorn.server:_serve:102 - Finished server process [52072]
+2026-04-16 16:05:39.660 | INFO     | src.api.register_routers:register_routers:21 - 🚀 Starting to search for controllers in [modules]
+2026-04-16 16:05:39.957 | INFO     | src.api.register_routers:register_routers:46 - ✅ Loaded controller: UserController (path = src.modules.system.user.controller)
+2026-04-16 16:05:39.957 | INFO     | src.api.register_routers:register_routers:52 - ✅️ Registered modules: 1 controllers
+2026-04-16 16:05:54.481 | WARNING  | uvicorn.supervisors.basereload:run:54 - WatchFiles detected changes in 'main.py'. Reloading...
+2026-04-16 16:05:55.465 | INFO     | src.api.register_routers:register_routers:21 - 🚀 Starting to search for controllers in [modules]
+2026-04-16 16:05:55.596 | INFO     | src.api.register_routers:register_routers:46 - ✅ Loaded controller: UserController (path = src.modules.system.user.controller)
+2026-04-16 16:05:55.597 | INFO     | src.api.register_routers:register_routers:52 - ✅️ Registered modules: 1 controllers
+2026-04-16 16:05:55.597 | INFO     | src.api.register_routers:register_routers:21 - 🚀 Starting to search for controllers in [plugins]
+2026-04-16 16:05:55.598 | INFO     | src.api.register_routers:register_routers:52 - ✅️ Registered plugins: 0 controllers
+2026-04-16 16:05:55.841 | INFO     | uvicorn.server:_serve:92 - Started server process [37648]
+2026-04-16 16:05:55.841 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-16 16:05:55.851 | INFO     | main:on_startup:18 - [GET   ] /api/v1/users                       - UserController:get_users
+2026-04-16 16:05:55.852 | INFO     | main:on_startup:18 - [POST  ] /api/v1/users                       - UserController:create_user
+2026-04-16 16:05:55.852 | INFO     | main:on_startup:18 - [GET   ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-16 16:05:55.853 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-16 17:47:57.969 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-16 17:47:58.108 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-16 17:47:58.150 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-16 17:47:58.169 | INFO     | uvicorn.server:_serve:102 - Finished server process [37648]
+2026-04-16 17:50:51.101 | INFO     | uvicorn.config:__init__:324 - Will watch for changes in these directories: ['C:\\Users\\tung.ma\\Documents\\GitHub\\ai-development\\LitestartAdmin']
+2026-04-16 17:50:51.109 | INFO     | uvicorn.config:bind_socket:545 - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-04-16 17:50:51.109 | INFO     | uvicorn.supervisors.basereload:startup:79 - Started reloader process [45404] using WatchFiles
+2026-04-16 17:50:52.082 | INFO     | src.api.register_routers:register_routers:21 - 🚀 Starting to search for controllers in [modules]
+2026-04-16 17:50:52.484 | INFO     | src.api.register_routers:register_routers:46 - ✅ Loaded controller: UserController (path = src.modules.system.user.controller)
+2026-04-16 17:50:52.484 | INFO     | src.api.register_routers:register_routers:52 - ✅️ Registered modules: 1 controllers
+2026-04-16 17:50:52.485 | INFO     | src.api.register_routers:register_routers:21 - 🚀 Starting to search for controllers in [plugins]
+2026-04-16 17:50:52.485 | INFO     | src.api.register_routers:register_routers:52 - ✅️ Registered plugins: 0 controllers
+2026-04-16 17:50:52.788 | INFO     | uvicorn.server:_serve:92 - Started server process [67472]
+2026-04-16 17:50:52.789 | INFO     | uvicorn.lifespan.on:startup:48 - Waiting for application startup.
+2026-04-16 17:50:52.802 | INFO     | main:on_startup:18 - [POST  ] /api/v1/users                       - UserController:create_user
+2026-04-16 17:50:52.803 | INFO     | main:on_startup:18 - [GET   ] /api/v1/users                       - UserController:get_users
+2026-04-16 17:50:52.803 | INFO     | main:on_startup:18 - [GET   ] /api/v1/users/{userId:int}          - UserController:get_user_by_id
+2026-04-16 17:50:52.803 | INFO     | uvicorn.lifespan.on:startup:62 - Application startup complete.
+2026-04-16 17:50:54.779 | INFO     | uvicorn.server:shutdown:272 - Shutting down
+2026-04-16 17:50:54.885 | INFO     | uvicorn.lifespan.on:shutdown:67 - Waiting for application shutdown.
+2026-04-16 17:50:54.886 | INFO     | uvicorn.lifespan.on:shutdown:76 - Application shutdown complete.
+2026-04-16 17:50:54.887 | INFO     | uvicorn.server:_serve:102 - Finished server process [67472]
+2026-04-16 17:50:54.978 | INFO     | uvicorn.supervisors.basereload:shutdown:115 - Stopping reloader process [45404]

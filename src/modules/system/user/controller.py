@@ -17,9 +17,13 @@ class UserController(Controller):
         description="Retrieve a list of users",
         dependencies={"query_params": Provide(QueryFilter, sync_to_thread=False)},
     )
-    async def get_users(self, query_params: QueryFilter) -> QueryFilter:
+    async def get_users(self, query_params: QueryFilter) -> UnifiedResponse[list[dict]]:
         log.info("Getting users")
-        return query_params
+        return UnifiedResponse.success(
+            status_code=200,
+            msg="Users retrieved successfully",
+            data=[],
+        )
 
     @get(
         "/{userId:int}",

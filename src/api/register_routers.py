@@ -4,17 +4,29 @@ from litestar import Controller
 from src.core.logger import log
 
 
-def register_routers() -> list[type[Controller]]:
-    """Automatically load all Controller classes from src/modules/*/controller.py"""
-    controllers = []
-    registered_controller_ids: set[int] = set()  # 用來追蹤已註冊的路徑
-    modules_path = Path(__file__).parent.parent / "modules"  # src/modules
+def register_routers(module_dir: str = "modules") -> list[type[Controller]]:
+    """
+    Automatically load all Controller classes from the specified directory.
 
-    for module_dir in modules_path.iterdir():
-        if module_dir.is_dir() and (module_dir / "controller.py").exists():
-            module_name = f"src.modules.{module_dir.name}.controller"
+    Args:
+        module_dir (str, optional): The directory to search for controllers. Defaults to "modules".
+
+    Returns:
+        list[type[Controller]]: A list of Controller classes.
+    """
+    controllers = []
+    registered_controller_ids: set[int] = set()
+    base_dir = Path(__file__).parent.parent
+    try:
+        log.info(f"🚀 Starting to search for controllers in [{module_dir}]")
+        controller_files = list(base_dir.glob(f"{module_dir}/**/controller.py"))
+        controller_files.sort()
+        for file in controller_files:
+            rel_path = file.relative_to(Path.cwd())
+            path_parts = rel_path.parts
+            module_path = f"{'.'.join(path_parts[:-1])}.controller"
             try:
-                module = importlib.import_module(module_name)
+                module = importlib.import_module(module_path)
                 for attr_name in dir(module):
                     attr = getattr(module, attr_name)
 
@@ -22,7 +34,7 @@ def register_routers() -> list[type[Controller]]:
                         isinstance(attr, type)
                         and issubclass(attr, Controller)
                         and attr != Controller
-                        and attr.__module__ == module_name
+                        and attr.__module__ == module_path
                     ):
                         controller_id = id(attr)
                         if controller_id in registered_controller_ids:
@@ -32,14 +44,16 @@ def register_routers() -> list[type[Controller]]:
 
                         controllers.append(attr)
                         log.info(
-                            f"✅ Loaded controller: {attr.__name__} (path = {getattr(attr, 'path', 'None')})"
+                            f"✅ Loaded controller: {attr.__name__} (path = {module_path})"
                         )
 
             except ImportError as e:
-                # Log the error but continue loading other controllers
-                log.warning(f"Failed to load controller from {module_name}: {e}")
-        else:
-            log.warning(f"Controller file not found: {module_dir / 'controller.py'}")
-    log.info(f"✅ Loaded controllers: {(len(controllers))} controllers")
+                log.warning(f"Failed to load controller from {module_path}: {e}")
+        log.info(
+            f"✅️ Registered {module_dir}: {len(registered_controller_ids)} controllers"
+        )
+    except Exception as e:
+        log.error(f"Failed to find controller files: {e}")
+        controller_files = []
 
     return controllers
