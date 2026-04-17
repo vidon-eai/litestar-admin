@@ -7,6 +7,8 @@ import traceback
 from loguru import logger
 from typing_extensions import override
 
+from src.config.setting import settings
+
 # 全局变量记录日志处理器ID
 _logger_handlers = []
 
@@ -70,7 +72,7 @@ def setup_logging() -> None:
     global _logger_handlers
 
     # 添加上下文信息
-    _ = logger.configure(extra={"app_name": "FastapiAdmin"})
+    _ = logger.configure(extra={"app_name": "Liststar Admin"})
     # 步骤1：移除默认处理器
     logger.remove()
 
@@ -87,7 +89,8 @@ def setup_logging() -> None:
     )
 
     # 步骤3：配置控制台输出
-    handler_id = logger.add(sys.stdout, format=log_format, level="DEBUG")
+    handler_id = logger.add(sys.stdout, format=log_format, level=settings.logger_level)
+
     _logger_handlers.append(handler_id)
 
     # 步骤4：创建日志目录
@@ -120,9 +123,9 @@ def setup_logging() -> None:
         diagnose=True,
     )
     _logger_handlers.append(handler_id)
-
+     
     # 步骤7：配置标准库日志
-    logging.basicConfig(handlers=[InterceptHandler()], level="DEBUG", force=True)
+    logging.basicConfig(handlers=[InterceptHandler()], level=settings.logger_level, force=True)
     logger_name_list = list(logging.root.manager.loggerDict)
     # 步骤8：配置第三方库日志
     for logger_name in logger_name_list:

@@ -8,4 +8,5 @@ dependencies = [
     "litestar[standard]>=2.21.1",
     "loguru>=0.7.3",
     "pydantic>=2.12.5",
+    "pydantic-settings>=2.7.0",
 ]

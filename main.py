@@ -1,4 +1,6 @@
+import os
 from litestar import Litestar, Router
+from litestar.openapi.config import OpenAPIConfig
 
 
 async def on_startup(app: Litestar) -> None:
@@ -27,27 +29,47 @@ def create_app() -> Litestar:
     setup_logging()
     system_routers = register_routers()
     plugin_routers = register_routers("plugins")
+    os.environ["ENVIRONMENT"] = "dev"
+    
+    from src.config.setting import get_settings
+    settings = get_settings()
+    get_settings.cache_clear()
+    
+    
+    print(settings.environment)
 
     return Litestar(
-        path="/api/v1",
+        path=settings.root_path,
         route_handlers=[
             *system_routers,
             Router(path="/plugins", route_handlers=plugin_routers),
         ],
+        openapi_config=OpenAPIConfig(
+            title=settings.title,
+            version=settings.version,
+            description=settings.description,
+            summary=settings.summary,
+        ),
         on_startup=[on_startup],
     )
 
 
 if __name__ == "__main__":
+    
+    
     import uvicorn
     from src.core.logger import setup_logging
+    
+    from src.config.setting import get_settings
+    settings = get_settings()
+    get_settings.cache_clear()
 
     setup_logging()
     uvicorn.run(
         "main:create_app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
+        host=settings.server_host,
+        port=settings.server_port,
+        reload=settings.debug,
         factory=True,
         log_config=None,
     )
