@@ -1,8 +1,8 @@
 logs
 .DS_Store
 .evnv
-env/.env.development
-env/.env.production
 **/__pycache__/
 *.py[cod]
 *$py.class
+
+migrations/versions/*

@@ -1,10 +1,13 @@
+from ast import TypeVar
 import os
 from litestar import Litestar, Router
 from litestar.openapi.config import OpenAPIConfig
-
+from pydantic import BaseModel
+from app.core.database import sqlalchemy_plugin
+from app.core.exception_handler import unified_exception_handler
 
 async def on_startup(app: Litestar) -> None:
-    from src.core.logger import log
+    from app.core.logger import log
 
     sorted_routes = app.route_handler_method_map.items()
     for route_path, method_map in sorted_routes:
@@ -22,23 +25,30 @@ async def on_startup(app: Litestar) -> None:
             )
 
 
+T = TypeVar("T")
+
+from litestar.openapi.datastructures import ResponseSpec
+
+class ItemNotFound(BaseModel):
+    was_removed: bool
+
 def create_app() -> Litestar:
-    from src.core.logger import setup_logging
-    from src.api.register_routers import register_routers
+    os.environ["ENVIRONMENT"] = "dev"
+
+    from app.core.logger import setup_logging
+    from app.api.register_routers import register_routers
 
     setup_logging()
     system_routers = register_routers()
-    plugin_routers = register_routers("plugins")
-    os.environ["ENVIRONMENT"] = "dev"
-    
-    from src.config.setting import get_settings
+    plugin_routers = register_routers("app.plugins")
+
+    from app.config.setting import get_settings
+
     settings = get_settings()
     get_settings.cache_clear()
-    
-    
-    print(settings.environment)
 
     return Litestar(
+        debug=settings.debug,
         path=settings.root_path,
         route_handlers=[
             *system_routers,
@@ -49,18 +59,20 @@ def create_app() -> Litestar:
             version=settings.version,
             description=settings.description,
             summary=settings.summary,
+           
         ),
         on_startup=[on_startup],
+        plugins=[sqlalchemy_plugin],
+        exception_handlers={Exception: unified_exception_handler},
     )
 
 
 if __name__ == "__main__":
-    
-    
     import uvicorn
-    from src.core.logger import setup_logging
-    
-    from src.config.setting import get_settings
+    from app.core.logger import setup_logging
+
+    from app.config.setting import get_settings
+
     settings = get_settings()
     get_settings.cache_clear()
 

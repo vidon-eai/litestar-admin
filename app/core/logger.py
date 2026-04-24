@@ -7,7 +7,7 @@ import traceback
 from loguru import logger
 from typing_extensions import override
 
-from src.config.setting import settings
+from app.config.setting import settings
 
 # 全局变量记录日志处理器ID
 _logger_handlers = []

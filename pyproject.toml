@@ -5,8 +5,14 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "litestar[standard]>=2.21.1",
+    "advanced-alchemy[cli]>=1.9.3",
+    "aioredis>=2.0.1",
+    "aiosqlite>=0.22.1",
+    "asyncmy[cryptography]>=0.2.11",
+    "cryptography>=46.0.7",
+    "litestar[sqlalchemy,standard]>=2.21.1",
     "loguru>=0.7.3",
     "pydantic>=2.12.5",
     "pydantic-settings>=2.7.0",
+    "sqlalchemy>=2.0.49",
 ]

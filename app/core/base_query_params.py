@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from litestar.params import Parameter
 from typing import Literal
-from src.common.enums import SortBy
+from app.common.enums import SortBy
 
 
 @dataclass

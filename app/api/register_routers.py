@@ -1,7 +1,7 @@
 from pathlib import Path
 import importlib
 from litestar import Controller
-from src.core.logger import log
+from app.core.logger import log
 
 
 def register_routers(module_dir: str = "modules") -> list[type[Controller]]:
