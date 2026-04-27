@@ -1,10 +1,10 @@
-from ast import TypeVar
 import os
-from litestar import Litestar, Router
+from litestar import Litestar, Response, Router
 from litestar.openapi.config import OpenAPIConfig
-from pydantic import BaseModel
+from litestar.status_codes import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
+from app.common.exceptions import unified_exception_handler
 from app.core.database import sqlalchemy_plugin
-from app.core.exception_handler import unified_exception_handler
+
 
 async def on_startup(app: Litestar) -> None:
     from app.core.logger import log
@@ -23,14 +23,7 @@ async def on_startup(app: Litestar) -> None:
             log.info(
                 f"[{http_method:<6}] {route_path:<35} - {controller_name}:{handler_name}"
             )
-
-
-T = TypeVar("T")
-
-from litestar.openapi.datastructures import ResponseSpec
-
-class ItemNotFound(BaseModel):
-    was_removed: bool
+            
 
 def create_app() -> Litestar:
     os.environ["ENVIRONMENT"] = "dev"
@@ -59,11 +52,14 @@ def create_app() -> Litestar:
             version=settings.version,
             description=settings.description,
             summary=settings.summary,
-           
         ),
         on_startup=[on_startup],
         plugins=[sqlalchemy_plugin],
-        exception_handlers={Exception: unified_exception_handler},
+        exception_handlers={
+            HTTP_404_NOT_FOUND: unified_exception_handler,
+            HTTP_500_INTERNAL_SERVER_ERROR: unified_exception_handler,
+            HTTP_400_BAD_REQUEST: unified_exception_handler
+        }
     )
 
 
