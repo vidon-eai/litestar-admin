@@ -1,33 +1,46 @@
+from enum import Enum
 from typing import Annotated
 from uuid import UUID
-from advanced_alchemy.extensions.litestar import filters, providers, service
-from advanced_alchemy.filters import LimitOffset, SearchFilter
+from advanced_alchemy.extensions.litestar import providers, service
+from advanced_alchemy.filters import (
+    ComparisonFilter,
+    LimitOffset,
+    OrderBy,
+    SearchFilter,
+)
 from litestar import Controller, delete, get, patch, post
+from litestar.di import Provide
 from litestar.openapi.datastructures import ResponseSpec
 from litestar.params import Dependency
-from litestar.status_codes import HTTP_204_NO_CONTENT
+from app.core.dependencies import (
+    create_order_provider,
+    create_search_provider,
+    provide_filter_list,
+    provide_pagination,
+)
 from app.common.response import COMMON_RESPONSES, ResponseSchema, SuccessResponse
-from app.modules.system.user.model import UserCreate, UserRead, UserUpdate
+from app.modules.system.user.schema import UserCreate, UserRead, UserUpdate
 from app.modules.system.user.service import UserService
-from advanced_alchemy.filters import PaginationFilter
+
+
+# 定义模型字段枚举
+class UserSortField(str, Enum):
+    USERNAME = "username"
+    EMAIL = "email"
+    DESCRIPTION = "description"
+    PHONE = "phone"
 
 
 class UserController(Controller):
     path = "/users"
     tags = ["User Management"]
 
-    dependencies = providers.create_service_dependencies(
-        UserService,
-        "user_service",
-        filters={
-            "pagination_type": "limit_offset",
-            "sort_order": "asc",
-            "sort_field": "username",
-            # 使用字典格式可以更精確地覆蓋預設行為
-            "search": (["username", "description", "email", "phone"], "search"),
-            "pagination_size": 10,
-        },
-    )
+    dependencies = {
+        **providers.create_service_dependencies(
+            UserService,
+            "user_service",
+        )
+    }
 
     @get(
         "/",
@@ -38,18 +51,30 @@ class UserController(Controller):
             ),
             **COMMON_RESPONSES,
         },
+        dependencies={
+            "pagination": Provide(provide_pagination),
+            "order": create_order_provider(UserSortField),
+            "search_filter": create_search_provider(
+                ["username", "description", "phone"]
+            ),
+            "filters_list": Provide(provide_filter_list),
+        },
     )
     async def list_users(
         self,
         user_service: UserService,
-        filters: Annotated[list[filters.FilterTypes], Dependency(skip_validation=True)],
+        search_filter: Annotated[SearchFilter, Dependency(skip_validation=True)],
+        pagination: Annotated[LimitOffset, Dependency(skip_validation=True)],
+        order: Annotated[OrderBy, Dependency(skip_validation=True)],
+        filters_list: Annotated[list[ComparisonFilter], Dependency(skip_validation=True)],
     ) -> ResponseSchema[service.OffsetPagination[UserRead]]:
 
-        results, total = await user_service.list_and_count(*filters)
+        data = await user_service.search_users(
+            search_filter, pagination, order, filters_list
+        )
+
         return SuccessResponse(
-            data=user_service.to_schema(
-                results, total, filters=filters, schema_type=UserRead
-            ),
+            data=data,
             detail="用戶列表查詢成功",
         )
 

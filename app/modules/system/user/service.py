@@ -1,10 +1,15 @@
-from advanced_alchemy.filters import LimitOffset
+from advanced_alchemy.filters import ComparisonFilter, LimitOffset, OrderBy, SearchFilter
 from advanced_alchemy.service import (
+    OffsetPagination,
     SQLAlchemyAsyncRepositoryService,
 )
 from advanced_alchemy.repository import SQLAlchemyAsyncRepository
-from sqlalchemy import or_
 from app.modules.system.user.model import User
+from app.modules.system.user.schema import UserRead
+
+from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
+from litestar.repository.filters import LimitOffset
+
 
 class UserService(SQLAlchemyAsyncRepositoryService[User]):
 
@@ -12,20 +17,25 @@ class UserService(SQLAlchemyAsyncRepositoryService[User]):
         model_type = User
 
     repository_type = Repo
-    
-    
-    async def search(self, query: str | None = None, page: int = 1, page_size:int = 10) -> list[User]:
-        offset = (page-1) * page_size
-        
-        if not query:
-            return await self.repository.list_and_count(LimitOffset(offset=offset, limit=page_size))
-        
-        search_term = f"%{query}%"
-        conditions = [
-            User.username.ilike(search_term),
-            User.description.ilike(search_term),
-            User.phone.ilike(search_term)
+
+    async def search_users(
+        self,
+        search_filter: SearchFilter,
+        pagination: LimitOffset,
+        order_by: OrderBy | None,
+        filters_list: list[ComparisonFilter] | None = None
+    ) -> OffsetPagination[UserRead]:
+
+        filters = [
+            pagination
         ]
-        
-        
-        return await self.repository.list_and_count(or_(*conditions), LimitOffset(offset=offset, limit=page_size))
+
+        if order_by: filters.append(order_by)
+        if search_filter: filters.append(search_filter)
+            
+        if filters_list:
+            filters.extend(filters_list)
+
+        results, total = await self.list_and_count(*filters)
+
+        return self.to_schema(results, total, filters=filters, schema_type=UserRead)
