@@ -16,3 +16,6 @@ dependencies = [
     "pydantic-settings>=2.7.0",
     "sqlalchemy>=2.0.49",
 ]
+
+[project.entry-points."litestar.commands"]
+mycommand = "main:mycommand"

@@ -15,6 +15,7 @@ _ENV_DIR = _PROJECT_ROOT / "env"
 
 
 
+
 class Settings(BaseSettings):
     """
     Application Settings

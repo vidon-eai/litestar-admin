@@ -1,0 +1,92 @@
+[
+    {
+        "username": "username1",
+        "email": "user1@email.com",
+        "description": "description 1",
+        "phone": "123450001",
+        "is_active": true,
+        "dob": "1999-01-01",
+        "address": "address 1"
+    },
+    {
+        "username": "username2",
+        "email": "user2@email.com",
+        "description": "description 2",
+        "phone": "123450002",
+        "is_active": true,
+        "dob": "1998-02-02",
+        "address": "address 2"
+    },
+    {
+        "username": "username3",
+        "email": "user3@email.com",
+        "description": "description 3",
+        "phone": "123450003",
+        "is_active": false,
+        "dob": "1997-03-03",
+        "address": "address 3"
+    },
+    {
+        "username": "username4",
+        "email": "user4@email.com",
+        "description": "description 4",
+        "phone": "123450004",
+        "is_active": true,
+        "dob": "1996-04-04",
+        "address": "address 4"
+    },
+    {
+        "username": "username5",
+        "email": "user5@email.com",
+        "description": "description 5",
+        "phone": "123450005",
+        "is_active": false,
+        "dob": "1995-05-05",
+        "address": "address 5"
+    },
+    {
+        "username": "username6",
+        "email": "user6@email.com",
+        "description": "description 6",
+        "phone": "123450006",
+        "is_active": true,
+        "dob": "1994-06-06",
+        "address": "address 6"
+    },
+    {
+        "username": "username7",
+        "email": "user7@email.com",
+        "description": "description 7",
+        "phone": "123450007",
+        "is_active": true,
+        "dob": "1993-07-07",
+        "address": "address 7"
+    },
+    {
+        "username": "username8",
+        "email": "user8@email.com",
+        "description": "description 8",
+        "phone": "123450008",
+        "is_active": false,
+        "dob": "1992-08-08",
+        "address": "address 8"
+    },
+    {
+        "username": "username9",
+        "email": "user9@email.com",
+        "description": "description 9",
+        "phone": "123450009",
+        "is_active": true,
+        "dob": "1991-09-09",
+        "address": "address 9"
+    },
+    {
+        "username": "username10",
+        "email": "user10@email.com",
+        "description": "description 10",
+        "phone": "123450010",
+        "is_active": true,
+        "dob": "1990-10-10",
+        "address": "address 10"
+    }
+]

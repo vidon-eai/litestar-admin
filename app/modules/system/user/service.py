@@ -11,12 +11,14 @@ from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
 from litestar.repository.filters import LimitOffset
 
 
-class UserService(SQLAlchemyAsyncRepositoryService[User]):
-
-    class Repo(SQLAlchemyAsyncRepository[User]):
+class UserRepo(SQLAlchemyAsyncRepository[User]):
         model_type = User
 
-    repository_type = Repo
+class UserService(SQLAlchemyAsyncRepositoryService[User]):
+
+
+
+    repository_type = UserRepo
 
     async def search_users(
         self,

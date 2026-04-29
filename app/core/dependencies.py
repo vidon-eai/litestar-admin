@@ -61,7 +61,7 @@ def create_order_provider(order_enum: Type[T], default_field: str | None = None)
 
     return provide_order
     
-def provide_filter_list(
+async def provide_filter_list(
     is_active: bool | None = Parameter(query="isActive", default=None, description="激活狀態"),
     description: str | None = Parameter(query="description", default=None, description="用戶描述"),
 ) -> list[ComparisonFilter]:

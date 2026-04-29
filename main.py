@@ -1,9 +1,17 @@
 import os
-from litestar import Litestar, Response, Router
+from litestar import Litestar, Router
+from litestar.config.app import AppConfig
 from litestar.openapi.config import OpenAPIConfig
-from litestar.status_codes import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
+from litestar.plugins import CLIPluginProtocol, InitPluginProtocol
+from litestar.status_codes import (
+    HTTP_400_BAD_REQUEST,
+    HTTP_404_NOT_FOUND,
+    HTTP_500_INTERNAL_SERVER_ERROR,
+)
+
+from _main import init_db
 from app.common.exceptions import unified_exception_handler
-from app.core.database import sqlalchemy_plugin
+from app.core.database import seed_database, sqlalchemy_plugin
 
 
 async def on_startup(app: Litestar) -> None:
@@ -23,43 +31,55 @@ async def on_startup(app: Litestar) -> None:
             log.info(
                 f"[{http_method:<6}] {route_path:<35} - {controller_name}:{handler_name}"
             )
-            
 
-def create_app() -> Litestar:
-    os.environ["ENVIRONMENT"] = "dev"
 
-    from app.core.logger import setup_logging
-    from app.api.register_routers import register_routers
+class ApplicationCore(InitPluginProtocol):
 
-    setup_logging()
-    system_routers = register_routers()
-    plugin_routers = register_routers("app.plugins")
+    def on_app_init(self, app_config: AppConfig) -> AppConfig:
+        os.environ["ENVIRONMENT"] = "dev"
 
-    from app.config.setting import get_settings
+        from app.core.logger import setup_logging
+        from app.api.register_routers import register_routers
 
-    settings = get_settings()
-    get_settings.cache_clear()
+        setup_logging()
+        system_routers = register_routers()
+        plugin_routers = register_routers("plugins")
 
-    return Litestar(
-        debug=settings.debug,
-        path=settings.root_path,
-        route_handlers=[
-            *system_routers,
-            Router(path="/plugins", route_handlers=plugin_routers),
-        ],
-        openapi_config=OpenAPIConfig(
+        from app.config.setting import get_settings
+
+        settings = get_settings()
+        get_settings.cache_clear()
+
+        app_config.on_startup.extend([init_db, seed_database, on_startup])
+        app_config.debug = settings.debug
+        app_config.path = settings.root_path
+        app_config.route_handlers.extend(
+            [
+                *system_routers,
+                Router(path="/plugins", route_handlers=plugin_routers),
+            ]
+        )
+        app_config.openapi_config = OpenAPIConfig(
             title=settings.title,
             version=settings.version,
             description=settings.description,
             summary=settings.summary,
-        ),
-        on_startup=[on_startup],
-        plugins=[sqlalchemy_plugin],
-        exception_handlers={
+        )
+
+        app_config.plugins.extend([sqlalchemy_plugin])
+
+        app_config.exception_handlers = {
             HTTP_404_NOT_FOUND: unified_exception_handler,
             HTTP_500_INTERNAL_SERVER_ERROR: unified_exception_handler,
-            HTTP_400_BAD_REQUEST: unified_exception_handler
+            HTTP_400_BAD_REQUEST: unified_exception_handler,
         }
+
+        return super().on_app_init(app_config)
+
+
+def create_app() -> Litestar:
+    return Litestar(
+        plugins=[ApplicationCore()],
     )
 
 
