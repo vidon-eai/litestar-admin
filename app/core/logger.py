@@ -2,7 +2,6 @@ import atexit
 import logging
 from pathlib import Path
 import sys
-import traceback
 
 from loguru import logger
 from typing_extensions import override
@@ -15,29 +14,24 @@ _logger_handlers = []
 
 class InterceptHandler(logging.Handler):
     """
-    日志拦截处理器：将所有 Python 标准日志重定向到 Loguru
-
-    工作原理：
-    1. 继承自 logging.Handler
-    2. 重写 emit 方法处理日志记录
-    3. 将标准库日志转换为 Loguru 格式
+    日誌攔截處理器：將所有 Python 標準日誌重定向到 Loguru
     """
 
     @override
     def emit(self, record: logging.LogRecord) -> None:
-        # 尝试获取日志级别名称
+        # 嘗試獲取日誌級別名稱
         try:
             level = logger.level(record.levelname).name
         except ValueError:
             level = record.levelno
 
-        # 获取调用帧信息，增加None检查
+        # 獲取調用幀信息，確保 Loguru 顯示正確的原始代碼位置
         frame, depth = sys._getframe(), 6
         while frame and frame.f_code.co_filename == logging.__file__:
             frame = frame.f_back
             depth += 1
 
-        # 使用 Loguru 记录日志
+        # 使用 Loguru 記錄日誌，這會套用你定義的 log_format
         logger.opt(depth=depth, exception=record.exc_info).log(
             level,
             record.getMessage(),
@@ -45,95 +39,83 @@ class InterceptHandler(logging.Handler):
 
 
 def cleanup_logging() -> None:
-    """
-    清理日志资源
-    在程序退出时调用,确保所有日志处理器被正确关闭
-    """
+    """清理日誌資源[cite: 1]"""
     global _logger_handlers
-
     for handler_id in _logger_handlers:
         try:
             logger.remove(handler_id)
         except Exception as e:
-            logger.opt(depth=1).warning(f"移除日志处理器 {handler_id} 时出错: {e}")
-
+            logger.opt(depth=1).warning(f"移除日誌處理器 {handler_id} 時出錯: {e}")
     _logger_handlers.clear()
 
 
 def setup_logging() -> None:
     """
-    配置日志系统
-
-    功能：
-    1. 控制台彩色输出
-    2. 文件日志轮转
-    3. 错误日志单独存储
+    配置日誌系統，實現 SQL 格式統一[cite: 1]
     """
     global _logger_handlers
 
-    # 添加上下文信息
-    _ = logger.configure(extra={"app_name": "Liststar Admin"})
-    # 步骤1：移除默认处理器
+    # 1. 配置 Loguru 基礎設定與格式[cite: 1]
+    logger.configure(extra={"app_name": "Liststar Admin"})
     logger.remove()
 
-    # 步骤2：定义日志格式
+    # 定義統一的格式[cite: 1]
     log_format = (
-        # 时间信息
         "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
-        # 日志级别，居中对齐
         "<level>{level: <8}</level> | "
-        # 文件、函数和行号
         "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
-        # 日志消息
         "<level>{message}</level>"
     )
 
-    # 步骤3：配置控制台输出
-    handler_id = logger.add(sys.stdout, format=log_format, level=settings.logger_level)
+    # 添加輸出目標[cite: 1]
+    _logger_handlers.append(
+        logger.add(sys.stdout, format=log_format, level=settings.logger_level)
+    )
 
-    _logger_handlers.append(handler_id)
-
-    # 步骤4：创建日志目录
     log_dir = Path("logs")
-    # 确保日志目录存在,如果不存在则创建
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    # 步骤5：配置常规日志文件
-    handler_id = logger.add(
-        str(log_dir / "info.log"),
-        format=log_format,
-        level="INFO",
-        rotation="00:00",  # 每天午夜轮转
-        retention=30,  # 日志保留天数，超过此天数的日志文件将被自动清理
-        compression="gz",
-        encoding="utf-8",
+    # 文件輸出[cite: 1]
+    _logger_handlers.append(
+        logger.add(
+            str(log_dir / "info.log"),
+            format=log_format,
+            level="INFO",
+            rotation="00:00",
+            retention=30,
+            compression="gz",
+            encoding="utf-8",
+        )
     )
-    _logger_handlers.append(handler_id)
 
-    # 步骤6：配置错误日志文件
-    handler_id = logger.add(
-        str(log_dir / "error.log"),
-        format=log_format,
-        level="ERROR",
-        rotation="00:00",  # 每天午夜轮转
-        retention=30,  # 日志保留天数，超过此天数的日志文件将被自动清理
-        compression="gz",
-        encoding="utf-8",
-        backtrace=True,
-        diagnose=True,
-    )
-    _logger_handlers.append(handler_id)
-     
-    # 步骤7：配置标准库日志
-    logging.basicConfig(handlers=[InterceptHandler()], level=settings.logger_level, force=True)
-    logger_name_list = list(logging.root.manager.loggerDict)
-    # 步骤8：配置第三方库日志
-    for logger_name in logger_name_list:
-        logger_ = logging.getLogger(logger_name)
-        logger_.handlers = [InterceptHandler()]
-        logger_.propagate = False
+    # 2. 攔截標準庫 logging 的 Root Logger[cite: 1]
+    logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
 
-    # 注册退出清理函数
+    # 3. 專門針對 SQLAlchemy 進行格式統一化
+    # 這些是 SQLAlchemy 常用的日誌名稱
+    sql_loggers = [
+        "sqlalchemy.engine",  # 顯示 SQL 語句
+        "sqlalchemy.pool",  # 顯示連線池資訊
+        "sqlalchemy.dialects",
+        "sqlalchemy.orm",
+    ]
+
+    for name in sql_loggers:
+        specific_logger = logging.getLogger(name)
+        # 清除現有的 handler 防止重複輸出
+        specific_logger.handlers = [InterceptHandler()]
+        # 禁用傳播，確保日誌直接交給 InterceptHandler 處理，不再流向 Root Logger[cite: 1]
+        specific_logger.propagate = False
+        # 強制設定等級，確保能捕獲到日誌
+        specific_logger.setLevel(settings.logger_level)
+
+    # 4. 處理其餘第三方庫[cite: 1]
+    for logger_name in logging.root.manager.loggerDict:
+        if logger_name not in sql_loggers:
+            _logger = logging.getLogger(logger_name)
+            _logger.handlers = [InterceptHandler()]
+            _logger.propagate = False
+
     atexit.register(cleanup_logging)
 
 
