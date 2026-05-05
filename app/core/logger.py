@@ -6,7 +6,6 @@ import sys
 from loguru import logger
 from typing_extensions import override
 
-from app.config.setting import settings
 
 # 全局变量记录日志处理器ID
 _logger_handlers = []
@@ -50,6 +49,8 @@ def cleanup_logging() -> None:
 
 
 def setup_logging() -> None:
+    from app.config.setting import settings
+    
     """
     配置日誌系統，實現 SQL 格式統一[cite: 1]
     """

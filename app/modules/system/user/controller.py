@@ -19,6 +19,7 @@ from app.core.dependencies import (
     provide_pagination,
 )
 from app.common.response import COMMON_RESPONSES, ResponseSchema, SuccessResponse
+from app.modules.system.user.model import User
 from app.modules.system.user.schema import UserCreate, UserRead, UserUpdate
 from app.modules.system.user.service import UserService
 
@@ -39,6 +40,7 @@ class UserController(Controller):
         **providers.create_service_dependencies(
             UserService,
             "user_service",
+            load=[User.posts]
         )
     }
 

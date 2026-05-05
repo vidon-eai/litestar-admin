@@ -1,8 +1,15 @@
 from datetime import date
-from sqlalchemy import Boolean, String
-from sqlalchemy.orm import Mapped, mapped_column
+from typing import TYPE_CHECKING
+from uuid import UUID
+
+from sqlalchemy import Boolean, ForeignKey, String, Text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import Date
+
 from app.core.base_model import Base
+
+if TYPE_CHECKING:
+    from app.modules.system.post.model import Post
 
 
 class User(Base):
@@ -32,4 +39,11 @@ class User(Base):
 
     address: Mapped[str | None] = mapped_column(
         String(64), nullable=True, comment="地址"
+    )
+
+    posts: Mapped[list["Post"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+        uselist=True
     )

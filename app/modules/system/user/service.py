@@ -16,8 +16,6 @@ class UserRepo(SQLAlchemyAsyncRepository[User]):
 
 class UserService(SQLAlchemyAsyncRepositoryService[User]):
 
-
-
     repository_type = UserRepo
 
     async def search_users(

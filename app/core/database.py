@@ -1,5 +1,8 @@
 from datetime import datetime
+import os
 from pathlib import Path
+from typing import TYPE_CHECKING
+from advanced_alchemy.alembic.commands import AlembicCommands
 from advanced_alchemy.config import EngineConfig
 from advanced_alchemy.utils.fixtures import open_fixture_async
 from litestar.plugins.sqlalchemy import (
@@ -8,10 +11,10 @@ from litestar.plugins.sqlalchemy import (
     SQLAlchemyInitPlugin,
 )
 
-from app.config.setting import settings
 from app.core.base_model import Base
-from app.modules.system.user.service import UserService
-
+from app.modules.system.user.model import User
+from app.modules.system.post.model import Post
+from app.config.setting import settings
 
 db_config = SQLAlchemyAsyncConfig(
     connection_string=settings.database_url,
@@ -25,12 +28,14 @@ sqlalchemy_plugin = SQLAlchemyInitPlugin(config=db_config)
 
 async def create_tables() -> None:
     async with db_config.get_engine().begin() as conn:
+
         await conn.run_sync(Base.metadata.create_all)
 
 
 async def seed_database() -> None:
     fixtures_path = Path("app/db/fixtures")
     from app.core.logger import log
+    from app.modules.system.user.service import UserService
 
     async with db_config.get_session() as db_session:
         user_service = UserService(session=db_session)
@@ -53,3 +58,17 @@ async def seed_database() -> None:
         )
 
         log.info("✅ Seed data loaded successfully.")
+
+
+def upgrade_database(revision: str) -> None:
+
+    alembic_cmds = AlembicCommands(sqlalchemy_config=db_config)
+    alembic_cmds.upgrade(revision=revision)
+
+
+def make_migrations(
+    message: str, autogenerate: bool = True, head: str = "head"
+) -> None:
+
+    alembic_cmds = AlembicCommands(sqlalchemy_config=db_config)
+    alembic_cmds.revision(message=message, autogenerate=autogenerate, head=head)

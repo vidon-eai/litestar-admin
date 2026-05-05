@@ -38,6 +38,18 @@ class RET(Enum):
     SERVICE_UNAVAILABLE = (503, "服务不可用")
     GATEWAY_TIMEOUT = (504, "网关超时")
     HTTP_VERSION_NOT_SUPPORTED = (505, "HTTP版本不支持")
+    
+    # 數據庫操作相關錯誤碼 (4200+)
+    DB_ERR = (4200, "數據庫操作失敗")
+    DB_CONN_ERR = (4201, "數據庫連接超時")
+    DB_DATA_NOT_FOUND = (4202, "查詢不到相關數據")
+    DB_DUPLICATE_KEY = (4203, "主鍵或唯一索引衝突")
+    DB_FOREIGN_KEY_VIOLATION = (4204, "外鍵約束限制")
+    DB_DATA_TOO_LONG = (4205, "數據長度超出限制")
+    DB_LOCK_WAIT_TIMEOUT = (4206, "數據庫鎖等待超時")
+    DB_DEADLOCK = (4207, "數據庫死鎖")
+    DB_TRANSACTION_ERR = (4208, "事務回滾失敗")
+    DB_MAX_CONNECTIONS = (4209, "數據庫連接數已滿")
 
     # 自定义业务错误码
     EXCEPTION = (-1, "系统异常")

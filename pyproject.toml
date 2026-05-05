@@ -9,6 +9,7 @@ dependencies = [
     "aioredis>=2.0.1",
     "aiosqlite>=0.22.1",
     "asyncmy[cryptography]>=0.2.11",
+    "asyncpg>=0.31.0",
     "cryptography>=46.0.7",
     "litestar[sqlalchemy,standard]>=2.21.1",
     "loguru>=0.7.3",

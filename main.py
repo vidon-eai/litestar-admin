@@ -1,9 +1,9 @@
 from litestar import Litestar
 from app.cli.commands import cli
-from app.server.core import ApplicationCore
 
 
 def create_app() -> Litestar:
+    from app.server.core import ApplicationCore    
     return Litestar(
         plugins=[ApplicationCore()],
     )

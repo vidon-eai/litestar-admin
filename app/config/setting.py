@@ -12,10 +12,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 _ENV_DIR = _PROJECT_ROOT / "env"
 
-
-
-
-
 class Settings(BaseSettings):
     """
     Application Settings
@@ -91,6 +87,5 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
-
 
 settings = get_settings()
