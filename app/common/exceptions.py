@@ -11,7 +11,7 @@ from litestar.status_codes import (
 )
 from sqlalchemy.exc import OperationalError, ProgrammingError
 
-from app.common.constant import RET
+from app.common.constant import RET, MySQLError
 from app.common.response import ResponseSchema
 
 
@@ -26,26 +26,33 @@ def unified_exception_handler(request: Any, exc: Exception) -> Response:
     status_code = getattr(exc, "status_code", RET.INTERNAL_SERVER_ERROR.code)
     detail = getattr(exc, "detail", RET.INTERNAL_SERVER_ERROR.msg)
     extra_data = getattr(exc, "extra", None)
-    if isinstance(exc, IntegrityError):
+    if isinstance(exc, (IntegrityError, ProgrammingError, IntegrityError)):
         original_cause = getattr(exc, "__cause__", None)
-        
-        if original_cause and hasattr(original_cause, "orig"):
+
+        if original_cause and hasattr(original_cause, "orig") and original_cause.orig:
             code = str(original_cause.orig.args[0])
-            detail = str(original_cause.orig.args[1]) 
-        elif original_cause:
-            detail = str(original_cause)
-            
-        status_code = HTTP_500_INTERNAL_SERVER_ERROR
-        code = RET.DB_ERR.code
-    
+            print(code)
+            detail = str(original_cause.orig.args[1])
+            try:
+                db_error = MySQLError.get(int(code))
+            except ValueError:
+                db_error = MySQLError.get(MySQLError.ER_UNKNOWN_ERROR.code)
+            code = db_error.code
+            detail = db_error.msg
+        # elif original_cause:
+        #     detail = str(original_cause)
+
+        # status_code = HTTP_500_INTERNAL_SERVER_ERROR
+        # code = RET.DB_ERR.code
+
     elif isinstance(exc, NotFoundError):
         status_code = RET.NOT_FOUND.code
         detail = RET.NOT_FOUND.msg
-    
+
     elif isinstance(exc, DuplicateKeyError):
         status_code = RET.CONFLICT.code
         detail = RET.CONFLICT.msg
-    
+
     elif isinstance(exc, ValidationException):
         status_code = RET.BAD_REQUEST.code
         detail = extra_data

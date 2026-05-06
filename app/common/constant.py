@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class RET(Enum):
     """
     系统返回码枚举
@@ -38,7 +39,7 @@ class RET(Enum):
     SERVICE_UNAVAILABLE = (503, "服务不可用")
     GATEWAY_TIMEOUT = (504, "网关超时")
     HTTP_VERSION_NOT_SUPPORTED = (505, "HTTP版本不支持")
-    
+
     # 數據庫操作相關錯誤碼 (4200+)
     DB_ERR = (4200, "數據庫操作失敗")
     DB_CONN_ERR = (4201, "數據庫連接超時")
@@ -218,3 +219,81 @@ class RET(Enum):
         - str: 错误信息文本。
         """
         return self._msg
+
+
+class MySQLError(Enum):
+    """
+    MySQL 錯誤碼枚舉
+
+    參考 MySQL 官方錯誤碼，統一封裝供業務層使用
+    """
+
+    # ==================== 連接與權限 ====================
+    ER_ACCESS_DENIED_ERROR = (1045, "存取被拒：帳號、密碼或權限錯誤")
+    ER_TOO_MANY_CONNECTIONS = (1040, "資料庫連線數已達上限")
+    ER_DBACCESS_DENIED_ERROR = (1044, "無此資料庫的存取權限")
+    ER_CANNOT_CONNECT = (2003, "無法連接到 MySQL 伺服器")
+    ER_SERVER_GONE_AWAY = (2006, "MySQL 伺服器已斷線")
+    ER_LOST_CONNECTION = (2013, "查詢過程中與伺服器連線遺失")
+
+    # ==================== 語法與物件 ====================
+    ER_PARSE_ERROR = (1064, "SQL 語法錯誤")
+    ER_BAD_FIELD_ERROR = (1054, "未知的欄位名稱")
+    ER_NO_SUCH_TABLE = (1146, "資料表不存在")
+    ER_UNKNOWN_TABLE = (1051, "未知的資料表")
+
+    # ==================== 資料完整性 ====================
+    ER_DUP_ENTRY = (1062, "主鍵或唯一索引重複")
+    ER_NO_REFERENCED_ROW_2 = (1452, "外鍵約束違反：找不到對應的父記錄")
+    ER_ROW_IS_REFERENCED_2 = (1217, "外鍵約束違反：無法刪除或更新父記錄")
+    ER_NO_DEFAULT_FOR_FIELD = (1364, "欄位沒有預設值且不可為空")
+    ER_DATA_TOO_LONG = (1406, "資料長度超過欄位限制")
+    ER_TRUNCATED_WRONG_VALUE = (1292, "資料截斷或格式錯誤")
+
+    # ==================== 資源與鎖定 ====================
+    ER_TABLE_FULL = (1114, "資料表已滿（磁碟空間不足）")
+    ER_LOCK_WAIT_TIMEOUT = (1205, "鎖等待超時")
+    ER_DEADLOCK = (1213, "發生死鎖")
+    ER_CANT_CREATE_TABLE = (1005, "無法建立資料表（通常為外鍵定義錯誤）")
+    ER_WRONG_KEY_FILE = (126, "索引檔案損壞")
+
+    # ==================== 其他常見 ====================
+    ER_QUERY_INTERRUPTED = (1317, "查詢被中斷")
+    ER_UNKNOWN_ERROR = (1105, "未知的 MySQL 錯誤")
+
+    def __init__(self, code: int, msg: str) -> None:
+        """
+        初始化 MySQL 錯誤碼
+
+        參數:
+        - code (int): MySQL 原始錯誤代碼
+        - msg (str): 錯誤描述
+        """
+        self._code = code
+        self._msg = msg
+
+    @property
+    def code(self) -> int:
+        """MySQL 原始錯誤碼"""
+        return self._code
+
+    @property
+    def msg(self) -> str:
+        """錯誤描述訊息"""
+        return self._msg
+
+    @classmethod
+    def get(cls, code: int) -> "MySQLError":
+        """根據錯誤碼取得對應枚舉（推薦使用）"""
+        for member in cls:
+            if member.code == code:
+                return member
+        raise ValueError(f"未知的 MySQL 錯誤碼: {code}")
+
+    @classmethod
+    def get_msg(cls, code: int, default: str = "資料庫操作失敗") -> str:
+        """快速取得錯誤訊息"""
+        try:
+            return cls.get(code).msg
+        except ValueError:
+            return default
