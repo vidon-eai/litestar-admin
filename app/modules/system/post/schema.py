@@ -1,9 +1,6 @@
-from __future__ import annotations
-from datetime import date, datetime
-from typing import TYPE_CHECKING
+from datetime import datetime
 from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
-
 
 class PostRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -22,3 +19,9 @@ class PostCreate(BaseModel):
     content: str | None = Field(default=None, max_length=100, description="权限标识")
     user_id: UUID = Field(...)
     is_publish: bool = Field(default=False)
+    
+class PostUpdate(PostCreate):
+    # model_config = ConfigDict(from_attributes=True)
+    """Post Update"""
+    user_id: UUID | None = Field(default=None)
+   

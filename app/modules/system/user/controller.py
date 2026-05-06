@@ -20,7 +20,7 @@ from app.core.dependencies import (
 )
 from app.common.response import COMMON_RESPONSES, ResponseSchema, SuccessResponse
 from app.modules.system.user.model import User
-from app.modules.system.user.schema import UserCreate, UserRead, UserUpdate
+from app.modules.system.user.schema import UserCreate, UserRead,UserReadWithPosts, UserUpdate
 from app.modules.system.user.service import UserService
 
 
@@ -48,7 +48,7 @@ class UserController(Controller):
         "/",
         responses={
             200: ResponseSpec(
-                data_container=ResponseSchema[service.OffsetPagination[UserRead]],
+                data_container=ResponseSchema[service.OffsetPagination[UserReadWithPosts]],
                 description="用戶列表",
             ),
             **COMMON_RESPONSES,
@@ -69,7 +69,7 @@ class UserController(Controller):
         pagination: Annotated[LimitOffset, Dependency(skip_validation=True)],
         order: Annotated[OrderBy, Dependency(skip_validation=True)],
         filters_list: Annotated[list[ComparisonFilter], Dependency(skip_validation=True)],
-    ) -> ResponseSchema[service.OffsetPagination[UserRead]]:
+    ) -> ResponseSchema[service.OffsetPagination[UserReadWithPosts]]:
 
         data = await user_service.search_users(
             search_filter, pagination, order, filters_list

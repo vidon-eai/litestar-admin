@@ -1,5 +1,6 @@
 from enum import Enum
-from typing import Annotated, Literal, Sequence, Type, TypeVar
+import sys
+from typing import Annotated, Any, Callable, Literal, Sequence, Type, TypeVar
 from advanced_alchemy.filters import (
     ComparisonFilter,
     LimitOffset,
@@ -60,6 +61,7 @@ def create_order_provider(order_enum: Type[T], default_field: str | None = None)
         return OrderBy(field_name=field, sort_order=sort_order.value)
 
     return provide_order
+
     
 async def provide_filter_list(
     is_active: bool | None = Parameter(query="isActive", default=None, description="激活狀態"),

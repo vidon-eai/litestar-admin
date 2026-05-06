@@ -1,16 +1,11 @@
-from __future__ import annotations
 from datetime import date, datetime
-from typing import TYPE_CHECKING
-from uuid import UUID
-
 from pydantic import BaseModel, ConfigDict, Field
-
+from app.core.base_schema import BaseSchema
 from app.modules.system.post.schema import PostRead
 
-class UserRead(BaseModel):
+class UserRead(BaseSchema):
     model_config = ConfigDict(from_attributes=True)
 
-    id: UUID
     username: str = Field(..., description="必須填寫")
     email: str | None = Field(default=None, max_length=100, description="权限标识")
     description: str | None = Field(
@@ -20,10 +15,11 @@ class UserRead(BaseModel):
     address: str
     is_active: bool = True
     dob: datetime | None
-    created_at: datetime
-    updated_at: datetime
     
-    posts: list[PostRead] | None = Field(default=[])
+
+class UserReadWithPosts(UserRead, BaseSchema):
+    posts: list["PostRead"] | None = Field(default=[])
+    
     
 class UserCreate(BaseModel):
     model_config = ConfigDict(from_attributes=True)

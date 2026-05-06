@@ -5,7 +5,7 @@ from advanced_alchemy.service import (
 )
 from advanced_alchemy.repository import SQLAlchemyAsyncRepository
 from app.modules.system.user.model import User
-from app.modules.system.user.schema import UserRead
+from app.modules.system.user.schema import UserReadWithPosts
 
 from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
 from litestar.repository.filters import LimitOffset
@@ -24,7 +24,7 @@ class UserService(SQLAlchemyAsyncRepositoryService[User]):
         pagination: LimitOffset,
         order_by: OrderBy | None,
         filters_list: list[ComparisonFilter] | None = None
-    ) -> OffsetPagination[UserRead]:
+    ) -> OffsetPagination[UserReadWithPosts]:
 
         filters = [
             pagination
@@ -38,4 +38,4 @@ class UserService(SQLAlchemyAsyncRepositoryService[User]):
 
         results, total = await self.list_and_count(*filters)
 
-        return self.to_schema(results, total, filters=filters, schema_type=UserRead)
+        return self.to_schema(results, total, filters=filters, schema_type=UserReadWithPosts)

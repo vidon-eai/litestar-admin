@@ -1,11 +1,11 @@
-from typing import Any
-
-import msgspec
-
-class BaseStruct(msgspec.Struct):
-    def to_dict(self) -> dict[str, Any]:
-        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f, None) != msgspec.UNSET}
+from datetime import datetime
+from uuid import UUID
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class CamelizedBaseStruct(BaseStruct, rename="camel"):
-    """Camelized Base Struct"""
+class BaseSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID | None = Field(default=None, description="Primary Key")
+    created_time: datetime | None = Field(default=None, description="Create record datetime")
+    updated_time: datetime | None = Field(default=None, description="Update record datetime")
