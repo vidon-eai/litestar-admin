@@ -4,6 +4,7 @@ from litestar import Litestar, Router
 from litestar.config.app import AppConfig
 from litestar.openapi.config import OpenAPIConfig
 from litestar.plugins import InitPluginProtocol
+from litestar.routes import ASGIRoute, HTTPRoute, WebSocketRoute
 from litestar.status_codes import (
     HTTP_400_BAD_REQUEST,
     HTTP_404_NOT_FOUND,
@@ -18,7 +19,7 @@ from app.common.exceptions import unified_exception_handler
 
 async def on_startup(app: Litestar) -> None:
     from app.core.logger import log
-
+    log.info("="*100)
     sorted_routes = app.route_handler_method_map.items()
     for route_path, method_map in sorted_routes:
 
@@ -31,29 +32,28 @@ async def on_startup(app: Litestar) -> None:
             controller_part, handler_name = str(handler).rsplit(".", 1)
             controller_name = controller_part.rsplit(".", 1)[-1]
             log.info(
-                f"[{http_method:<6}] {route_path:<35} - {controller_name}:{handler_name}"
+                # f"[{http_method:<6}] {route_path:<35} - {controller_name}:{handler_name}"
+                f"📍 {route_path:<45} | {http_method:<12} | {controller_name} ({handler_name})"
             )
 
+    log.info("="*100)
 
 async def db_connection() -> None:
+    from app.core.logger import log
     from app.config.setting import settings
 
     try:
         async with settings.db_config.get_engine().begin() as conn:
-            # 執行簡單查詢測試連接
             await conn.execute(text("SELECT 1"))
-            # 或使用 SELECT 1::int 等特定 dialect 的方式
-        print("✅ 資料庫連接成功！")
+        log.info("✅ 資料庫連接成功！")
     except Exception as e:
-        print(f"❌ 資料庫連接失敗: {e}")
-        print("🔴 程式將在 3 秒後退出...")
+        log.info(f"❌ 資料庫連接失敗: {e}")
+        log.info("🔴 程式將在 3 秒後退出...")
         
-        # 等待一下讓錯誤訊息能被看到
         import asyncio
         await asyncio.sleep(3)
         
-        # 退出程序，並返回非零錯誤碼
-        sys.exit(1)  # 1 表示異常退出
+        sys.exit(1)
 
 
 class ApplicationCore(InitPluginProtocol):
@@ -73,7 +73,7 @@ class ApplicationCore(InitPluginProtocol):
         settings = get_settings()
         get_settings.cache_clear()
 
-        app_config.on_startup.extend([on_startup, db_connection])
+        app_config.on_startup.extend([db_connection, on_startup])
         app_config.debug = settings.debug
         app_config.path = settings.root_path
         app_config.route_handlers.extend(
