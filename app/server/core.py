@@ -1,14 +1,19 @@
-
-import os
+import sys
 from advanced_alchemy.exceptions import IntegrityError, RepositoryError
 from litestar import Litestar, Router
 from litestar.config.app import AppConfig
 from litestar.openapi.config import OpenAPIConfig
 from litestar.plugins import InitPluginProtocol
-from litestar.status_codes import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
+from litestar.status_codes import (
+    HTTP_400_BAD_REQUEST,
+    HTTP_404_NOT_FOUND,
+    HTTP_500_INTERNAL_SERVER_ERROR,
+)
 from sqlalchemy.exc import OperationalError
+from sqlalchemy.sql import text
 
 from app.common.exceptions import unified_exception_handler
+# from app.core.database import db_config
 
 
 async def on_startup(app: Litestar) -> None:
@@ -30,10 +35,31 @@ async def on_startup(app: Litestar) -> None:
             )
 
 
+async def db_connection() -> None:
+    from app.config.setting import settings
+
+    try:
+        async with settings.db_config.get_engine().begin() as conn:
+            # 執行簡單查詢測試連接
+            await conn.execute(text("SELECT 1"))
+            # 或使用 SELECT 1::int 等特定 dialect 的方式
+        print("✅ 資料庫連接成功！")
+    except Exception as e:
+        print(f"❌ 資料庫連接失敗: {e}")
+        print("🔴 程式將在 3 秒後退出...")
+        
+        # 等待一下讓錯誤訊息能被看到
+        import asyncio
+        await asyncio.sleep(3)
+        
+        # 退出程序，並返回非零錯誤碼
+        sys.exit(1)  # 1 表示異常退出
+
+
 class ApplicationCore(InitPluginProtocol):
 
     def on_app_init(self, app_config: AppConfig) -> AppConfig:
-        
+
         from app.core.logger import setup_logging
         from app.api.register_routers import register_routers
         from app.core.database import sqlalchemy_plugin
@@ -47,7 +73,7 @@ class ApplicationCore(InitPluginProtocol):
         settings = get_settings()
         get_settings.cache_clear()
 
-        app_config.on_startup.extend([on_startup])
+        app_config.on_startup.extend([on_startup, db_connection])
         app_config.debug = settings.debug
         app_config.path = settings.root_path
         app_config.route_handlers.extend(
@@ -71,7 +97,7 @@ class ApplicationCore(InitPluginProtocol):
             HTTP_400_BAD_REQUEST: unified_exception_handler,
             IntegrityError: unified_exception_handler,
             RepositoryError: unified_exception_handler,
-            OperationalError: unified_exception_handler
+            OperationalError: unified_exception_handler,
         }
 
         return super().on_app_init(app_config)

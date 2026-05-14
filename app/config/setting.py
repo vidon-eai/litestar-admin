@@ -1,16 +1,17 @@
-from __future__ import annotations
-
 from functools import lru_cache
 import os
-from pathlib import Path
-from typing import Any
 from urllib.parse import quote_plus
 
-from pydantic import Field, field_validator
+from advanced_alchemy.config import AlembicAsyncConfig, EngineConfig
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-_PROJECT_ROOT = Path(__file__).resolve().parents[2]
-_ENV_DIR = _PROJECT_ROOT / "env"
+from litestar.plugins.sqlalchemy import (
+    AsyncSessionConfig,
+    SQLAlchemyAsyncConfig,
+)
+
+from app.config.path_config import ALEMBIC_CONFIG_DIR, ALEMBIC_CONFIG_FILE, ENV_DIR
 
 class Settings(BaseSettings):
     """
@@ -18,7 +19,7 @@ class Settings(BaseSettings):
     """
 
     model_config = SettingsConfigDict(
-        env_file=f"{_ENV_DIR}/.env.{os.getenv('ENVIRONMENT', 'dev')}",
+        env_file=f"{ENV_DIR}/.env.{os.getenv('ENVIRONMENT', 'dev')}",
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore",
@@ -82,6 +83,20 @@ class Settings(BaseSettings):
             db_connect = f"sqlite+aiosqlite:///{self.database_name}"
         return db_connect
 
+    @property
+    def db_config(self) -> SQLAlchemyAsyncConfig:
+        
+        return SQLAlchemyAsyncConfig(
+            connection_string=self.database_url,
+            before_send_handler="autocommit",
+            session_config=AsyncSessionConfig(expire_on_commit=False),
+            engine_config=EngineConfig(echo=self.database_echo),
+            alembic_config=AlembicAsyncConfig(
+                script_location=f"{ALEMBIC_CONFIG_DIR}",
+                script_config=f"{ALEMBIC_CONFIG_FILE}",
+            ),
+        )
+        
 
 
 @lru_cache

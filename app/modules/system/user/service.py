@@ -4,7 +4,7 @@ from advanced_alchemy.service import (
     SQLAlchemyAsyncRepositoryService,
 )
 from advanced_alchemy.repository import SQLAlchemyAsyncRepository
-from app.modules.system.user.model import User
+from app.db.models.models import User
 from app.modules.system.user.schema import UserReadWithPosts
 
 from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService

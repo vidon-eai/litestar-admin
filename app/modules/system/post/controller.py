@@ -99,7 +99,7 @@ class PostController(Controller):
 
         return SuccessResponse(
             data=post_service.to_schema(result, schema_type=PostRead),
-            detail="Post創建成功",
+            detail="文章創建成功",
         )
         
     @patch("/{post_id:uuid}", responses={**COMMON_RESPONSES})

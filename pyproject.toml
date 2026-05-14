@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "advanced-alchemy[cli]>=1.9.3",
+    "advanced-alchemy[cli,uuid]>=1.9.3",
     "aioredis>=2.0.1",
     "aiosqlite>=0.22.1",
     "asyncmy[cryptography]>=0.2.11",

@@ -19,7 +19,6 @@ from app.core.dependencies import (
     provide_pagination,
 )
 from app.common.response import COMMON_RESPONSES, ResponseSchema, SuccessResponse
-from app.modules.system.user.model import User
 from app.modules.system.user.schema import UserCreate, UserRead,UserReadWithPosts, UserUpdate
 from app.modules.system.user.service import UserService
 
@@ -34,13 +33,13 @@ class UserSortField(str, Enum):
 
 class UserController(Controller):
     path = "/users"
-    tags = ["User Management"]
+    tags = ["用戶管理模塊"]
 
     dependencies = {
         **providers.create_service_dependencies(
             UserService,
             "user_service",
-            load=[User.posts]
+            # load=[User.posts]
         )
     }
 
@@ -61,6 +60,7 @@ class UserController(Controller):
             ),
             "filters_list": Provide(provide_filter_list),
         },
+        summary="用戶列表"
     )
     async def list_users(
         self,
@@ -89,6 +89,7 @@ class UserController(Controller):
             ),
             **COMMON_RESPONSES,
         },
+        summary="獲取用戶信息"
     )
     async def get_user(
         self, user_service: UserService, user_id: UUID
@@ -101,7 +102,7 @@ class UserController(Controller):
             detail="用戶查詢成功",
         )
 
-    @post("/", responses={**COMMON_RESPONSES})
+    @post("/", responses={**COMMON_RESPONSES}, summary="創建用戶")
     async def create_user(
         self, user_service: UserService, data: UserCreate
     ) -> ResponseSchema[UserRead]:
@@ -112,7 +113,7 @@ class UserController(Controller):
             detail="用戶創建成功",
         )
 
-    @patch("/{user_id:uuid}", responses={**COMMON_RESPONSES})
+    @patch("/{user_id:uuid}", responses={**COMMON_RESPONSES}, summary="更新用戶信息")
     async def update_user(
         self, user_service: UserService, data: UserUpdate, user_id: UUID
     ) -> ResponseSchema[UserRead]:
@@ -132,6 +133,7 @@ class UserController(Controller):
             ),
         },
         status_code=200,
+        summary="刪除用戶"
     )
     async def delete_user(
         self, user_service: UserService, user_id: UUID

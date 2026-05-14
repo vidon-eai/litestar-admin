@@ -143,14 +143,6 @@ def db_upgrade(env: str, revision: str) -> None:
     required=False,
 )
 @click.option(
-    "--autogenerate",
-    help="是否自動生成腳本",
-    type=click.BOOL,
-    default="True",
-    show_default=True,
-    required=False,
-)
-@click.option(
     "--head",
     help="The head revision to base the new revision on",
     show_default=True,

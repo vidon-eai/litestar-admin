@@ -8,7 +8,8 @@ from advanced_alchemy.repository import SQLAlchemyAsyncRepository
 
 from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
 
-from app.modules.system.post.model import Post
+from app.db.models.models import Post
+
 
 from app.modules.system.post.schema import PostRead
 

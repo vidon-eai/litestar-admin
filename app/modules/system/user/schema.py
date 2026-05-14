@@ -16,6 +16,7 @@ class UserRead(BaseSchema):
     is_active: bool = True
     dob: datetime | None
     
+    
 
 class UserReadWithPosts(UserRead, BaseSchema):
     posts: list["PostRead"] | None = Field(default=[])
