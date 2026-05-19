@@ -49,8 +49,8 @@ def cleanup_logging() -> None:
 
 
 def setup_logging() -> None:
-    from app.config.setting import settings
-    
+    from app.config.setting import app_setting
+
     """
     配置日誌系統，實現 SQL 格式統一[cite: 1]
     """
@@ -61,16 +61,11 @@ def setup_logging() -> None:
     logger.remove()
 
     # 定義統一的格式[cite: 1]
-    log_format = (
-        "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
-        "<level>{level: <8}</level> | "
-        "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
-        "<level>{message}</level>"
-    )
+    log_format = app_setting.LOG_FORMAT
 
     # 添加輸出目標[cite: 1]
     _logger_handlers.append(
-        logger.add(sys.stdout, format=log_format, level=settings.logger_level)
+        logger.add(sys.stdout, format=log_format, level=app_setting.LOG_LEVEL)
     )
 
     log_dir = Path("logs")
@@ -108,7 +103,7 @@ def setup_logging() -> None:
         # 禁用傳播，確保日誌直接交給 InterceptHandler 處理，不再流向 Root Logger[cite: 1]
         specific_logger.propagate = False
         # 強制設定等級，確保能捕獲到日誌
-        specific_logger.setLevel(settings.logger_level)
+        specific_logger.setLevel(app_setting.LOG_LEVEL)
 
     # 4. 處理其餘第三方庫[cite: 1]
     for logger_name in logging.root.manager.loggerDict:

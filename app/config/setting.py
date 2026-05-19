@@ -1,9 +1,11 @@
 from functools import lru_cache
 import os
+from typing import Literal
 from urllib.parse import quote_plus
 
-from advanced_alchemy.config import AlembicAsyncConfig, EngineConfig
-from pydantic import Field
+from advanced_alchemy.config import AlembicAsyncConfig
+from advanced_alchemy.extensions.litestar.plugins.init.config.engine import EngineConfig
+from pydantic import Field, PositiveInt, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from litestar.plugins.sqlalchemy import (
@@ -13,11 +15,111 @@ from litestar.plugins.sqlalchemy import (
 
 from app.config.path_config import ALEMBIC_CONFIG_DIR, ALEMBIC_CONFIG_FILE, ENV_DIR
 
-class Settings(BaseSettings):
-    """
-    Application Settings
-    """
 
+class DatabaseSetting(BaseSettings):
+    DB_TYPE: Literal["postgresql", "mysql", "sqlite"] = Field(
+        description="Database type to use.",
+        default="mysql",
+    )
+
+    DB_HOST: str = Field(
+        default=...,
+        description="Hostname or IP address of the database server.",
+    )
+
+    DB_PORT: PositiveInt = Field(
+        default=...,
+        description="Port number for database connection.",
+    )
+
+    DB_USERNAME: str = Field(
+        default=...,
+        description="Username for database authentication.",
+    )
+
+    DB_PASSWORD: str = Field(
+        default=...,
+        description="Password for database authentication.",
+    )
+
+    DB_DATABASE: str = Field(
+        default=...,
+        description="Name of the database to connect to.",
+    )
+
+    SQLALCHEMY_ECHO: bool = Field(
+        description="If True, SQLAlchemy will log all SQL statements.",
+        default=True,
+    )
+
+    @computed_field
+    @property
+    def SQLALCHEMY_DATABASE_URI_SCHEME(self) -> str:
+        return "postgresql+asyncpg" if self.DB_TYPE == "postgresql" else "mysql+asyncmy"
+
+    @property
+    def SQLALCHEMY_DATABASE_URI(self) -> str:
+        """
+        Async SQLAlchemy database URL.
+
+        Returns:
+        - str: Connection string for the async driver.
+
+        """
+        return (
+            f"sqlite+aiosqlite:///{self.DB_DATABASE}"
+            if self.DB_TYPE == "sqlite"
+            else (
+                f"{self.SQLALCHEMY_DATABASE_URI_SCHEME}://"
+                f"{quote_plus(self.DB_USERNAME)}:{quote_plus(self.DB_PASSWORD)}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_DATABASE}"
+            )
+        )
+
+    @property
+    def DB_CONFIG(self) -> SQLAlchemyAsyncConfig:
+
+        return SQLAlchemyAsyncConfig(
+            connection_string=self.SQLALCHEMY_DATABASE_URI,
+            before_send_handler="autocommit",
+            session_config=AsyncSessionConfig(expire_on_commit=False),
+            engine_config=EngineConfig(echo=self.SQLALCHEMY_ECHO),
+            alembic_config=AlembicAsyncConfig(
+                script_location=f"{ALEMBIC_CONFIG_DIR}",
+                script_config=f"{ALEMBIC_CONFIG_FILE}",
+            ),
+        )
+
+
+class APIDocSetting(BaseSettings):
+
+    API_DOCS_ENABLED: bool = Field(
+        description="If True, API documentation will be enabled.",
+        default=True,
+    )
+
+    TITLE: str = Field(default="🎉 Liststar Admin 🎉 -Development")
+    VERSION: str = Field(default="0.1.0")
+    SUMMARY: str = Field(default="API Summary")
+    DESCRIPTION: str = Field(
+        default="This is a web service framework based on python, based on Litestar and sqlalchemy implementation.",
+    )
+
+
+class LoggingSetting(BaseSettings):
+    LOG_LEVEL: str = Field(default="DEBUG")
+
+    LOG_FORMAT: str = Field(
+        description="Format string for log messages",
+        default=(
+            "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
+            "<level>{level: <8}</level> | "
+            "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
+            "<level>{message}</level>"
+        ),
+    )
+
+
+class AppSetting(DatabaseSetting, APIDocSetting, LoggingSetting):
     model_config = SettingsConfigDict(
         env_file=f"{ENV_DIR}/.env.{os.getenv('ENVIRONMENT', 'dev')}",
         env_file_encoding="utf-8",
@@ -26,81 +128,21 @@ class Settings(BaseSettings):
     )
 
     # Environment Configuration
-    environment: str = Field(default="dev", validation_alias="ENVIRONMENT")
+    ENV: str = Field(default="dev")
 
     # Server Configuration
-    server_host: str = Field(default="localhost", validation_alias="SERVER_HOST")
-    server_port: int = Field(default=8001, validation_alias="SERVER_PORT")
+    SERVER_HOST: str = Field(default="localhost")
+    SERVER_PORT: int = Field(default=8001)
 
     # Debug Configuration
-    debug: bool = Field(default=True, validation_alias="DEBUG")
-    
-    # API Documentation Configuration
-    title: str = Field(default="🎉 Liststar Admin 🎉 -Development", validation_alias="TITLE")
-    version: str = Field(default="0.1.0", validation_alias="VERSION")
-    summary: str = Field(default="API Summary", validation_alias="SUMMARY")
-    root_path: str = Field(default="/api/v1", validation_alias="ROOT_PATH")
-    description: str = Field(
-        default="This is a web service framework based on python, based on Litestar and sqlalchemy implementation.",
-        validation_alias="DESCRIPTION",
-    )
+    DEBUG: bool = Field(default=True)
 
-    demo_enable: bool = Field(default=False, validation_alias="DEMO_ENABLE")
-
-    # Database Configuration
-    database_type: str = Field(default="mysql", validation_alias="DATABASE_TYPE")
-    database_host: str = Field(default="localhost", validation_alias="DATABASE_HOST")
-    database_port: int = Field(default=3308, validation_alias="DATABASE_PORT")
-    database_username: str = Field(default="root", validation_alias="DATABASE_USERNAME")
-    database_password: str = Field(default="root_password", validation_alias="DATABASE_PASSWORD")
-    database_name: str = Field(default="litestaradmin", validation_alias="DATABASE_NAME")
-    database_echo: bool = True
-
-    # Log Setting
-    logger_level: str = Field(default="DEBUG", validation_alias="LOGGER_LEVEL")
-
-    @property
-    def database_url(self) -> str:
-        """
-        Async SQLAlchemy database URL.
-
-        Returns:
-        - str: Connection string for the async driver.
-
-        Raises:
-        - ValueError: Raised when the database type is not supported.
-        """
-        if self.database_type not in ("mysql", "postgres", "sqlite"):
-            raise ValueError(
-                f"Unsupported database driver: {self.database_type}. For async databases, please choose mysql, postgres, or sqlite."
-            )
-        db_connect: str = ""
-        if self.database_type == "mysql":
-            db_connect = f"mysql+asyncmy://{self.database_username}:{quote_plus(self.database_password)}@{self.database_host}:{self.database_port}/{self.database_name}?charset=utf8mb4"
-        elif self.database_type == "postgres":
-            db_connect = f"postgresql+asyncpg://{self.database_username}:{quote_plus(self.database_password)}@{self.database_host}:{self.database_port}/{self.database_name}"
-        else:
-            db_connect = f"sqlite+aiosqlite:///{self.database_name}"
-        return db_connect
-
-    @property
-    def db_config(self) -> SQLAlchemyAsyncConfig:
-        
-        return SQLAlchemyAsyncConfig(
-            connection_string=self.database_url,
-            before_send_handler="autocommit",
-            session_config=AsyncSessionConfig(expire_on_commit=False),
-            engine_config=EngineConfig(echo=self.database_echo),
-            alembic_config=AlembicAsyncConfig(
-                script_location=f"{ALEMBIC_CONFIG_DIR}",
-                script_config=f"{ALEMBIC_CONFIG_FILE}",
-            ),
-        )
-        
+    ROOT_PATH: str = Field(default="/api/v1")
 
 
 @lru_cache
-def get_settings() -> Settings:
-    return Settings()
+def get_app_setting() -> AppSetting:
+    return AppSetting()
 
-settings = get_settings()
+
+app_setting = get_app_setting()

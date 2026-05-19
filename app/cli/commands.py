@@ -4,6 +4,7 @@ from advanced_alchemy.alembic.commands import AlembicCommands
 import anyio
 import click
 
+from app.config.setting import app_setting
 from app.core.database import make_migrations, upgrade_database
 
 
@@ -32,16 +33,16 @@ def start_app(env: str, port: int | None) -> None:
     import uvicorn
     from app.core.logger import setup_logging
 
-    from app.config.setting import get_settings
+    from app.config.setting import get_app_setting
 
-    settings = get_settings()
-    get_settings.cache_clear()
+    app_setting = get_app_setting()
+    get_app_setting.cache_clear()
     setup_logging()
     uvicorn.run(
         "main:create_app",
-        host=settings.server_host,
-        port=port or settings.server_port,
-        reload=settings.debug,
+        host=app_setting.SERVER_HOST,
+        port=port or app_setting.SERVER_PORT,
+        reload=app_setting.DEBUG,
         factory=True,
         log_config=None,
     )

@@ -14,12 +14,12 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import text
 
 from app.common.exceptions import unified_exception_handler
-# from app.core.database import db_config
 
 
-async def on_startup(app: Litestar) -> None:
+async def find_routers(app: Litestar) -> None:
     from app.core.logger import log
-    log.info("="*100)
+
+    log.info("=" * 100)
     sorted_routes = app.route_handler_method_map.items()
     for route_path, method_map in sorted_routes:
 
@@ -32,27 +32,28 @@ async def on_startup(app: Litestar) -> None:
             controller_part, handler_name = str(handler).rsplit(".", 1)
             controller_name = controller_part.rsplit(".", 1)[-1]
             log.info(
-                # f"[{http_method:<6}] {route_path:<35} - {controller_name}:{handler_name}"
-                f"📍 {route_path:<45} | {http_method:<12} | {controller_name} ({handler_name})"
+                f"📍 {route_path:<35} | {http_method:<12} | {controller_name} ({handler_name})"
             )
 
-    log.info("="*100)
+    log.info("=" * 100)
+
 
 async def db_connection() -> None:
     from app.core.logger import log
-    from app.config.setting import settings
+    from app.config.setting import app_setting
 
     try:
-        async with settings.db_config.get_engine().begin() as conn:
+        async with app_setting.DB_CONFIG.get_engine().begin() as conn:
             await conn.execute(text("SELECT 1"))
         log.info("✅ 資料庫連接成功！")
     except Exception as e:
         log.info(f"❌ 資料庫連接失敗: {e}")
         log.info("🔴 程式將在 3 秒後退出...")
-        
+
         import asyncio
+
         await asyncio.sleep(3)
-        
+
         sys.exit(1)
 
 
@@ -68,14 +69,14 @@ class ApplicationCore(InitPluginProtocol):
         system_routers = register_routers()
         plugin_routers = register_routers("plugins")
 
-        from app.config.setting import get_settings
+        from app.config.setting import get_app_setting
 
-        settings = get_settings()
-        get_settings.cache_clear()
+        app_setting = get_app_setting()
+        get_app_setting.cache_clear()
 
-        app_config.on_startup.extend([db_connection, on_startup])
-        app_config.debug = settings.debug
-        app_config.path = settings.root_path
+        app_config.on_startup.extend([db_connection, find_routers])
+        app_config.debug = app_setting.DEBUG
+        app_config.path = app_setting.ROOT_PATH
         app_config.route_handlers.extend(
             [
                 *system_routers,
@@ -83,10 +84,10 @@ class ApplicationCore(InitPluginProtocol):
             ]
         )
         app_config.openapi_config = OpenAPIConfig(
-            title=settings.title,
-            version=settings.version,
-            description=settings.description,
-            summary=settings.summary,
+            title=app_setting.TITLE,
+            version=app_setting.VERSION,
+            description=app_setting.DESCRIPTION,
+            summary=app_setting.SUMMARY,
         )
 
         app_config.plugins.extend([sqlalchemy_plugin])
