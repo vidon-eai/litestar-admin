@@ -1,18 +1,13 @@
 from typing import Any
 from advanced_alchemy.exceptions import DuplicateKeyError, IntegrityError, NotFoundError
-from litestar import Request, Response
-from litestar import status_codes
+from litestar import Response
 from litestar.exceptions import ValidationException
-from litestar.status_codes import (
-    HTTP_400_BAD_REQUEST,
-    HTTP_404_NOT_FOUND,
-    HTTP_409_CONFLICT,
-    HTTP_500_INTERNAL_SERVER_ERROR,
-)
 from sqlalchemy.exc import OperationalError, ProgrammingError
 
-from app.common.constant import RET, MySQLError
+from app.common.constant import RET, MySQLError, PostgreSQLError
 from app.common.response import ResponseSchema
+
+from app.config.setting import app_setting
 
 
 def unified_exception_handler(request: Any, exc: Exception) -> Response:
@@ -26,24 +21,58 @@ def unified_exception_handler(request: Any, exc: Exception) -> Response:
     status_code = getattr(exc, "status_code", RET.INTERNAL_SERVER_ERROR.code)
     detail = getattr(exc, "detail", RET.INTERNAL_SERVER_ERROR.msg)
     extra_data = getattr(exc, "extra", None)
-    if isinstance(exc, (IntegrityError, ProgrammingError, IntegrityError)):
+
+    if isinstance(exc, (IntegrityError, ProgrammingError, OperationalError)):
         original_cause = getattr(exc, "__cause__", None)
 
         if original_cause and hasattr(original_cause, "orig") and original_cause.orig:
-            code = str(original_cause.orig.args[0])
-            print(code)
-            detail = str(original_cause.orig.args[1])
-            try:
-                db_error = MySQLError.get(int(code))
-            except ValueError:
-                db_error = MySQLError.get(MySQLError.ER_UNKNOWN_ERROR.code)
-            code = db_error.code
-            detail = db_error.msg
-        # elif original_cause:
-        #     detail = str(original_cause)
+            orig_err = original_cause.orig
 
-        # status_code = HTTP_500_INTERNAL_SERVER_ERROR
-        # code = RET.DB_ERR.code
+            # ==================== PostgreSQL 異常處理分支 ====================
+            if app_setting.DB_TYPE == "postgresql":
+                # asyncpg 驅動的錯誤碼欄位通常是 sqlstate，某些驅動是 pgcode
+                pg_code = getattr(orig_err, "sqlstate", None) or getattr(
+                    orig_err, "pgcode", None
+                )
+                print(f"Extracted PostgreSQL error code: {pg_code}")  # 調試輸出
+                # 如果屬性裡都拿不到，嘗試從 args 中抓取 5 碼的 SQLSTATE 字串
+                if not pg_code and hasattr(orig_err, "args") and orig_err.args:
+                    raw_code = str(orig_err.args[0])
+                    if len(raw_code) == 5:
+                        pg_code = raw_code
+
+                if pg_code:
+                    try:
+                        db_error = PostgreSQLError.get(str(pg_code))
+                    except ValueError:
+                        db_error = PostgreSQLError.get(
+                            PostgreSQLError.ER_UNKNOWN_ERROR.code
+                        )
+                    code = db_error.code
+                    detail = db_error.msg
+                else:
+                    # 讀取不到 code 時的 fallback
+                    code = RET.DB_ERR.code
+                    detail = f"PostgreSQL 錯誤: {str(orig_err)}"
+
+            # ==================== MySQL 異常處理分支 ====================
+            elif app_setting.DB_TYPE == "mysql":
+                if hasattr(orig_err, "args") and orig_err.args:
+                    raw_code = orig_err.args[0]
+                    try:
+                        db_error = MySQLError.get(int(raw_code))
+                    except (ValueError, TypeError):
+                        db_error = MySQLError.get(MySQLError.ER_UNKNOWN_ERROR.code)
+                    code = db_error.code
+                    detail = db_error.msg
+                else:
+                    code = RET.DB_ERR.code
+                    detail = RET.DB_ERR.msg
+
+            # ==================== 其他資料庫 (如 SQLite) ====================
+            else:
+                code = RET.DB_ERR.code
+                detail = str(orig_err)
 
     elif isinstance(exc, NotFoundError):
         status_code = RET.NOT_FOUND.code
@@ -68,17 +97,4 @@ def unified_exception_handler(request: Any, exc: Exception) -> Response:
     return Response(
         content=content,
         status_code=status_code,
-    )
-
-
-def sqlalchemy_exception_handler(request, exc: Exception) -> Response:
-    # 這裡可以記錄日誌
-    print(f"Detected DB Error: {exc}")
-
-    return Response(
-        content={
-            "error": "Database Connection Failed",
-            "message": "無法連接到資料庫，請檢查數據庫服務狀態及端口(3307)是否正確。",
-        },
-        status_code=status_codes.HTTP_503_SERVICE_UNAVAILABLE,
     )

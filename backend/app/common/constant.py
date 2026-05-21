@@ -297,3 +297,66 @@ class MySQLError(Enum):
             return cls.get(code).msg
         except ValueError:
             return default
+
+
+class PostgreSQLError(Enum):
+    """
+    PostgreSQL 錯誤碼枚舉 (SQLSTATE)
+
+    參考 PostgreSQL 官方附錄 A 錯誤碼定義
+    """
+
+    # ==================== 連接與權限 (Class 08 / 28) ====================
+    ER_INVALID_AUTHORIZATION_SPECIFICATION = ("28000", "存取被拒：帳號或密碼錯誤")
+    ER_CONNECTION_EXCEPTION = ("08000", "無法連接到 PostgreSQL 伺服器")
+    ER_CONNECTION_DOES_NOT_EXIST = ("08003", "連線不存在或已斷線")
+    ER_CONNECTION_FAILURE = ("08006", "與伺服器連線遺失")
+    ER_TOO_MANY_CONNECTIONS = ("53300", "資料庫連線數已達上限")
+
+    # ==================== 語法與物件 (Class 42) ====================
+    ER_SYNTAX_ERROR = ("42601", "SQL 語法錯誤")
+    ER_UNDEFINED_COLUMN = ("42703", "未知的欄位名稱")
+    ER_UNDEFINED_TABLE = ("42P01", "資料表不存在")
+
+    # ==================== 資料完整性 (Class 23) ====================
+    ER_UNIQUE_VIOLATION = ("23505", "主鍵或唯一索引重複")
+    ER_FOREIGN_KEY_VIOLATION = ("23503", "外鍵約束違反：找不到對應的父記錄或無法刪除")
+    ER_NOT_NULL_VIOLATION = ("23502", "欄位不可為空（違反非空約束）")
+    ER_STRING_DATA_RIGHT_TRUNCATION = ("22001", "資料長度超過欄位限制")
+    ER_INVALID_TEXT_REPRESENTATION = ("22P02", "資料格式錯誤（資料截斷或類型不匹配）")
+
+    # ==================== 資源與鎖定 (Class 40 / 55) ====================
+    ER_DISK_FULL = ("53100", "資料庫磁碟空間不足")
+    ER_LOCK_NOT_AVAILABLE = ("55P03", "鎖無法取得")
+    ER_DEADLOCK_DETECTED = ("40P01", "發生死鎖")
+    ER_QUERY_CANCELED = ("57014", "查詢被使用者或超時中斷")
+
+    # ==================== 其他常見 ====================
+    ER_UNKNOWN_ERROR = ("99999", "未知的 PostgreSQL 錯誤")
+
+    def __init__(self, code: str, msg: str) -> None:
+        self._code = code
+        self._msg = msg
+
+    @property
+    def code(self) -> str:
+        return self._code
+
+    @property
+    def msg(self) -> str:
+        return self._msg
+
+    @classmethod
+    def get(cls, code: str) -> "PostgreSQLError":
+        """根據 SQLSTATE 取得對應枚舉"""
+        for member in cls:
+            if member.code == code:
+                return member
+        raise ValueError(f"未知的 PostgreSQL 錯誤碼: {code}")
+
+    @classmethod
+    def get_msg(cls, code: str, default: str = "資料庫操作失敗") -> str:
+        try:
+            return cls.get(code).msg
+        except ValueError:
+            return default
