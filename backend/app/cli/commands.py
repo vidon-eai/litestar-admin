@@ -64,16 +64,16 @@ def db_group() -> None:
     required=False,
 )
 def init_db(env: str) -> None:
-    """Create database tables."""
+    """Initialize database tables."""
     try:
         os.environ["ENVIRONMENT"] = env
-
+        click.echo(click.style("Initializing database tables", fg="green"))
         from app.core.database import create_tables
 
         anyio.run(create_tables)
-        click.echo("Database tables initialized.")
+        click.echo(click.style("Database tables initialized.", fg="green"))
     except Exception as e:
-        click.echo(f"Database tables initialization failed: {e}")
+        click.echo(click.style(f"Database tables initialization failed: {e}", fg="red"))
         sys.exit(1)
 
 
@@ -88,15 +88,11 @@ def init_db(env: str) -> None:
 )
 def init_data(env: str) -> None:
     """Load fixture data into database."""
-    try:
-        os.environ["ENVIRONMENT"] = env
-        from app.core.database import seed_database
+    os.environ["ENVIRONMENT"] = env
+    from app.core.database import seed_database
 
-        anyio.run(seed_database)
-        click.echo("Data seed completed.")
-    except Exception as e:
-        click.echo(f"Data seed failed: {e}")
-        sys.exit(1)
+    anyio.run(seed_database)
+    click.echo("Data seed completed.")
 
 
 @db_group.command(name="upgrade")

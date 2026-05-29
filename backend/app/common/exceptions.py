@@ -5,7 +5,7 @@ from litestar.exceptions import ValidationException
 from sqlalchemy.exc import OperationalError, ProgrammingError
 
 from app.common.constant import RET, MySQLError, PostgreSQLError
-from app.common.response import ResponseSchema
+from app.common.response import ErrorResponse, ResponseSchema
 
 from app.config.setting import app_setting
 
@@ -76,7 +76,7 @@ def unified_exception_handler(request: Any, exc: Exception) -> Response:
 
     elif isinstance(exc, NotFoundError):
         status_code = RET.NOT_FOUND.code
-        detail = RET.NOT_FOUND.msg
+        detail = detail or RET.NOT_FOUND.msg
 
     elif isinstance(exc, DuplicateKeyError):
         status_code = RET.CONFLICT.code
@@ -87,13 +87,12 @@ def unified_exception_handler(request: Any, exc: Exception) -> Response:
         detail = extra_data
 
     # 4. 構建並回傳回應
-    content = ResponseSchema(
+    content = ErrorResponse(
         code=code,
         status_code=status_code,
         detail=detail,
         is_success=False,
-    ).model_dump()
-
+    )
     return Response(
         content=content,
         status_code=status_code,

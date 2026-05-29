@@ -19,7 +19,12 @@ from app.core.dependencies import (
     provide_pagination,
 )
 from app.common.response import COMMON_RESPONSES, ResponseSchema, SuccessResponse
-from app.modules.system.user.schema import UserCreate, UserRead,UserReadWithPosts, UserUpdate
+from app.modules.system.user.schema import (
+    UserCreate,
+    UserRead,
+    UserReadWithPosts,
+    UserUpdate,
+)
 from app.modules.system.user.service import UserService
 
 
@@ -47,7 +52,9 @@ class UserController(Controller):
         "/",
         responses={
             200: ResponseSpec(
-                data_container=ResponseSchema[service.OffsetPagination[UserReadWithPosts]],
+                data_container=ResponseSchema[
+                    service.OffsetPagination[UserReadWithPosts]
+                ],
                 description="用戶列表",
             ),
             **COMMON_RESPONSES,
@@ -60,7 +67,7 @@ class UserController(Controller):
             ),
             "filters_list": Provide(provide_filter_list),
         },
-        summary="用戶列表"
+        summary="用戶列表",
     )
     async def list_users(
         self,
@@ -68,8 +75,10 @@ class UserController(Controller):
         search_filter: Annotated[SearchFilter, Dependency(skip_validation=True)],
         pagination: Annotated[LimitOffset, Dependency(skip_validation=True)],
         order: Annotated[OrderBy, Dependency(skip_validation=True)],
-        filters_list: Annotated[list[ComparisonFilter], Dependency(skip_validation=True)],
-    ) -> ResponseSchema[service.OffsetPagination[UserReadWithPosts]]:
+        filters_list: Annotated[
+            list[ComparisonFilter], Dependency(skip_validation=True)
+        ],
+    ) -> SuccessResponse[service.OffsetPagination[UserReadWithPosts]]:
 
         data = await user_service.search_users(
             search_filter, pagination, order, filters_list
@@ -89,11 +98,11 @@ class UserController(Controller):
             ),
             **COMMON_RESPONSES,
         },
-        summary="獲取用戶信息"
+        summary="獲取用戶信息",
     )
     async def get_user(
         self, user_service: UserService, user_id: UUID
-    ) -> ResponseSchema[UserRead]:
+    ) -> SuccessResponse[UserRead]:
 
         result = await user_service.get(user_id)
 
@@ -105,7 +114,7 @@ class UserController(Controller):
     @post("/", responses={**COMMON_RESPONSES}, summary="創建用戶")
     async def create_user(
         self, user_service: UserService, data: UserCreate
-    ) -> ResponseSchema[UserRead]:
+    ) -> SuccessResponse[UserRead]:
         result = await user_service.create(data)
 
         return SuccessResponse(
@@ -116,7 +125,7 @@ class UserController(Controller):
     @patch("/{user_id:uuid}", responses={**COMMON_RESPONSES}, summary="更新用戶信息")
     async def update_user(
         self, user_service: UserService, data: UserUpdate, user_id: UUID
-    ) -> ResponseSchema[UserRead]:
+    ) -> SuccessResponse[UserRead]:
         result = await user_service.update(data, item_id=user_id)
         return SuccessResponse(
             data=user_service.to_schema(result, schema_type=UserRead),
@@ -133,11 +142,11 @@ class UserController(Controller):
             ),
         },
         status_code=200,
-        summary="刪除用戶"
+        summary="刪除用戶",
     )
     async def delete_user(
         self, user_service: UserService, user_id: UUID
-    ) -> ResponseSchema[UserRead]:
+    ) -> SuccessResponse[UserRead]:
         result = await user_service.delete(user_id)
         return SuccessResponse(
             data=user_service.to_schema(result, schema_type=UserRead),

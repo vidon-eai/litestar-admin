@@ -1,4 +1,3 @@
-
 from datetime import date
 from uuid import UUID
 from advanced_alchemy.base import UUIDv7AuditBase
@@ -8,22 +7,23 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 # class Base(UUIDv7AuditBase):
 #     __abstract__ = True
-    
+
+
 class User(UUIDv7AuditBase):
     __tablename__ = "users"
     username: Mapped[str] = mapped_column(
-        String(64), nullable=False, unique=True, comment="用戶名"
+        String(255), nullable=False, unique=True, comment="用戶名"
     )
     email: Mapped[str | None] = mapped_column(
-        String(64), nullable=True, unique=True, comment="電子郵箱"
+        String(255), nullable=True, unique=True, comment="電子郵箱"
     )
 
     description: Mapped[str | None] = mapped_column(
-        String(64), nullable=True, comment="描述"
+        String(255), nullable=True, comment="描述"
     )
 
     phone: Mapped[str | None] = mapped_column(
-        String(64), nullable=True, comment="電話號碼"
+        String(255), nullable=True, comment="電話號碼"
     )
 
     is_active: Mapped[bool] = mapped_column(
@@ -35,17 +35,21 @@ class User(UUIDv7AuditBase):
     )
 
     address: Mapped[str | None] = mapped_column(
-        String(64), nullable=True, comment="地址"
+        String(255), nullable=True, comment="地址"
+    )
+
+    ip_address: Mapped[str | None] = mapped_column(
+        String(255), nullable=True, comment="IP地址"
     )
 
     posts: Mapped[list["Post"]] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",
         lazy="selectin",
-        uselist=True
+        uselist=True,
     )
-    
-    
+
+
 class Post(UUIDv7AuditBase):
     __tablename__ = "posts"
 
@@ -59,9 +63,68 @@ class Post(UUIDv7AuditBase):
 
     is_publish: Mapped[bool] = mapped_column(Boolean, default=False, comment="是否發佈")
 
-
-    description: Mapped[str] = mapped_column(String(255), nullable=True, comment="帖子描述")
+    description: Mapped[str] = mapped_column(
+        String(255), nullable=True, comment="帖子描述"
+    )
 
     user: Mapped["User"] = relationship(
         back_populates="posts", lazy="joined", innerjoin=True, viewonly=True
+    )
+
+
+class Account(UUIDv7AuditBase):
+    __tablename__ = "accounts"
+
+    username: Mapped[str] = mapped_column(
+        String(255), nullable=False, unique=True, comment="帳號名稱"
+    )
+
+    email: Mapped[str | None] = mapped_column(
+        String(255), nullable=True, unique=True, comment="電子郵箱"
+    )
+
+    password: Mapped[str] = mapped_column(String(255), nullable=False, comment="密碼")
+
+    tenants: Mapped[list["AccountTenantAssociation"]] = relationship(
+        back_populates="account",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+        uselist=True,
+    )
+
+
+class Tenant(UUIDv7AuditBase):
+    __tablename__ = "tenants"
+
+    name: Mapped[str] = mapped_column(
+        String(255), nullable=False, unique=True, comment="租戶名稱"
+    )
+
+    accounts: Mapped[list["AccountTenantAssociation"]] = relationship(
+        back_populates="tenant",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+        uselist=True,
+    )
+
+
+class AccountTenantAssociation(UUIDv7AuditBase):
+    __tablename__ = "account_tenant_association"
+
+    account_id: Mapped[UUID] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), nullable=False, comment="帳號 ID"
+    )
+
+    tenant_id: Mapped[UUID] = mapped_column(
+        ForeignKey("tenants.id", ondelete="CASCADE"), nullable=False, comment="租戶 ID"
+    )
+
+    role: Mapped[str] = mapped_column(String(255), nullable=False, comment="角色")
+
+    account: Mapped["Account"] = relationship(
+        back_populates="tenants",
+    )
+
+    tenant: Mapped["Tenant"] = relationship(
+        back_populates="accounts",
     )

@@ -77,3 +77,16 @@ services:
       timeout: 3s
       retries: 30
       start_period: 20s
+
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_ui
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: litestaradmin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db_postgres

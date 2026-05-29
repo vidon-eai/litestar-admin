@@ -25,7 +25,8 @@ def register_routers(module_dir: str = "modules") -> list[type[Controller]]:
             rel_path = file.relative_to(Path.cwd())
             path_parts = rel_path.parts
             module_path = f"{'.'.join(path_parts[:-1])}.controller"
-           
+            print("===>", module_path)
+
             try:
                 module = importlib.import_module(module_path)
                 for attr_name in dir(module):
