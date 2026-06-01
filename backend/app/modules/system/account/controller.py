@@ -1,15 +1,11 @@
-from email.policy import HTTP
 from typing import Annotated, Generic, TypeVar
 from uuid import UUID
-from advanced_alchemy.exceptions import NotFoundError
 from advanced_alchemy.extensions.litestar import providers
 from advanced_alchemy.filters import LimitOffset
 from advanced_alchemy.service import OffsetPagination
-from litestar import Controller, MediaType, Response, get
+from litestar import Controller, get
 from litestar.di import Provide
-from litestar.openapi import ResponseSpec
 from litestar.params import Dependency
-from litestar.status_codes import HTTP_200_OK
 from pydantic import BaseModel
 from app.core.dependencies import (
     provide_pagination,
@@ -17,13 +13,9 @@ from app.core.dependencies import (
 from app.common.response import (
     COMMON_RESPONSES,
     ApiResponse,
-    PaginationResponse,
-    ResponseSchema,
-    SuccessResponse,
 )
 from app.modules.system.account.service import AccountService
-from app.modules.system.account.schema import AccountDTO, AccountRead
-from app.db.models.models import Account
+from app.core.base_schema import AccountDetail, AccountRead
 
 
 T = TypeVar("T")
@@ -57,23 +49,22 @@ class AccountController(Controller):
         dependencies={
             "pagination": Provide(provide_pagination),
         },
-        dto=AccountDTO,
     )
     async def list_accounts(
         self,
         account_service: AccountService,
         pagination: Annotated[LimitOffset, Dependency(skip_validation=True)],
-    ) -> PaginationResponse[Account]:
+    ) -> ApiResponse[OffsetPagination[AccountDetail]]:
 
         filters = [pagination]
 
         results, total_count = await account_service.list_and_count(*filters)
 
-        return PaginationResponse(
-            data=list(results),
-            total=total_count,
-            limit=pagination.limit,
-            offset=pagination.offset,
+        return ApiResponse(
+            data=account_service.to_schema(
+                results, total=total_count, filters=filters, schema_type=AccountDetail
+            ),
+            detail="賬戶列表獲取成功",
         )
 
     @get(
@@ -82,16 +73,15 @@ class AccountController(Controller):
         responses={
             **COMMON_RESPONSES,
         },
-        dto=AccountDTO,
     )
     async def get_account(
         self,
         account_service: AccountService,
         account_id: UUID,
-    ) -> ApiResponse[Account]:
+    ) -> ApiResponse[AccountDetail]:
         result = await account_service.get(account_id)
 
         return ApiResponse(
-            data=result,
+            data=account_service.to_schema(result, schema_type=AccountDetail),
             detail="賬戶詳情獲取成功",
         )

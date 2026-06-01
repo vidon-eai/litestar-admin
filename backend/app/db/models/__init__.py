@@ -1,3 +1,3 @@
-from app.db.models.models import User, Post
+from app.db.models.models import Account, AccountTenantAssociation, Tenant
 
-__all__ = ("User", "Post")
+__all__ = ("Account", "AccountTenantAssociation", "Tenant")

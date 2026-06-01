@@ -17,7 +17,6 @@ import msgspec
 from pydantic import BaseModel, Field
 
 from app.common.constant import RET
-from app.db.models.models import Account
 
 T = TypeVar("T")
 
