@@ -1,6 +1,25 @@
 from datetime import datetime
+from typing import Annotated, Any
 from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
+import msgspec
+
+
+class BaseStruct(msgspec.Struct):
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            f: getattr(self, f)
+            for f in self.__struct_fields__
+            if getattr(self, f, None) != msgspec.UNSET
+        }
+
+
+class CamelizedBaseStruct(BaseStruct, rename="camel"):
+    """Camelized Base Struct"""
+
+    id: Annotated[UUID | None, msgspec.Meta(description="Primary Key")]
+    created_at: Annotated[datetime, msgspec.Meta(description="Create record datetime")]
+    updated_at: Annotated[datetime, msgspec.Meta(description="Update record datetime")]
 
 
 class BaseSchema(BaseModel):
@@ -11,39 +30,36 @@ class BaseSchema(BaseModel):
     updated_at: datetime = Field(..., description="Update record datetime")
 
 
-class TenantRead(BaseSchema):
-    name: str = Field(..., description="租戶名稱")
+class TenantRead(CamelizedBaseStruct):
+    name: str
 
 
-class TenantCreate(BaseModel):
-    name: str = Field(..., description="租戶名稱")
+class TenantCreate(BaseSchema):
+    name: str
 
 
-class AccountRead(BaseSchema):
-
-    username: str = Field(..., description="用戶名")
-    email: str | None = Field(default=None, description="電郵")
-
-
-class TenantRole(BaseModel):
-    account_id: UUID = Field(..., description="帳號ID")
-    tenant_id: UUID = Field(..., description="租戶ID")
-    role: str = Field(..., description="在租戶中的角色")
+class AccountRead(CamelizedBaseStruct):
+    username: str
+    email: str | None
 
 
-class TenantWithAccounts(BaseSchema, TenantRole):
-    account: AccountRead = Field(..., description="帳號")
+class TenantRole(CamelizedBaseStruct):
+    account_id: UUID
+    tenant_id: UUID
+    role: str
 
 
-class AccountWithTenantRole(BaseSchema, TenantRole):
-    tenant: TenantRead = Field(..., description="租戶")
+class TenantWithAccounts(TenantRole):
+    account: AccountRead
+
+
+class AccountWithTenantRole(TenantRole):
+    tenant: TenantRead
 
 
 class AccountDetail(AccountRead):
-    tenants: list[AccountWithTenantRole] = Field(
-        default_factory=list, description="租戶列表"
-    )
+    tenants: list[AccountWithTenantRole] = []
 
 
 class TenantDetail(TenantRead):
-    accounts: list[TenantWithAccounts] = Field(default_factory=list, description="帳號")
+    accounts: list[TenantWithAccounts] = []

@@ -1,6 +1,6 @@
 from uuid import UUID
 from advanced_alchemy.base import UUIDv7AuditBase
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
@@ -28,8 +28,9 @@ class Account(UUIDv7AuditBase):
 class Tenant(UUIDv7AuditBase):
     __tablename__ = "tenants"
 
-    name: Mapped[str] = mapped_column(
-        String(255), nullable=False, unique=True, comment="租戶名稱"
+    name: Mapped[str] = mapped_column(String(255), nullable=False, comment="租戶名稱")
+    description: Mapped[str | None] = mapped_column(
+        String(255), nullable=True, comment="租戶描述", default=None
     )
 
     accounts: Mapped[list["AccountTenantAssociation"]] = relationship(
@@ -42,6 +43,14 @@ class Tenant(UUIDv7AuditBase):
 
 class AccountTenantAssociation(UUIDv7AuditBase):
     __tablename__ = "account_tenant_association"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "account_id",
+            "tenant_id",
+            name="uq_account_tenant_association_account_tenant",
+        ),
+    )
 
     account_id: Mapped[UUID] = mapped_column(
         ForeignKey("accounts.id", ondelete="CASCADE"), nullable=False, comment="帳號 ID"

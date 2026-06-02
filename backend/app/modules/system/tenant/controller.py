@@ -8,7 +8,7 @@ from advanced_alchemy.service import OffsetPagination
 from litestar import Controller, delete, get, patch, post
 from litestar.di import Provide
 from litestar.params import Dependency
-from litestar.status_codes import HTTP_200_OK, HTTP_202_ACCEPTED, HTTP_204_NO_CONTENT
+from litestar.status_codes import HTTP_200_OK
 from app.core.dependencies import (
     provide_pagination,
 )
@@ -17,7 +17,7 @@ from app.common.response import (
     ApiResponse,
 )
 from app.modules.system.tenant.service import TenantService
-from app.core.base_schema import TenantDetail, TenantCreate, TenantRead
+from app.modules.system.tenant.schema import TenantRead, TenantCreate, TenantUpdate
 
 
 class TenantController(Controller):
@@ -44,7 +44,7 @@ class TenantController(Controller):
         self,
         tenant_service: TenantService,
         pagination: Annotated[LimitOffset, Dependency(skip_validation=True)],
-    ) -> ApiResponse[OffsetPagination[TenantDetail]]:
+    ) -> ApiResponse[OffsetPagination[TenantRead]]:
 
         filters = [pagination]
 
@@ -55,9 +55,21 @@ class TenantController(Controller):
                 results,
                 total=total_count,
                 filters=filters,
-                schema_type=TenantDetail,
+                schema_type=TenantRead,
             ),
             detail="租戶列表獲取成功",
+        )
+
+    @get("/{tenant_id:uuid}")
+    async def get_tenant(
+        self,
+        tenant_service: TenantService,
+        tenant_id: UUID,
+    ) -> ApiResponse[TenantRead]:
+        result = await tenant_service.get(tenant_id)
+        return ApiResponse(
+            data=tenant_service.to_schema(result, schema_type=TenantRead),
+            detail="租戶獲取成功",
         )
 
     @post(
@@ -71,11 +83,11 @@ class TenantController(Controller):
         self,
         tenant_service: TenantService,
         data: TenantCreate,
-    ) -> ApiResponse[TenantDetail]:
+    ) -> ApiResponse[TenantRead]:
         result = await tenant_service.create(data)
 
         return ApiResponse(
-            data=tenant_service.to_schema(result, schema_type=TenantDetail),
+            data=tenant_service.to_schema(result, schema_type=TenantRead),
             detail="租戶創建成功",
         )
 
@@ -84,7 +96,7 @@ class TenantController(Controller):
         self,
         tenant_service: TenantService,
         tenant_id: UUID,
-        data: TenantCreate,
+        data: TenantUpdate,
     ) -> ApiResponse[TenantRead]:
         result = await tenant_service.update(data, item_id=tenant_id)
         return ApiResponse(
