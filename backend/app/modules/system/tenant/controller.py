@@ -2,6 +2,7 @@ from email.policy import HTTP
 from turtle import pos
 from typing import Annotated, Generic, TypeVar
 from uuid import UUID
+from advanced_alchemy.exceptions import NotFoundError
 from advanced_alchemy.extensions.litestar import providers
 from advanced_alchemy.filters import LimitOffset
 from advanced_alchemy.service import OffsetPagination
@@ -60,13 +61,23 @@ class TenantController(Controller):
             detail="租戶列表獲取成功",
         )
 
-    @get("/{tenant_id:uuid}")
+    @get(
+        "/{tenant_id:uuid}",
+        responses={
+            **COMMON_RESPONSES,
+        },
+        summary="獲取租戶",
+    )
     async def get_tenant(
         self,
         tenant_service: TenantService,
         tenant_id: UUID,
     ) -> ApiResponse[TenantRead]:
-        result = await tenant_service.get(tenant_id)
+        try:
+            result = await tenant_service.get(tenant_id)
+        except Exception:
+            raise NotFoundError("租戶不存在")
+
         return ApiResponse(
             data=tenant_service.to_schema(result, schema_type=TenantRead),
             detail="租戶獲取成功",
@@ -91,7 +102,13 @@ class TenantController(Controller):
             detail="租戶創建成功",
         )
 
-    @patch("/{tenant_id:uuid}")
+    @patch(
+        "/{tenant_id:uuid}",
+        responses={
+            **COMMON_RESPONSES,
+        },
+        summary="更新租戶",
+    )
     async def update_tenant(
         self,
         tenant_service: TenantService,
@@ -104,7 +121,14 @@ class TenantController(Controller):
             detail="租戶更新成功",
         )
 
-    @delete("/{tenant_id:uuid}", status_code=HTTP_200_OK)
+    @delete(
+        "/{tenant_id:uuid}",
+        responses={
+            **COMMON_RESPONSES,
+        },
+        status_code=HTTP_200_OK,
+        summary="刪除租戶",
+    )
     async def delete_tenant(
         self,
         tenant_service: TenantService,

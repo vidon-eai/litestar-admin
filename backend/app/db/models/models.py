@@ -15,8 +15,16 @@ class Account(UUIDv7AuditBase):
         String(255), nullable=True, unique=True, comment="電子郵箱"
     )
 
-    password: Mapped[str] = mapped_column(String(255), nullable=False, comment="密碼")
+    hashed_password: Mapped[str | None] = mapped_column(
+        String(length=255),
+        nullable=True,
+        default=None,
+        deferred=True,
+        deferred_group="security_sensitive",
+        comment="加密密碼",
+    )
 
+    """ 關聯數據 """
     tenants: Mapped[list["AccountTenantAssociation"]] = relationship(
         back_populates="account",
         cascade="all, delete-orphan",
@@ -64,7 +72,9 @@ class AccountTenantAssociation(UUIDv7AuditBase):
 
     account: Mapped["Account"] = relationship(
         back_populates="tenants",
-        lazy="selectin",
+        lazy="joined",
+        innerjoin=True,
+        uselist=False,
     )
 
     tenant: Mapped["Tenant"] = relationship(

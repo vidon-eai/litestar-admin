@@ -1,49 +1,21 @@
-from datetime import datetime
-from typing import Annotated
 from uuid import UUID
-import msgspec
-from pydantic import BaseModel
-from app.core.base_schema import BaseSchema, BaseStruct, CamelizedBaseStruct
+from pydantic import BaseModel, Field
+from app.core.base_schema import BaseSchema
 
 
 class TenantBase(BaseSchema):
-    name: str
-    description: str | None = None
-
-
-class AccountTenantAssociationCreate(BaseModel):
-    account_id: UUID
-    role: str
-
-
-class AccountTenantAssociationUpdate(BaseModel):
-    account_id: UUID | None = None
-    role: str | None = None
+    name: str = Field(..., description="租戶名稱")
+    description: str | None = Field(None, description="租戶描述")
 
 
 class TenantCreate(BaseModel):
-    name: str
-    description: str | None = None
-
-    accounts: list[AccountTenantAssociationCreate]
+    name: str = Field(..., description="租戶名稱")
+    description: str | None = Field(None, description="租戶描述")
 
 
 class TenantUpdate(TenantCreate):
-    name: str | None = None
-    description: str | None = None
-    accounts: list[AccountTenantAssociationCreate] | None = None
-
-
-class AccountRead(BaseSchema):
-    username: str
-    email: str
-
-
-class AccountList(BaseModel):
-    role: str
-    account: AccountRead
+    name: str | None = Field(None, description="租戶名稱")
 
 
 class TenantRead(TenantBase):
-
-    accounts: list[AccountList] = []
+    pass

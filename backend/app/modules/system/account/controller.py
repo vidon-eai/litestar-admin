@@ -1,12 +1,11 @@
-from typing import Annotated, Generic, TypeVar
+from typing import Annotated
 from uuid import UUID
 from advanced_alchemy.extensions.litestar import providers
 from advanced_alchemy.filters import LimitOffset
 from advanced_alchemy.service import OffsetPagination
-from litestar import Controller, get
+from litestar import Controller, get, post
 from litestar.di import Provide
 from litestar.params import Dependency
-from pydantic import BaseModel
 from app.core.dependencies import (
     provide_pagination,
 )
@@ -15,19 +14,7 @@ from app.common.response import (
     ApiResponse,
 )
 from app.modules.system.account.service import AccountService
-from app.core.base_schema import AccountDetail, AccountRead
-
-
-T = TypeVar("T")
-
-
-class StandardResponse(BaseModel, Generic[T]):
-    status: str = "success"
-    code: int = 200
-    message: str = "Operation successful"
-    data: T  # 這裡會動態填入 DTO 轉換後的資料
-
-    model_config = {"arbitrary_types_allowed": True}
+from app.modules.system.account.schema import AccountCreate, AccountRead
 
 
 class AccountController(Controller):
@@ -54,7 +41,7 @@ class AccountController(Controller):
         self,
         account_service: AccountService,
         pagination: Annotated[LimitOffset, Dependency(skip_validation=True)],
-    ) -> ApiResponse[OffsetPagination[AccountDetail]]:
+    ) -> ApiResponse[OffsetPagination[AccountRead]]:
 
         filters = [pagination]
 
@@ -62,7 +49,7 @@ class AccountController(Controller):
 
         return ApiResponse(
             data=account_service.to_schema(
-                results, total=total_count, filters=filters, schema_type=AccountDetail
+                results, total=total_count, filters=filters, schema_type=AccountRead
             ),
             detail="賬戶列表獲取成功",
         )
@@ -78,10 +65,26 @@ class AccountController(Controller):
         self,
         account_service: AccountService,
         account_id: UUID,
-    ) -> ApiResponse[AccountDetail]:
+    ) -> ApiResponse[AccountRead]:
         result = await account_service.get(account_id)
 
         return ApiResponse(
-            data=account_service.to_schema(result, schema_type=AccountDetail),
+            data=account_service.to_schema(result, schema_type=AccountRead),
             detail="賬戶詳情獲取成功",
+        )
+
+    @post(
+        summary="創建賬戶",
+        responses={
+            **COMMON_RESPONSES,
+        },
+    )
+    async def create_account(
+        self, account_service: AccountService, data: AccountCreate
+    ) -> ApiResponse[AccountRead]:
+        result = await account_service.create(data)
+
+        return ApiResponse(
+            data=account_service.to_schema(result, schema_type=AccountRead),
+            detail="賬戶創建成功",
         )
