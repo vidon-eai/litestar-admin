@@ -1,3 +1,4 @@
+import binascii
 from functools import lru_cache
 import os
 from typing import Literal
@@ -137,6 +138,12 @@ class AppSetting(DatabaseSetting, APIDocSetting, LoggingSetting):
 
     # Debug Configuration
     DEBUG: bool = Field(default=True)
+
+    SECRET_KEY: str = Field(
+        default_factory=lambda: binascii.hexlify(os.urandom(32)).decode(
+            encoding="utf-8"
+        ),
+    )
 
     ROOT_PATH: str = Field(default="/api/v1")
 

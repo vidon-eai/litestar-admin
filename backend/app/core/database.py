@@ -23,26 +23,27 @@ async def create_tables() -> None:
 
 
 async def seed_database() -> None:
-    fixtures_path = Path("app/db/fixtures")
-    from app.core.logger import log
-    from app.modules.system.user.service import UserService
+    pass
+    # fixtures_path = Path("app/db/fixtures")
+    # from app.core.logger import log
+    # from app.modules.system.user.service import UserService
 
-    try:
-        async with app_setting.DB_CONFIG.get_session() as db_session:
-            user_service = UserService(session=db_session)
+    # try:
+    #     async with app_setting.DB_CONFIG.get_session() as db_session:
+    #         user_service = UserService(session=db_session)
 
-            user_data = await open_fixture_async(fixtures_path, "user")
-            for user in user_data:
-                if "dob" in user and isinstance(user["dob"], str):
-                    # 將 "YYYY-MM-DD" 字串轉為 python 的 date 物件
-                    user["dob"] = datetime.strptime(user["dob"], "%Y-%m-%d").date()
-            await user_service.upsert_many(
-                match_fields=["username"], data=user_data, auto_commit=True
-            )
+    #         user_data = await open_fixture_async(fixtures_path, "user")
+    #         for user in user_data:
+    #             if "dob" in user and isinstance(user["dob"], str):
+    #                 # 將 "YYYY-MM-DD" 字串轉為 python 的 date 物件
+    #                 user["dob"] = datetime.strptime(user["dob"], "%Y-%m-%d").date()
+    #         await user_service.upsert_many(
+    #             match_fields=["username"], data=user_data, auto_commit=True
+    #         )
 
-            log.info("✅ Seed data loaded successfully.")
-    except DBAPIError as e:
-        log.error(f"Data seed failed: {e}")
+    #         log.info("✅ Seed data loaded successfully.")
+    # except DBAPIError as e:
+    #     log.error(f"Data seed failed: {e}")
 
 
 def upgrade_database(revision: str) -> None:

@@ -2,18 +2,20 @@ import sys
 from advanced_alchemy.exceptions import IntegrityError, RepositoryError
 from litestar import Litestar, Router
 from litestar.config.app import AppConfig
+from litestar.di import Provide
 from litestar.openapi.config import OpenAPIConfig
 from litestar.plugins import InitPluginProtocol
-from litestar.routes import ASGIRoute, HTTPRoute, WebSocketRoute
 from litestar.status_codes import (
     HTTP_400_BAD_REQUEST,
+    HTTP_401_UNAUTHORIZED,
     HTTP_404_NOT_FOUND,
     HTTP_500_INTERNAL_SERVER_ERROR,
 )
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import text
-
 from app.common.exceptions import unified_exception_handler
+from app.core.guards import auth
+from app.core.dependencies import provide_user
 
 
 async def find_routers(app: Litestar) -> None:
@@ -88,17 +90,26 @@ class ApplicationCore(InitPluginProtocol):
             version=app_setting.VERSION,
             description=app_setting.DESCRIPTION,
             summary=app_setting.SUMMARY,
+            components=[auth.openapi_components],
+            security=[auth.security_requirement],
         )
-
+        app_config = auth.on_app_init(app_config)
         app_config.plugins.extend([sqlalchemy_plugin])
 
         app_config.exception_handlers = {
             HTTP_404_NOT_FOUND: unified_exception_handler,
             HTTP_500_INTERNAL_SERVER_ERROR: unified_exception_handler,
             HTTP_400_BAD_REQUEST: unified_exception_handler,
+            HTTP_401_UNAUTHORIZED: unified_exception_handler,
             IntegrityError: unified_exception_handler,
             RepositoryError: unified_exception_handler,
             OperationalError: unified_exception_handler,
         }
+
+        app_config.dependencies.update(
+            {
+                "current_user": Provide(provide_user, sync_to_thread=False),
+            }
+        )
 
         return super().on_app_init(app_config)

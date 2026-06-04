@@ -1,12 +1,15 @@
+from enum import Enum
 from typing import Annotated
 from uuid import UUID
 from advanced_alchemy.extensions.litestar import providers
-from advanced_alchemy.filters import LimitOffset
+from advanced_alchemy.filters import LimitOffset, OrderBy, SearchFilter
 from advanced_alchemy.service import OffsetPagination
 from litestar import Controller, get, post
 from litestar.di import Provide
 from litestar.params import Dependency
 from app.core.dependencies import (
+    create_order_provider,
+    create_search_provider,
     provide_pagination,
 )
 from app.common.response import (
@@ -15,6 +18,12 @@ from app.common.response import (
 )
 from app.modules.system.account.service import AccountService
 from app.modules.system.account.schema import AccountCreate, AccountRead
+
+
+class OrderFields(str, Enum):
+    USERNAME = "username"
+    EMAIL = "email"
+    CREATED_AT = "created_at"
 
 
 class AccountController(Controller):
@@ -35,15 +44,32 @@ class AccountController(Controller):
         },
         dependencies={
             "pagination": Provide(provide_pagination),
+            "search_filter": Provide(create_search_provider({"username", "email"})),
+            "order_filter": Provide(
+                create_order_provider(
+                    order_enum=OrderFields, default_field="created_at"
+                )
+            ),
         },
     )
     async def list_accounts(
         self,
         account_service: AccountService,
         pagination: Annotated[LimitOffset, Dependency(skip_validation=True)],
+        search_filter: Annotated[
+            SearchFilter | None, Dependency(skip_validation=True)
+        ] = None,
+        order_filter: Annotated[
+            OrderBy | None, Dependency(skip_validation=True)
+        ] = None,
     ) -> ApiResponse[OffsetPagination[AccountRead]]:
 
         filters = [pagination]
+        if search_filter:
+            filters.append(search_filter)
+
+        if order_filter:
+            filters.append(order_filter)
 
         results, total_count = await account_service.list_and_count(*filters)
 

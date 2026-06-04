@@ -1,7 +1,7 @@
 from typing import Any
 from advanced_alchemy.exceptions import DuplicateKeyError, IntegrityError, NotFoundError
 from litestar import Response
-from litestar.exceptions import ValidationException
+from litestar.exceptions import NotAuthorizedException, ValidationException
 from sqlalchemy.exc import OperationalError, ProgrammingError
 
 from app.common.constant import RET, MySQLError, PostgreSQLError
@@ -80,11 +80,14 @@ def unified_exception_handler(request: Any, exc: Exception) -> Response:
 
     elif isinstance(exc, DuplicateKeyError):
         status_code = RET.CONFLICT.code
-        detail = RET.CONFLICT.msg
+        detail = detail or RET.CONFLICT.msg
+    elif isinstance(exc, NotAuthorizedException):
+        status_code = RET.UNAUTHORIZED.code
+        detail = detail or RET.UNAUTHORIZED.msg
 
     elif isinstance(exc, ValidationException):
         status_code = RET.BAD_REQUEST.code
-        detail = extra_data
+        detail = detail or extra_data
 
     # 4. 構建並回傳回應
     content = ErrorResponse(

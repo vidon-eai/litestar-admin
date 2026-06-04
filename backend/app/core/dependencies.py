@@ -7,8 +7,12 @@ from advanced_alchemy.filters import (
     OrderBy,
     SearchFilter,
 )
+from litestar import Request
 from litestar.params import Parameter
 from app.common.enums import SortBy
+from app.db.models.models import Account
+from litestar.security.jwt import Token
+
 
 async def provide_pagination(
     page: Annotated[int, Parameter(ge=1, default=1, description="頁碼")],
@@ -18,6 +22,7 @@ async def provide_pagination(
     ],
 ) -> LimitOffset:
     return LimitOffset(limit=page_size, offset=(page - 1) * page_size)
+
 
 def create_search_provider(field_names: Sequence[str]):
     """
@@ -42,6 +47,8 @@ def create_search_provider(field_names: Sequence[str]):
 
 
 T = TypeVar("T", bound=Enum)
+
+
 def create_order_provider(order_enum: Type[T], default_field: str | None = None):
     """
     排序工廠：支持動態傳入 Enum 並處理默認排序
@@ -62,20 +69,40 @@ def create_order_provider(order_enum: Type[T], default_field: str | None = None)
 
     return provide_order
 
-    
+
 async def provide_filter_list(
-    is_active: bool | None = Parameter(query="isActive", default=None, description="激活狀態"),
-    description: str | None = Parameter(query="description", default=None, description="用戶描述"),
+    is_active: bool | None = Parameter(
+        query="isActive", default=None, description="激活狀態"
+    ),
+    description: str | None = Parameter(
+        query="description", default=None, description="用戶描述"
+    ),
 ) -> list[ComparisonFilter]:
     """
     根據傳入的查詢參數，動態構建 ComparisonFilter 列表
     """
     filters: list[ComparisonFilter] = []
-    
+
     if is_active is not None:
-        filters.append(ComparisonFilter(field_name="is_active", operator="eq", value=is_active))
-        
+        filters.append(
+            ComparisonFilter(field_name="is_active", operator="eq", value=is_active)
+        )
+
     if description is not None:
-        filters.append(ComparisonFilter(field_name="description", operator="eq", value=description))
-        
+        filters.append(
+            ComparisonFilter(field_name="description", operator="eq", value=description)
+        )
+
     return filters
+
+
+def provide_user(request: Request[Account, Token, Any]) -> Any:
+    """Get the user from the connection.
+
+    Args:
+        request: current connection.
+
+    Returns:
+        User
+    """
+    return request.user
