@@ -20,7 +20,7 @@ from app.modules.system.account.service import AccountService
 from app.modules.system.account.schema import AccountCreate, AccountRead
 
 
-class OrderFields(str, Enum):
+class AccountOrderFields(str, Enum):
     USERNAME = "username"
     EMAIL = "email"
     CREATED_AT = "created_at"
@@ -47,7 +47,7 @@ class AccountController(Controller):
             "search_filter": Provide(create_search_provider({"username", "email"})),
             "order_filter": Provide(
                 create_order_provider(
-                    order_enum=OrderFields, default_field="created_at"
+                    order_enum=AccountOrderFields, default_field="created_at"
                 )
             ),
         },

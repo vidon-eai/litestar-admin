@@ -8,6 +8,7 @@ from litestar.plugins import InitPluginProtocol
 from litestar.status_codes import (
     HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
+    HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     HTTP_500_INTERNAL_SERVER_ERROR,
 )
@@ -101,6 +102,7 @@ class ApplicationCore(InitPluginProtocol):
             HTTP_500_INTERNAL_SERVER_ERROR: unified_exception_handler,
             HTTP_400_BAD_REQUEST: unified_exception_handler,
             HTTP_401_UNAUTHORIZED: unified_exception_handler,
+            HTTP_403_FORBIDDEN: unified_exception_handler,
             IntegrityError: unified_exception_handler,
             RepositoryError: unified_exception_handler,
             OperationalError: unified_exception_handler,

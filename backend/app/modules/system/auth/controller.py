@@ -1,16 +1,15 @@
-from typing import Annotated, Any, Dict
+from typing import Annotated, Any
 from advanced_alchemy.extensions.litestar import providers
 from litestar import Controller, Request, Response, get, post
 from litestar.enums import RequestEncodingType
-from litestar.exceptions import NotAuthorizedException
 from litestar.params import Body
 from pydantic import BaseModel
 
 from app.common.response import ApiResponse
 from app.core.guards import auth
 from app.db.models.models import Account
-from app.modules.system.account.service import AccountService
 from app.modules.system.account.schema import AccountRead
+from app.modules.system.auth.service import AuthService
 
 
 class AccountLogin(BaseModel):
@@ -24,8 +23,8 @@ class AuthController(Controller):
 
     dependencies = {
         **providers.create_service_dependencies(
-            AccountService,
-            "account_service",
+            AuthService,
+            "auth_service",
         )
     }
 
@@ -36,10 +35,10 @@ class AuthController(Controller):
             AccountLogin,
             Body(title="OAuth2 Login", media_type=RequestEncodingType.URL_ENCODED),
         ],
-        account_service: AccountService,
+        auth_service: AuthService,
     ) -> Response[Any]:
 
-        account = await account_service.authenticate(data.username, data.password)
+        account = await auth_service.authenticate(data.username, data.password)
 
         return auth.login(
             identifier=account.username,
@@ -47,11 +46,11 @@ class AuthController(Controller):
 
     @get("/me")
     async def get_me(
-        self, account_service: AccountService, current_user: Account
+        self, auth_service: AuthService, current_user: Account
     ) -> ApiResponse[AccountRead]:
 
         return ApiResponse(
-            data=account_service.to_schema(current_user, schema_type=AccountRead),
+            data=auth_service.to_schema(current_user, schema_type=AccountRead),
             detail="取得當前用戶成功",
         )
 

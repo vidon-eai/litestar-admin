@@ -1,10 +1,8 @@
 import os
 import sys
-from advanced_alchemy.alembic.commands import AlembicCommands
 import anyio
 import click
 
-from app.config.setting import app_setting
 from app.core.database import make_migrations, upgrade_database
 
 
