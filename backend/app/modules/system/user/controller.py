@@ -150,3 +150,24 @@ class UserController(Controller):
             data=None,
             detail="用戶刪除成功",
         )
+
+
+    @post(
+        '/{user_id:uuid}/roles',
+        summary="分配用戶角色",
+        responses={
+            **COMMON_RESPONSES,
+        },
+    )
+    async def assign_roles_to_user(
+        self, user_service: UserService, user_id: UUID, role_ids: list[UUID] | None = None
+    ) -> ApiResponse[UserRead]:
+        user = await user_service.get(user_id)
+        user.role_ids = role_ids or []
+
+        await user_service.update(user)
+
+        return ApiResponse(
+            data=user_service.to_schema(user, schema_type=UserRead),
+            detail="用戶角色分配成功",
+        )

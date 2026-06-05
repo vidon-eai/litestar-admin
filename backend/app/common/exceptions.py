@@ -5,7 +5,7 @@ from litestar.exceptions import NotAuthorizedException, ValidationException
 from sqlalchemy.exc import OperationalError, ProgrammingError
 
 from app.common.constant import RET, MySQLError, PostgreSQLError
-from app.common.response import ErrorResponse, ResponseSchema
+from app.common.response import ErrorResponse
 
 from app.config.setting import app_setting
 
@@ -80,14 +80,14 @@ def unified_exception_handler(request: Any, exc: Exception) -> Response:
 
     elif isinstance(exc, DuplicateKeyError):
         status_code = RET.CONFLICT.code
-        detail = detail or RET.CONFLICT.msg
+        detail = RET.CONFLICT.msg
     elif isinstance(exc, NotAuthorizedException):
         status_code = RET.UNAUTHORIZED.code
-        detail = detail or RET.UNAUTHORIZED.msg
+        detail = RET.UNAUTHORIZED.msg
 
     elif isinstance(exc, ValidationException):
         status_code = RET.BAD_REQUEST.code
-        detail = detail or extra_data
+        detail = extra_data or RET.BAD_REQUEST.msg
 
     # 4. 構建並回傳回應
     content = ErrorResponse(

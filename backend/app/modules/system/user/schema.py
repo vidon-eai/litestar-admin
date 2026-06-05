@@ -19,5 +19,11 @@ class UserUpdate(BaseModel):
     password: str | None = Field(None, description="密碼")
 
 
+class Role(BaseSchema):
+    name: str = Field(..., description="角色名稱")
+    code: str = Field(..., description="角色代碼")
+    description: str | None = Field(None, description="角色描述")
+
+
 class UserRead(UserBase):
-    pass
+    role_list: list[Role]

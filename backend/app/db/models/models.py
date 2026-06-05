@@ -4,6 +4,7 @@ from sqlalchemy import ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from advanced_alchemy.types import PasswordHash
 from advanced_alchemy.types.password_hash.argon2 import Argon2Hasher
+from sqlalchemy.ext.associationproxy import association_proxy, AssociationProxy
 
 
 class UserRole(UUIDv7AuditBase):
@@ -55,13 +56,19 @@ class User(UUIDv7AuditBase):
         back_populates="user",
         lazy="selectin",
         uselist=True,
-        cascade="all, delete",
+        cascade="all, delete-orphan",
     )
     creator: Mapped["User | None"] = relationship(
         "User", remote_side="User.id", foreign_keys=[created_by], lazy="noload"
     )
     updater: Mapped["User | None"] = relationship(
         "User", remote_side="User.id", foreign_keys=[updated_by], lazy="noload"
+    )
+    role_list: AssociationProxy[list["Role"]] = association_proxy("roles", "role", creator=lambda role: UserRole(role=role))
+    role_ids: AssociationProxy[list[UUID]] = association_proxy(
+        "roles", 
+        "role_id", 
+        creator=lambda rid: UserRole(role_id=rid)
     )
 
 class Role(UUIDv7AuditBase):
