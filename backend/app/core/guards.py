@@ -2,9 +2,9 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import TYPE_CHECKING
 from litestar.security.jwt import OAuth2PasswordBearerAuth, Token
-from app.db.models.models import Account
+from app.db.models.models import User
 
-from app.modules.system.account.service import AccountService
+from app.modules.system.user.service import UserService
 from app.config.setting import app_setting
 
 if TYPE_CHECKING:
@@ -14,24 +14,24 @@ if TYPE_CHECKING:
 
 async def retrieve_user_handler(
     token: Token, connection: ASGIConnection[Any, Any, Any, Any]
-) -> Account | None:
+) -> User | None:
 
     async with app_setting.DB_CONFIG.get_session() as db_session:
 
-        account_service = AccountService(session=db_session)
+        user_service = UserService(session=db_session)
 
-        account = await account_service.get_one_or_none(username=token.sub)
+        user = await user_service.get_one_or_none(username=token.sub)
 
-        if not account:
+        if not user:
             return None
 
-        return account
+        return user
 
 
 ACCESS_TOKEN_EXPIRATION = timedelta(minutes=15)
 
 
-auth = OAuth2PasswordBearerAuth[Account](
+auth = OAuth2PasswordBearerAuth[User](
     retrieve_user_handler=retrieve_user_handler,
     token_secret=app_setting.SECRET_KEY,
     default_token_expiration=ACCESS_TOKEN_EXPIRATION,

@@ -7,12 +7,12 @@ from pydantic import BaseModel
 
 from app.common.response import ApiResponse
 from app.core.guards import auth
-from app.db.models.models import Account
-from app.modules.system.account.schema import AccountRead
+from app.db.models.models import User
+from app.modules.system.user.schema import UserRead
 from app.modules.system.auth.service import AuthService
 
 
-class AccountLogin(BaseModel):
+class UserLogin(BaseModel):
     username: str
     password: str
 
@@ -32,25 +32,25 @@ class AuthController(Controller):
     async def login(
         self,
         data: Annotated[
-            AccountLogin,
+            UserLogin,
             Body(title="OAuth2 Login", media_type=RequestEncodingType.URL_ENCODED),
         ],
         auth_service: AuthService,
     ) -> Response[Any]:
 
-        account = await auth_service.authenticate(data.username, data.password)
+        user = await auth_service.authenticate(data.username, data.password)
 
         return auth.login(
-            identifier=account.username,
+            identifier=user.username,
         )
 
     @get("/me")
     async def get_me(
-        self, auth_service: AuthService, current_user: Account
-    ) -> ApiResponse[AccountRead]:
+        self, auth_service: AuthService, current_user: User
+    ) -> ApiResponse[UserRead]:
 
         return ApiResponse(
-            data=auth_service.to_schema(current_user, schema_type=AccountRead),
+            data=auth_service.to_schema(current_user, schema_type=UserRead),
             detail="取得當前用戶成功",
         )
 

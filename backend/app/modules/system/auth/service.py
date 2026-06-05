@@ -3,28 +3,27 @@ from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
 from advanced_alchemy.repository import SQLAlchemyAsyncRepository
 from litestar.exceptions import NotFoundException, PermissionDeniedException
 from sqlalchemy.orm.strategy_options import undefer_group
-from app.db.models.models import Account
+from app.db.models.models import User
 
 
-class AuthService(SQLAlchemyAsyncRepositoryService[Account]):
+class AuthService(SQLAlchemyAsyncRepositoryService[User]):
 
-    class Repo(SQLAlchemyAsyncRepository[Account]):
-        model_type = Account
+    class Repo(SQLAlchemyAsyncRepository[User]):
+        model_type = User
 
     repository_type = Repo
 
-    async def authenticate(self, username: str, password: str) -> Account:
+    async def authenticate(self, username: str, password: str) -> User:
 
-        account = await self.get_one_or_none(
+        user = await self.get_one_or_none(
             username=username, load=[undefer_group("security_sensitive")]
         )
-        if not account:
+        if not user:
             raise NotFoundException(detail="找不到該用戶")
 
-        hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
-        if hashed_password != account.hashed_password:
+        if not user.password.verify(password):
             msg = "帳戶或密碼錯誤"
             raise PermissionDeniedException(detail=msg)
 
-        return account
+        return user

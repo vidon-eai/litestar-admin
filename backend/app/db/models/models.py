@@ -2,82 +2,81 @@ from uuid import UUID
 from advanced_alchemy.base import UUIDv7AuditBase
 from sqlalchemy import ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from advanced_alchemy.types import PasswordHash
+from advanced_alchemy.types.password_hash.argon2 import Argon2Hasher
 
 
-class Account(UUIDv7AuditBase):
-    __tablename__ = "accounts"
-
-    username: Mapped[str] = mapped_column(
-        String(255), nullable=False, unique=True, comment="帳號名稱"
-    )
-
-    email: Mapped[str | None] = mapped_column(
-        String(255), nullable=True, unique=True, comment="電子郵箱"
-    )
-
-    hashed_password: Mapped[str | None] = mapped_column(
-        String(length=255),
-        nullable=True,
-        default=None,
-        deferred=True,
-        deferred_group="security_sensitive",
-        comment="加密密碼",
-    )
-
-    """ 關聯數據 """
-    tenants: Mapped[list["AccountTenantAssociation"]] = relationship(
-        back_populates="account",
-        cascade="all, delete-orphan",
-        lazy="selectin",
-        uselist=True,
-    )
-
-
-class Tenant(UUIDv7AuditBase):
-    __tablename__ = "tenants"
-
-    name: Mapped[str] = mapped_column(String(255), nullable=False, comment="租戶名稱")
-    description: Mapped[str | None] = mapped_column(
-        String(255), nullable=True, comment="租戶描述", default=None
-    )
-
-    accounts: Mapped[list["AccountTenantAssociation"]] = relationship(
-        back_populates="tenant",
-        cascade="all, delete-orphan",
-        lazy="selectin",
-        uselist=True,
-    )
-
-
-class AccountTenantAssociation(UUIDv7AuditBase):
-    __tablename__ = "account_tenant_association"
+class UserRole(UUIDv7AuditBase):
+    __tablename__ = "sys_user_role"
 
     __table_args__ = (
-        UniqueConstraint(
-            "account_id",
-            "tenant_id",
-            name="uq_account_tenant_association_account_tenant",
-        ),
+        UniqueConstraint("user_id", "role_id", name="uq_user_role"),
     )
 
-    account_id: Mapped[UUID] = mapped_column(
-        ForeignKey("accounts.id", ondelete="CASCADE"), nullable=False, comment="帳號 ID"
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey("sys_user.id", ondelete="CASCADE"), nullable=False
+    )
+    role_id: Mapped[UUID] = mapped_column(
+        ForeignKey("sys_role.id", ondelete="CASCADE"), nullable=False
+    )
+    
+    # 關聯數據
+    user: Mapped["User"] = relationship(back_populates="roles", innerjoin=True, uselist=False, lazy="joined")
+    role: Mapped["Role"] = relationship(back_populates="users", innerjoin=True, uselist=False, lazy="joined")
+
+class User(UUIDv7AuditBase):
+    __tablename__ = "sys_user"
+
+    username: Mapped[str] = mapped_column(
+        String(255), nullable=False, unique=True, comment="用戶名/登錄帳號"
+    )
+    password: Mapped[str] = mapped_column(
+        PasswordHash(backend=Argon2Hasher()), nullable=True, comment="密碼", default=None
+    )
+    email: Mapped[str] = mapped_column(
+        String(255), nullable=False, unique=True, comment="電子郵箱"
+    )
+    description: Mapped[str | None] = mapped_column(
+        String(255), nullable=True, default=None, comment="描述"
     )
 
-    tenant_id: Mapped[UUID] = mapped_column(
-        ForeignKey("tenants.id", ondelete="CASCADE"), nullable=False, comment="租戶 ID"
+    created_by: Mapped[UUID | None] = mapped_column(
+        ForeignKey("sys_user.id", ondelete="SET NULL"), nullable=True, comment="創建人ID"
     )
-
-    role: Mapped[str] = mapped_column(String(255), nullable=False, comment="角色")
-
-    account: Mapped["Account"] = relationship(
-        back_populates="tenants",
-        lazy="joined",
-        innerjoin=True,
-        uselist=False,
+    updated_by: Mapped[UUID | None] = mapped_column(
+        ForeignKey("sys_user.id", ondelete="SET NULL"), nullable=True, comment="更新人ID"
     )
-
-    tenant: Mapped["Tenant"] = relationship(
-        back_populates="accounts",
+    is_active: Mapped[bool] = mapped_column(
+        default=True, nullable=False, comment="是否啟用"
+    )
+    
+    # 關聯數據
+    roles: Mapped[list[UserRole]] = relationship(
+        back_populates="user",
         lazy="selectin",
+        uselist=True,
+        cascade="all, delete",
+    )
+    creator: Mapped["User | None"] = relationship(
+        "User", remote_side="User.id", foreign_keys=[created_by], lazy="noload"
+    )
+    updater: Mapped["User | None"] = relationship(
+        "User", remote_side="User.id", foreign_keys=[updated_by], lazy="noload"
+    )
+
+class Role(UUIDv7AuditBase):
+    __tablename__ = "sys_role"
+
+    name: Mapped[str] = mapped_column(String(64), nullable=False, comment="角色名稱")
+    code: Mapped[str] = mapped_column(String(64), nullable=False, unique=True, comment="角色代碼")
+    description: Mapped[str | None] = mapped_column(
+        String(255), nullable=True, default=None, comment="描述"
+    )
+
+    # 關聯數據
+    users: Mapped[list[UserRole]] = relationship(
+        back_populates="role",
+        cascade="all, delete",
+        lazy="noload",
+        viewonly=True,
     )

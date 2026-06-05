@@ -1,6 +1,5 @@
 from enum import Enum
-import sys
-from typing import Annotated, Any, Callable, Literal, Sequence, Type, TypeVar
+from typing import Annotated, Any, Literal, Sequence, Type, TypeVar
 from advanced_alchemy.filters import (
     ComparisonFilter,
     LimitOffset,
@@ -10,7 +9,7 @@ from advanced_alchemy.filters import (
 from litestar import Request
 from litestar.params import Parameter
 from app.common.enums import SortBy
-from app.db.models.models import Account
+from app.db.models.models import User       
 from litestar.security.jwt import Token
 
 
@@ -96,7 +95,7 @@ async def provide_filter_list(
     return filters
 
 
-def provide_user(request: Request[Account, Token, Any]) -> Any:
+def provide_user(request: Request[User, Token, Any]) -> Any:
     """Get the user from the connection.
 
     Args:

@@ -8,6 +8,7 @@ dependencies = [
     "advanced-alchemy[cli,uuid]>=1.9.3",
     "aioredis>=2.0.1",
     "aiosqlite>=0.22.1",
+    "argon2-cffi>=25.1.0",
     "asyncmy[cryptography]>=0.2.11",
     "asyncpg>=0.31.0",
     "cryptography>=46.0.7",
