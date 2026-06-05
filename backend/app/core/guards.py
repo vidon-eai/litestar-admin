@@ -28,7 +28,7 @@ async def retrieve_user_handler(
         return user
 
 
-ACCESS_TOKEN_EXPIRATION = timedelta(minutes=15)
+ACCESS_TOKEN_EXPIRATION = timedelta(days=1)
 
 
 auth = OAuth2PasswordBearerAuth[User](

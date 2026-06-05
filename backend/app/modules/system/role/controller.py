@@ -44,7 +44,7 @@ class RoleController(Controller):
         },
         dependencies={
             "pagination": Provide(provide_pagination),
-            "search_filter": Provide(create_search_provider({"rolename", "email"})),
+            "search_filter": Provide(create_search_provider({"name", "code"})),
             "order_filter": Provide(
                 create_order_provider(
                     order_enum=RoleOrderFields, default_field="created_at"

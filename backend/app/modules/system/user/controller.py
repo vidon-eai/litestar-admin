@@ -107,8 +107,9 @@ class UserController(Controller):
         },
     )
     async def create_user(
-        self, user_service: UserService, data: UserCreate
+        self, user_service: UserService, data: UserCreate,current_user:UserRead
     ) -> ApiResponse[UserRead]:
+        data.created_by = current_user.id
         result = await user_service.create(data)
 
         return ApiResponse(
@@ -124,8 +125,9 @@ class UserController(Controller):
         },
     )
     async def update_user(
-        self, user_service: UserService, user_id: UUID, data: UserUpdate
+        self, user_service: UserService, user_id: UUID, data: UserUpdate,current_user:UserRead
     ) -> ApiResponse[UserRead]:
+        data.updated_by = current_user.id
         result = await user_service.update(data, user_id)
 
         return ApiResponse(
