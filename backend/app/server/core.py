@@ -18,7 +18,6 @@ from app.common.exceptions import unified_exception_handler
 from app.core.guards import auth
 from app.core.dependencies import provide_user
 
-
 async def find_routers(app: Litestar) -> None:
     from app.core.logger import log
 
@@ -60,6 +59,8 @@ async def db_connection() -> None:
         sys.exit(1)
 
 
+
+
 class ApplicationCore(InitPluginProtocol):
 
     def on_app_init(self, app_config: AppConfig) -> AppConfig:
@@ -67,6 +68,7 @@ class ApplicationCore(InitPluginProtocol):
         from app.core.logger import setup_logging
         from app.api.register_routers import register_routers
         from app.core.database import sqlalchemy_plugin
+        from app.core.middlewares import AuditLogMiddleware
 
         setup_logging()
         system_routers = register_routers()
@@ -113,5 +115,6 @@ class ApplicationCore(InitPluginProtocol):
                 "current_user": Provide(provide_user, sync_to_thread=False),
             }
         )
+        app_config.middleware.append(AuditLogMiddleware())
 
         return super().on_app_init(app_config)
