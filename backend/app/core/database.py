@@ -1,16 +1,9 @@
 from advanced_alchemy.alembic.commands import AlembicCommands
-from litestar.plugins.sqlalchemy import (
-    SQLAlchemyInitPlugin,
-)
-
 from advanced_alchemy.base import UUIDv7AuditBase
 from pathlib import Path
 from app.config.setting import app_setting
 from advanced_alchemy.utils.fixtures import open_fixture_async
 from sqlalchemy.exc import DBAPIError
-
-sqlalchemy_plugin = SQLAlchemyInitPlugin(config=app_setting.DB_CONFIG)
-
 
 async def create_tables() -> None:
     import app.db.models

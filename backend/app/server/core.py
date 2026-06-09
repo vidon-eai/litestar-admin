@@ -1,10 +1,10 @@
 import sys
 from advanced_alchemy.exceptions import IntegrityError, RepositoryError
-from litestar import Litestar, Router
+from litestar import Router
 from litestar.config.app import AppConfig
 from litestar.di import Provide
 from litestar.openapi.config import OpenAPIConfig
-from litestar.plugins import InitPluginProtocol
+from litestar.plugins import InitPlugin
 from litestar.status_codes import (
     HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
@@ -18,26 +18,26 @@ from app.common.exceptions import unified_exception_handler
 from app.core.guards import auth
 from app.core.dependencies import provide_user
 
-async def find_routers(app: Litestar) -> None:
-    from app.core.logger import log
+# async def find_routers(app: Litestar) -> None:
+#     from app.core.logger import log
 
-    log.info("=" * 100)
-    sorted_routes = app.route_handler_method_map.items()
-    for route_path, method_map in sorted_routes:
+#     log.info("=" * 100)
+#     sorted_routes = app.route_handler_method_map.items()
+#     for route_path, method_map in sorted_routes:
 
-        if route_path == "/api/v1/schema" or route_path.startswith("/api/v1/schema"):
-            continue
+#         if route_path == "/api/v1/schema" or route_path.startswith("/api/v1/schema"):
+#             continue
 
-        for http_method, handler in method_map.items():
-            if http_method == "OPTIONS":
-                continue
-            controller_part, handler_name = str(handler).rsplit(".", 1)
-            controller_name = controller_part.rsplit(".", 1)[-1]
-            log.info(
-                f"📍 {route_path:<35} | {http_method:<12} | {controller_name} ({handler_name})"
-            )
+#         for http_method, handler in method_map.items():
+#             if http_method == "OPTIONS":
+#                 continue
+#             controller_part, handler_name = str(handler).rsplit(".", 1)
+#             controller_name = controller_part.rsplit(".", 1)[-1]
+#             log.info(
+#                 f"📍 {route_path:<35} | {http_method:<12} | {controller_name} ({handler_name})"
+#             )
 
-    log.info("=" * 100)
+#     log.info("=" * 100)
 
 
 async def db_connection() -> None:
@@ -61,13 +61,13 @@ async def db_connection() -> None:
 
 
 
-class ApplicationCore(InitPluginProtocol):
+class ApplicationCore(InitPlugin):
 
     def on_app_init(self, app_config: AppConfig) -> AppConfig:
 
         from app.core.logger import setup_logging
         from app.api.register_routers import register_routers
-        from app.core.database import sqlalchemy_plugin
+        from app.server.plugins import sqlalchemy_plugin
         from app.core.middlewares import AuditLogMiddleware
 
         setup_logging()
@@ -79,7 +79,7 @@ class ApplicationCore(InitPluginProtocol):
         app_setting = get_app_setting()
         get_app_setting.cache_clear()
 
-        app_config.on_startup.extend([db_connection, find_routers])
+        app_config.on_startup.extend([db_connection])
         app_config.debug = app_setting.DEBUG
         app_config.path = app_setting.ROOT_PATH
         app_config.route_handlers.extend(

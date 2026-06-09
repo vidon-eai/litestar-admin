@@ -38,7 +38,7 @@ class InterceptHandler(logging.Handler):
 
 
 def cleanup_logging() -> None:
-    """清理日誌資源[cite: 1]"""
+    """清理日誌資源"""
     global _logger_handlers
     for handler_id in _logger_handlers:
         try:
@@ -52,18 +52,18 @@ def setup_logging() -> None:
     from app.config.setting import app_setting
 
     """
-    配置日誌系統，實現 SQL 格式統一[cite: 1]
+    配置日誌系統，實現 SQL 格式統一
     """
     global _logger_handlers
 
-    # 1. 配置 Loguru 基礎設定與格式[cite: 1]
+    # 1. 配置 Loguru 基礎設定與格式
     logger.configure(extra={"app_name": "Liststar Admin"})
     logger.remove()
 
-    # 定義統一的格式[cite: 1]
+    # 定義統一的格式
     log_format = app_setting.LOG_FORMAT
 
-    # 添加輸出目標[cite: 1]
+    # 添加輸出目標
     _logger_handlers.append(
         logger.add(sys.stdout, format=log_format, level=app_setting.LOG_LEVEL)
     )
@@ -71,7 +71,7 @@ def setup_logging() -> None:
     log_dir = Path("logs")
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    # 文件輸出[cite: 1]
+    # 文件輸出
     _logger_handlers.append(
         logger.add(
             str(log_dir / "info.log"),
@@ -84,28 +84,28 @@ def setup_logging() -> None:
         )
     )
 
-    # 2. 攔截標準庫 logging 的 Root Logger[cite: 1]
+    # 2. 攔截標準庫 logging 的 Root Logger
     logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
 
     # 3. 專門針對 SQLAlchemy 進行格式統一化
     # 這些是 SQLAlchemy 常用的日誌名稱
-    sql_loggers = [
+    sql_loggers = app_setting.SQLALCHEMY_ECHO and [
         "sqlalchemy.engine",  # 顯示 SQL 語句
         "sqlalchemy.pool",  # 顯示連線池資訊
         "sqlalchemy.dialects",
         "sqlalchemy.orm",
-    ]
+    ] or []
 
     for name in sql_loggers:
         specific_logger = logging.getLogger(name)
         # 清除現有的 handler 防止重複輸出
         specific_logger.handlers = [InterceptHandler()]
-        # 禁用傳播，確保日誌直接交給 InterceptHandler 處理，不再流向 Root Logger[cite: 1]
+        # 禁用傳播，確保日誌直接交給 InterceptHandler 處理，不再流向 Root Logger
         specific_logger.propagate = False
         # 強制設定等級，確保能捕獲到日誌
         specific_logger.setLevel(app_setting.LOG_LEVEL)
 
-    # 4. 處理其餘第三方庫[cite: 1]
+    # 4. 處理其餘第三方庫
     for logger_name in logging.root.manager.loggerDict:
         if logger_name not in sql_loggers:
             _logger = logging.getLogger(logger_name)

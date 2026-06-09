@@ -87,7 +87,6 @@ class DatabaseSetting(BaseSettings):
             alembic_config=AlembicAsyncConfig(
                 script_location=f"{ALEMBIC_CONFIG_DIR}",
                 script_config=f"{ALEMBIC_CONFIG_FILE}",
-                compare_type=True,
             ),
         )
 
