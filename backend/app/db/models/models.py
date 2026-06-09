@@ -111,28 +111,21 @@ class AuditLog(UUIDv7AuditBase):
         nullable=True,
         comment="操作者 ID"
     )
-    request_path: Mapped[str | None] = mapped_column(
-        String(255), nullable=True, comment="API 路徑"
-    )
     request_method: Mapped[str] = mapped_column(
         String(50), comment="GET, POST, PUT, DELETE"
     )
-    request_payload_before: Mapped[dict | None] = mapped_column(
-        JSON, nullable=True, comment="請求內容(變更前)"
+    request_path: Mapped[str | None] = mapped_column(
+        String(255), nullable=True, comment="API 路徑"
     )
-    request_payload_after: Mapped[dict | None] = mapped_column(
-        JSON, nullable=True, comment="請求內容(變更後)"
+    request_payload: Mapped[dict | None] = mapped_column(
+        JSON, nullable=True, comment="請求內容"
     )
     request_ip: Mapped[str | None] = mapped_column(
         String(45), nullable=True, comment="操作者 IP"
     )
-
     status_code: Mapped[int | None] = mapped_column(
         Integer, nullable=True, comment="HTTP 狀態碼"
     )
     response_body: Mapped[dict | None] = mapped_column(
         JSON, nullable=True, comment="回應內容"
-    )
-    process_time: Mapped[datetime | None] = mapped_column(
-        DateTime, nullable=True, comment="處理時間"
     )

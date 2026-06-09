@@ -72,10 +72,8 @@ class AuditLogMiddleware(ASGIMiddleware):
             body_json = None
             if response_body_bytes:
                 try:
-                    # 這裡可以根據 response 的 content-type 過濾，避免解析二進位檔案(如圖片/PDF)
                     body_json = json.loads(response_body_bytes.decode("utf-8"))
                 except Exception:
-                    # 若非 JSON 格式則不記錄詳細內容，或僅抓取前段
                     body_json = {"raw": "Non-JSON or dynamic stream response"}
 
 
@@ -83,11 +81,11 @@ class AuditLogMiddleware(ASGIMiddleware):
                 audit_log_service = AuditLogService(db_session)
                 data = AuditLogCreate(
                     user_id=request.user.id,
-                    status_code=status_code,
                     request_method=request.method,
-                    request_path=str(request.url),
-                    request_payload_after=payload,
+                    request_path=str(f"{request.url.path}{('?' + request.url.query) if request.url.query else ''}"),
+                    request_payload=payload,
                     request_ip=request_ip,
+                    status_code=status_code,
                     response_body=body_json,
                 )
                 await audit_log_service.create(data=data, auto_commit=True)
