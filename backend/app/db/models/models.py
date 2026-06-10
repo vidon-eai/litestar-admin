@@ -1,11 +1,12 @@
-from datetime import datetime
 from uuid import UUID
 from advanced_alchemy.base import UUIDv7AuditBase
-from sqlalchemy import ForeignKey, String, UniqueConstraint, JSON, Integer, DateTime
+from sqlalchemy import ForeignKey, String, UniqueConstraint, JSON, Integer, BigInteger, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from advanced_alchemy.types import PasswordHash
 from advanced_alchemy.types.password_hash.argon2 import Argon2Hasher
 from sqlalchemy.ext.associationproxy import association_proxy, AssociationProxy
+
+from app.common.enums import StorageTypeEnum
 
 
 class UserRole(UUIDv7AuditBase):
@@ -109,7 +110,7 @@ class AuditLog(UUIDv7AuditBase):
     user_id: Mapped[UUID | None] = mapped_column(
         ForeignKey("sys_user.id", ondelete="SET NULL"),
         nullable=True,
-        comment="操作者 ID"
+        comment="操作者 ID",
     )
     request_method: Mapped[str] = mapped_column(
         String(50), comment="GET, POST, PUT, DELETE"
@@ -128,4 +129,30 @@ class AuditLog(UUIDv7AuditBase):
     )
     response_body: Mapped[dict | None] = mapped_column(
         JSON, nullable=True, comment="回應內容"
+    )
+
+
+class File(UUIDv7AuditBase):
+    __tablename__ = "sys_file"
+
+    parent_id: Mapped[UUID] = mapped_column(
+        ForeignKey("sys_file.id", ondelete="CASCADE"),
+        nullable=True,
+        comment="文件 ID",
+    )
+    created_by: Mapped[UUID | None] = mapped_column(
+        ForeignKey("sys_user.id", ondelete="SET NULL"),
+        nullable=True,
+        comment="創建人ID",
+    )
+    name: Mapped[str] = mapped_column(String(255), nullable=False, comment="文件名稱")
+    location: Mapped[str] = mapped_column(
+        String(255), nullable=False, comment="文件位置"
+    )
+    size: Mapped[int] = mapped_column(
+        BigInteger, default=0, nullable=False, comment="文件大小"
+    )
+    type: Mapped[str] = mapped_column(String(50), nullable=False, comment="文件類型")
+    source_type: Mapped[StorageTypeEnum] = mapped_column(
+        Enum(StorageTypeEnum), default=StorageTypeEnum.LOCAL, nullable=False, comment="文件來源"
     )

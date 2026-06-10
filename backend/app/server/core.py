@@ -16,7 +16,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import text
 from app.common.exceptions import unified_exception_handler
 from app.core.guards import auth
-from app.core.dependencies import provide_user
+from app.core.dependencies import provide_user, provide_storage
 
 # async def find_routers(app: Litestar) -> None:
 #     from app.core.logger import log

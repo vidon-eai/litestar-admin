@@ -11,6 +11,7 @@ from litestar.params import Parameter
 from app.common.enums import SortBy
 from app.db.models.models import User       
 from litestar.security.jwt import Token
+from app.core.storage import BaseStorage, OpenDALStorage, S3Storage
 
 
 async def provide_pagination(
@@ -105,3 +106,14 @@ def provide_user(request: Request[User, Token, Any]) -> Any:
         User
     """
     return request.user
+
+
+
+def provide_storage() -> BaseStorage:
+    from app.config.setting import app_setting
+    if(app_setting.STORAGE_TYPE == 'local'):
+        return OpenDALStorage("fs")
+    elif(app_setting.STORAGE_TYPE == 's3'):
+        return S3Storage()
+    else:
+        raise ValueError("Invalid storage type")

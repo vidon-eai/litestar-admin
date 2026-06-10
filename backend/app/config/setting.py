@@ -14,6 +14,8 @@ from litestar.plugins.sqlalchemy import (
     SQLAlchemyAsyncConfig,
 )
 
+from app.common.enums import StorageTypeEnum
+
 from app.config.path_config import ALEMBIC_CONFIG_DIR, ALEMBIC_CONFIG_FILE, ENV_DIR
 
 
@@ -105,6 +107,10 @@ class APIDocSetting(BaseSettings):
         default="This is a web service framework based on python, based on Litestar and sqlalchemy implementation.",
     )
 
+class StorageSetting(BaseSettings):
+    STORAGE_TYPE: StorageTypeEnum = Field(default=StorageTypeEnum.LOCAL)
+    STORAGE_LOCAL_PATH: str = Field(default="./storage")
+
 
 class LoggingSetting(BaseSettings):
     LOG_LEVEL: str = Field(default="DEBUG")
@@ -120,7 +126,7 @@ class LoggingSetting(BaseSettings):
     )
 
 
-class AppSetting(DatabaseSetting, APIDocSetting, LoggingSetting):
+class AppSetting(DatabaseSetting, APIDocSetting, LoggingSetting, StorageSetting):
     model_config = SettingsConfigDict(
         env_file=f"{ENV_DIR}/.env.{os.getenv('ENVIRONMENT', 'dev')}",
         env_file_encoding="utf-8",
