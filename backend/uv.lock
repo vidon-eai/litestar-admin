@@ -584,7 +584,7 @@ requires-dist = [
     { name = "aioredis", specifier = ">=2.0.1" },
     { name = "aiosqlite", specifier = ">=0.22.1" },
     { name = "argon2-cffi", specifier = ">=25.1.0" },
-    { name = "asyncmy", extras = ["cryptography"], specifier = ">=0.2.11" },
+    { name = "asyncmy", specifier = ">=0.2.11" },
     { name = "asyncpg", specifier = ">=0.31.0" },
     { name = "cryptography", specifier = ">=46.0.7" },
     { name = "litestar", extras = ["jwt", "sqlalchemy", "standard"], specifier = ">=2.21.1" },

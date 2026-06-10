@@ -16,7 +16,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import text
 from app.common.exceptions import unified_exception_handler
 from app.core.guards import auth
-from app.core.dependencies import provide_user, provide_storage
+from app.core.dependencies import provide_user
 
 # async def find_routers(app: Litestar) -> None:
 #     from app.core.logger import log
@@ -115,6 +115,8 @@ class ApplicationCore(InitPlugin):
                 "current_user": Provide(provide_user, sync_to_thread=False),
             }
         )
-        app_config.middleware.append(AuditLogMiddleware())
+        
+        if app_setting.AUDIT_LOG_ENABLE:
+            app_config.middleware.append(AuditLogMiddleware())
 
         return super().on_app_init(app_config)

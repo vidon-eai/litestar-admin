@@ -3,8 +3,9 @@ from typing import Annotated
 from advanced_alchemy.extensions.litestar import providers
 from advanced_alchemy.filters import LimitOffset, OrderBy, SearchFilter
 from advanced_alchemy.service import OffsetPagination
-from litestar import Controller, get, post
+from litestar import Controller, delete, get, post
 from litestar.exceptions import HTTPException
+from litestar.response import File
 from litestar.di import Provide
 from litestar.params import Dependency, MultipartBody
 from litestar.datastructures import UploadFile
@@ -19,7 +20,7 @@ from app.common.response import (
 )
 from app.modules.system.file.schema import FileRead
 from app.modules.system.file.service import FileService
-from app.core.storage import BaseStorage
+from app.core.storage import AsyncStorageDriver
 from app.modules.system.user.schema import UserRead
 import os
 import uuid
@@ -109,10 +110,10 @@ class FileController(Controller):
         filename = data.filename
         extension = os.path.splitext(filename)[1].lstrip(".").lower()
         filesize = len(content)
-        file_uuid = str(uuid.uuid4())
-        file_key = "uploads" + "/" + file_uuid + "." + extension
-        file_storage: BaseStorage = state.storage
-        success, file_path = file_storage.save(file_path=file_key, data=content)
+        file_uuid = uuid.uuid4()
+        file_key = "uploads" + "/" + str(file_uuid) + "." + extension
+        file_storage: AsyncStorageDriver = state.storage
+        success = await file_storage.put(file_key, content)
         if not success:
             raise HTTPException(status_code=500, detail="文件保存失败")
         file = await file_service.create({
@@ -126,3 +127,51 @@ class FileController(Controller):
 
         return ApiResponse(data=file_service.to_schema(file, schema_type=FileRead), detail="文件上傳成功")
       
+
+    @get("/download/{file_id:uuid}")
+    async def download_file(
+        self,
+        file_service: FileService,
+        file_id: uuid.UUID,
+        state: State,
+    ) -> File:
+        file = await file_service.get(file_id)
+        if not file:
+            raise HTTPException(status_code=404, detail="文件不存在")
+        
+        file_storage: AsyncStorageDriver = state.storage
+        content = await file_storage.get(file.location)
+        if not content:
+            raise HTTPException(status_code=404, detail="文件不存在")
+        
+        return File(
+            path="./storage/"+file.location,
+            filename=file.name,
+            media_type=file.type,
+        )
+
+    @delete(
+        "/{file_id:uuid}",
+        summary="刪除文件",
+        responses={
+            **COMMON_RESPONSES,
+        },
+        status_code=200
+    )
+    async def delete_file(
+        self,
+        file_service: FileService,
+        file_id: uuid.UUID,
+        state: State,
+    ) -> ApiResponse[None]:
+
+        file = await file_service.get(file_id)
+        if not file:
+            raise HTTPException(status_code=404, detail="文件不存在")
+        
+        # Delete from storage
+        file_storage: AsyncStorageDriver = state.storage
+        await file_storage.delete(file.location)
+        
+        await file_service.delete(file_id)
+        return ApiResponse(data=None,detail="文件刪除成功")

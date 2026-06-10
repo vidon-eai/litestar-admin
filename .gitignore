@@ -8,3 +8,4 @@ logs
 migrations/versions/*
 
 devops/
+backend/storage/

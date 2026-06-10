@@ -143,6 +143,8 @@ class AppSetting(DatabaseSetting, APIDocSetting, LoggingSetting, StorageSetting)
 
     # Debug Configuration
     DEBUG: bool = Field(default=True)
+    AUDIT_LOG_ENABLE: bool = Field(default=False)
+
 
     SECRET_KEY: str = Field(
         default_factory=lambda: binascii.hexlify(os.urandom(32)).decode(
