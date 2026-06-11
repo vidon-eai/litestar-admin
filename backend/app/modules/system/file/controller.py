@@ -4,7 +4,7 @@ from advanced_alchemy.extensions.litestar import providers
 from advanced_alchemy.filters import LimitOffset, OrderBy, SearchFilter
 from advanced_alchemy.service import OffsetPagination
 from litestar import Controller, delete, get, post
-from litestar.exceptions import HTTPException
+from litestar.exceptions import HTTPException, NotFoundException
 from litestar.response import File
 from litestar.di import Provide
 from litestar.params import Dependency, MultipartBody
@@ -20,11 +20,12 @@ from app.common.response import (
 )
 from app.modules.system.file.schema import FileRead
 from app.modules.system.file.service import FileService
-from app.core.storage import AsyncStorageDriver
+from app.utils.storage.storage import AsyncStorageDriver
 from app.modules.system.user.schema import UserRead
 import os
 import uuid
 from litestar.datastructures import State
+from app.config.setting import app_setting
 
 class FileOrderFields(Enum):
     created_at = "created_at"
@@ -135,17 +136,17 @@ class FileController(Controller):
         file_id: uuid.UUID,
         state: State,
     ) -> File:
-        file = await file_service.get(file_id)
-        if not file:
-            raise HTTPException(status_code=404, detail="文件不存在")
+        file = await file_service.get_one_or_none(id=file_id)
+        if file is None:
+            raise NotFoundException(detail="文件不存在")
         
         file_storage: AsyncStorageDriver = state.storage
         content = await file_storage.get(file.location)
         if not content:
-            raise HTTPException(status_code=404, detail="文件不存在")
+            raise NotFoundException(detail="文件不存在")
         
         return File(
-            path="./storage/"+file.location,
+            path=app_setting.STORAGE_LOCAL_PATH+"/"+file.location,
             filename=file.name,
             media_type=file.type,
         )
@@ -165,9 +166,9 @@ class FileController(Controller):
         state: State,
     ) -> ApiResponse[None]:
 
-        file = await file_service.get(file_id)
-        if not file:
-            raise HTTPException(status_code=404, detail="文件不存在")
+        file = await file_service.get_one_or_none(id=file_id)
+        if file is None:
+            raise NotFoundException(detail="文件不存在")
         
         # Delete from storage
         file_storage: AsyncStorageDriver = state.storage

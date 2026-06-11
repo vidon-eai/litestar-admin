@@ -1,4 +1,3 @@
-from tkinter import N
 from litestar import Request
 from litestar.enums import ScopeType
 from litestar.middleware import ASGIMiddleware
