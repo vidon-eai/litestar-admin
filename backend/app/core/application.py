@@ -67,7 +67,7 @@ class ApplicationCore(InitPlugin):
 
         from app.core.logger import setup_logging
         from app.api.register_routers import register_routers
-        from app.server.plugins import sqlalchemy_plugin
+        from app.core.plugins import sqlalchemy_plugin
         from app.core.middlewares import AuditLogMiddleware
 
         setup_logging()
