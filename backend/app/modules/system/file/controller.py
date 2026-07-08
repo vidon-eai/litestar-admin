@@ -1,31 +1,32 @@
+import os
+import uuid
 from enum import Enum
 from typing import Annotated
+
 from advanced_alchemy.extensions.litestar import providers
 from advanced_alchemy.filters import LimitOffset, OrderBy, SearchFilter
 from advanced_alchemy.service import OffsetPagination
-from litestar import Controller, delete, get, post
-from litestar.exceptions import HTTPException, NotFoundException
-from litestar.response import File
-from litestar.di import Provide
-from litestar.params import Dependency, MultipartBody
-from litestar.datastructures import UploadFile
+from app.common.response import (
+    COMMON_RESPONSES,
+    ApiResponse,
+)
+from app.config.setting import app_setting
 from app.core.dependencies import (
     create_order_provider,
     create_search_provider,
     provide_pagination,
 )
-from app.common.response import (
-    COMMON_RESPONSES,
-    ApiResponse,
-)
 from app.modules.system.file.schema import FileRead
 from app.modules.system.file.service import FileService
-from app.utils.storage.storage import AsyncStorageDriver
 from app.modules.system.user.schema import UserRead
-import os
-import uuid
-from litestar.datastructures import State
-from app.config.setting import app_setting
+from app.plugins.storage.service import StorageService
+from litestar import Controller, delete, get, post
+from litestar.datastructures import UploadFile
+from litestar.di import Provide
+from litestar.exceptions import HTTPException, NotFoundException
+from litestar.params import Dependency, MultipartBody
+from litestar.response import File
+
 
 class FileOrderFields(Enum):
     created_at = "created_at"
@@ -102,9 +103,9 @@ class FileController(Controller):
     )
     async def upload_file(
         self,
-        state: State,
         file_service: FileService,
         data: MultipartBody[UploadFile],
+        storage_service: StorageService,
         current_user:UserRead = None,
     ) -> ApiResponse[FileRead]:
         content = data.file.read()
@@ -113,8 +114,7 @@ class FileController(Controller):
         filesize = len(content)
         file_uuid = uuid.uuid4()
         file_key = "uploads" + "/" + str(file_uuid) + "." + extension
-        file_storage: AsyncStorageDriver = state.storage
-        success = await file_storage.put(file_key, content)
+        success = await storage_service.put(file_key, content)
         if not success:
             raise HTTPException(status_code=500, detail="文件保存失败")
         file = await file_service.create({
@@ -134,14 +134,13 @@ class FileController(Controller):
         self,
         file_service: FileService,
         file_id: uuid.UUID,
-        state: State,
+        storage_service: StorageService,
     ) -> File:
         file = await file_service.get_one_or_none(id=file_id)
         if file is None:
             raise NotFoundException(detail="文件不存在")
         
-        file_storage: AsyncStorageDriver = state.storage
-        content = await file_storage.get(file.location)
+        content = await storage_service.get(file.location)
         if not content:
             raise NotFoundException(detail="文件不存在")
         
@@ -163,7 +162,7 @@ class FileController(Controller):
         self,
         file_service: FileService,
         file_id: uuid.UUID,
-        state: State,
+        storage_service: StorageService,
     ) -> ApiResponse[None]:
 
         file = await file_service.get_one_or_none(id=file_id)
@@ -171,8 +170,7 @@ class FileController(Controller):
             raise NotFoundException(detail="文件不存在")
         
         # Delete from storage
-        file_storage: AsyncStorageDriver = state.storage
-        await file_storage.delete(file.location)
+        await storage_service.delete(file.location)
         
         await file_service.delete(file_id)
         return ApiResponse(data=None,detail="文件刪除成功")

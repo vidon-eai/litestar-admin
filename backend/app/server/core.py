@@ -1,6 +1,9 @@
 import sys
+
 from advanced_alchemy.exceptions import IntegrityError, RepositoryError
-from litestar import Router
+from app.common.exceptions import unified_exception_handler
+from app.core.dependencies import provide_user
+from app.core.guards import auth
 from litestar.config.app import AppConfig
 from litestar.di import Provide
 from litestar.openapi.config import OpenAPIConfig
@@ -14,35 +17,11 @@ from litestar.status_codes import (
 )
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import text
-from app.common.exceptions import unified_exception_handler
-from app.core.guards import auth
-from app.core.dependencies import provide_user
-
-# async def find_routers(app: Litestar) -> None:
-#     from app.core.logger import log
-
-#     log.info("=" * 100)
-#     sorted_routes = app.route_handler_method_map.items()
-#     for route_path, method_map in sorted_routes:
-
-#         if route_path == "/api/v1/schema" or route_path.startswith("/api/v1/schema"):
-#             continue
-
-#         for http_method, handler in method_map.items():
-#             if http_method == "OPTIONS":
-#                 continue
-#             controller_part, handler_name = str(handler).rsplit(".", 1)
-#             controller_name = controller_part.rsplit(".", 1)[-1]
-#             log.info(
-#                 f"📍 {route_path:<35} | {http_method:<12} | {controller_name} ({handler_name})"
-#             )
-
-#     log.info("=" * 100)
 
 
 async def db_connection() -> None:
-    from app.core.logger import log
     from app.config.setting import app_setting
+    from app.core.logger import log
 
     try:
         async with app_setting.DB_CONFIG.get_engine().begin() as conn:
@@ -59,20 +38,19 @@ async def db_connection() -> None:
         sys.exit(1)
 
 
-
-
 class ApplicationCore(InitPlugin):
+    plugin_tag = "application_core"
 
     def on_app_init(self, app_config: AppConfig) -> AppConfig:
 
-        from app.core.logger import setup_logging
         from app.api.register_routers import register_routers
-        from app.server.plugins import sqlalchemy_plugin
+        from app.core.logger import setup_logging
         from app.core.middlewares import AuditLogMiddleware
+        from app.server.plugins import sqlalchemy_plugin
 
         setup_logging()
         system_routers = register_routers()
-        plugin_routers = register_routers("plugins")
+        # plugin_routers = register_routers("plugins")
 
         from app.config.setting import get_app_setting
 
@@ -85,7 +63,6 @@ class ApplicationCore(InitPlugin):
         app_config.route_handlers.extend(
             [
                 *system_routers,
-                Router(path="/plugins", route_handlers=plugin_routers),
             ]
         )
         app_config.openapi_config = OpenAPIConfig(
@@ -115,7 +92,7 @@ class ApplicationCore(InitPlugin):
                 "current_user": Provide(provide_user, sync_to_thread=False),
             }
         )
-        
+
         if app_setting.AUDIT_LOG_ENABLE:
             app_config.middleware.append(AuditLogMiddleware())
 

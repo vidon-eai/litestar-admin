@@ -1,10 +1,12 @@
-from litestar.plugins import ReceiveRoutePlugin
-from litestar.routes import BaseRoute, HTTPRoute
 from app.core.logger import log
 from litestar.config.app import AppConfig
+from litestar.plugins import ReceiveRoutePlugin
+from litestar.routes import BaseRoute, HTTPRoute
 
 
 class RouteLoggerPlugin(ReceiveRoutePlugin):
+    
+    plugin_tag = "route_logger"
 
     def on_app_init(self, app_config: AppConfig) -> AppConfig:
         log.info("🚀 [Plugin] RouteLoggerPlugin initialized")
