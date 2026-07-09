@@ -101,9 +101,9 @@ class FileController(Controller):
     )
     async def upload_file(
         self,
+        storage_service: StorageService,
         file_service: FileService,
         data: MultipartBody[UploadFile],
-        storage_service: StorageService,
         current_user:UserRead = None,
     ) -> ApiResponse[FileRead]:
         content = data.file.read()
@@ -112,7 +112,7 @@ class FileController(Controller):
         filesize = len(content)
         file_uuid = uuid.uuid4()
         file_key = str(current_user.id) + "/uploads" + "/" + str(file_uuid) + "." + extension
-        success, result = await storage_service.put(file_key, content)
+        success = await storage_service.put(file_key, content)
         if not success:
             raise HTTPException(status_code=500, detail="文件保存失败")
         file = await file_service.create({

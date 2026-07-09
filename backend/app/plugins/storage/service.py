@@ -13,8 +13,9 @@ class StorageService:
     """
 
     def __init__(self, config: "StorageConfig | None" = None) -> None:
-        self.source_type = 's3' if config.storage_type == 's3' else 'fs'
-        if(config.storage_type == 's3'):
+        self.storage_type = config.storage_type.lower()
+
+        if self.storage_type == "s3":
             storage_config = {
                 "endpoint": config.endpoint,
                 "bucket": config.bucket,
@@ -22,15 +23,19 @@ class StorageService:
                 "secret_access_key": config.secret_access_key,
                 "region": config.region,
             }
-        else:
-            root_path = config.root_path if config else "./storage"
+        elif self.storage_type == "fs":
+            root_path = config.root_path
             Path(root_path).mkdir(parents=True, exist_ok=True)
             storage_config = {
                 "root": root_path,
             }
-        
-        self.op = AsyncOperator(scheme=config.storage_type, **storage_config)
-    
+        else:
+            raise ValueError(
+                (f"不支援的儲存類型: {self.storage_type}，僅支援 'fs' 或 's3'")
+            )
+
+        self.op = AsyncOperator(scheme=self.storage_type, **storage_config)
+
     async def put(self, file_path: str, data: bytes) -> tuple[bool, str | None]:
         try:
             result = await self.op.write(file_path, data)
@@ -40,7 +45,7 @@ class StorageService:
             return False, None
 
     async def get(self, file_path: str) -> Optional[bytes]:
-        
+
         try:
             return await self.op.read(file_path)
         except Exception:
@@ -61,6 +66,6 @@ class StorageService:
             return [e.path for e in entries if not e.is_dir]
         except Exception:
             return []
-        
+
     def exists(self, filename: str) -> bool:
         return self.op.exists(path=filename)
