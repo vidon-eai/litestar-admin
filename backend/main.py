@@ -18,9 +18,21 @@ async def spy_on_plugins(app: Litestar):
 
 
 def create_app() -> Litestar:
+    from app.config.setting import app_setting
+    from app.plugins.storage.config import StorageConfig
     from app.server.core import ApplicationCore
     return Litestar(
-        plugins=[ApplicationCore(), StoragePlugin(), RouteLoggerPlugin()],
+        plugins=[ApplicationCore(), StoragePlugin(
+            config=StorageConfig(
+                root_path=app_setting.STORAGE_PATH,
+                storage_type=app_setting.STORAGE_TYPE,
+                endpoint=app_setting.S3_ENDPOINT,
+                bucket=app_setting.S3_BUCKET_NAME,
+                access_key=app_setting.S3_ACCESS_KEY,
+                secret_access_key=app_setting.S3_SECRET_KEY,
+                region=app_setting.S3_REGION
+            )
+        ), RouteLoggerPlugin()],
     )
 
 

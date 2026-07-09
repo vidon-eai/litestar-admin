@@ -1,22 +1,19 @@
 import binascii
-from functools import lru_cache
 import os
+from functools import lru_cache
 from typing import Literal
 from urllib.parse import quote_plus
 
 from advanced_alchemy.config import AlembicAsyncConfig
 from advanced_alchemy.extensions.litestar.plugins.init.config.engine import EngineConfig
-from pydantic import Field, PositiveInt, computed_field
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
+from app.common.enums import StorageTypeEnum
+from app.config.path_config import ALEMBIC_CONFIG_DIR, ALEMBIC_CONFIG_FILE, ENV_DIR
 from litestar.plugins.sqlalchemy import (
     AsyncSessionConfig,
     SQLAlchemyAsyncConfig,
 )
-
-from app.common.enums import StorageTypeEnum
-
-from app.config.path_config import ALEMBIC_CONFIG_DIR, ALEMBIC_CONFIG_FILE, ENV_DIR
+from pydantic import Field, PositiveInt, computed_field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DatabaseSetting(BaseSettings):
@@ -108,8 +105,13 @@ class APIDocSetting(BaseSettings):
     )
 
 class StorageSetting(BaseSettings):
-    STORAGE_TYPE: StorageTypeEnum = Field(default=StorageTypeEnum.LOCAL)
-    STORAGE_LOCAL_PATH: str = Field(default="./storage")
+    STORAGE_TYPE: StorageTypeEnum = Field(default=StorageTypeEnum.FS)
+    STORAGE_PATH: str = Field(default="./storage")
+    S3_ENDPOINT: str | None = Field(default=None)
+    S3_BUCKET_NAME: str | None = Field(default=None)
+    S3_ACCESS_KEY: str | None = Field(default=None)
+    S3_SECRET_KEY: str | None = Field(default=None)
+    S3_REGION: str | None = Field(default=None)
 
 
 class LoggingSetting(BaseSettings):

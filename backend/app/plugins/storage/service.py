@@ -13,29 +13,46 @@ class StorageService:
     """
 
     def __init__(self, config: "StorageConfig | None" = None) -> None:
-        root_path = config.root_path if config else "./storage"
-        Path(root_path).mkdir(parents=True, exist_ok=True)
-        self.op = AsyncOperator(scheme="fs", root=root_path)
-
+        self.source_type = 's3' if config.storage_type == 's3' else 'fs'
+        if(config.storage_type == 's3'):
+            storage_config = {
+                "endpoint": config.endpoint,
+                "bucket": config.bucket,
+                "access_key_id": config.access_key,
+                "secret_access_key": config.secret_access_key,
+                "region": config.region,
+            }
+        else:
+            root_path = config.root_path if config else "./storage"
+            Path(root_path).mkdir(parents=True, exist_ok=True)
+            storage_config = {
+                "root": root_path,
+            }
+        
+        self.op = AsyncOperator(scheme=config.storage_type, **storage_config)
+    
     async def put(self, file_path: str, data: bytes) -> tuple[bool, str | None]:
         try:
-            await self.op.write(file_path, data)
-            return True, file_path
+            result = await self.op.write(file_path, data)
+            return True, result
         except Exception as e:
             print(f"文件保存失败: {e}")
             return False, None
 
     async def get(self, file_path: str) -> Optional[bytes]:
+        
         try:
             return await self.op.read(file_path)
         except Exception:
             return None
 
     async def delete(self, file_path: str) -> bool:
+        print("Delete file:", file_path)
         try:
             await self.op.delete(file_path)
             return True
-        except Exception:
+        except Exception as e:
+            print(f"文件删除失败: {e}")
             return False
 
     async def list(self, prefix: str = "") -> List[str]:
@@ -44,3 +61,6 @@ class StorageService:
             return [e.path for e in entries if not e.is_dir]
         except Exception:
             return []
+        
+    def exists(self, filename: str) -> bool:
+        return self.op.exists(path=filename)

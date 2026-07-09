@@ -14,4 +14,5 @@ class StatusEnum(StrEnum):
 class StorageTypeEnum(StrEnum):
     S3 = "s3"
     LOCAL = "local"
+    FS = "fs"
     

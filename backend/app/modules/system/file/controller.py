@@ -10,7 +10,6 @@ from app.common.response import (
     COMMON_RESPONSES,
     ApiResponse,
 )
-from app.config.setting import app_setting
 from app.core.dependencies import (
     create_order_provider,
     create_search_provider,
@@ -20,12 +19,11 @@ from app.modules.system.file.schema import FileRead
 from app.modules.system.file.service import FileService
 from app.modules.system.user.schema import UserRead
 from app.plugins.storage.service import StorageService
-from litestar import Controller, delete, get, post
+from litestar import Controller, Response, delete, get, post
 from litestar.datastructures import UploadFile
 from litestar.di import Provide
 from litestar.exceptions import HTTPException, NotFoundException
 from litestar.params import Dependency, MultipartBody
-from litestar.response import File
 
 
 class FileOrderFields(Enum):
@@ -113,8 +111,8 @@ class FileController(Controller):
         extension = os.path.splitext(filename)[1].lstrip(".").lower()
         filesize = len(content)
         file_uuid = uuid.uuid4()
-        file_key = "uploads" + "/" + str(file_uuid) + "." + extension
-        success = await storage_service.put(file_key, content)
+        file_key = str(current_user.id) + "/uploads" + "/" + str(file_uuid) + "." + extension
+        success, result = await storage_service.put(file_key, content)
         if not success:
             raise HTTPException(status_code=500, detail="文件保存失败")
         file = await file_service.create({
@@ -123,7 +121,7 @@ class FileController(Controller):
                 "location": file_key,
                 "size": filesize,
                 "type": data.content_type,
-                "source_type": "LOCAL",
+                "source_type": storage_service.source_type,
         })
 
         return ApiResponse(data=file_service.to_schema(file, schema_type=FileRead), detail="文件上傳成功")
@@ -135,7 +133,7 @@ class FileController(Controller):
         file_service: FileService,
         file_id: uuid.UUID,
         storage_service: StorageService,
-    ) -> File:
+    ) -> Response[bytes]:
         file = await file_service.get_one_or_none(id=file_id)
         if file is None:
             raise NotFoundException(detail="文件不存在")
@@ -144,10 +142,12 @@ class FileController(Controller):
         if not content:
             raise NotFoundException(detail="文件不存在")
         
-        return File(
-            path=app_setting.STORAGE_LOCAL_PATH+"/"+file.location,
-            filename=file.name,
-            media_type=file.type,
+        return Response(
+            content=content,
+            headers={
+                "Content-Disposition": f'attachment; filename="{file.name}"'
+            },
+            media_type="application/octet-stream"
         )
 
     @delete(

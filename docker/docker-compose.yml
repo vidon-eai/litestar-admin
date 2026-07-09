@@ -1,0 +1,83 @@
+services:
+  db_postgres:
+    image: postgres:15-alpine
+    container_name: litestaradmin-postgres
+    profiles:
+      - postgresql
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-litestaradmin}
+      POSTGRES_DB: ${DB_DATABASE:-litestaradmin}
+      PGDATA: ${PGDATA:-/var/lib/postgresql/data/pgdata}
+    command: >
+      postgres -c 'max_connections=${POSTGRES_MAX_CONNECTIONS:-100}'
+               -c 'shared_buffers=${POSTGRES_SHARED_BUFFERS:-128MB}'
+               -c 'work_mem=${POSTGRES_WORK_MEM:-4MB}'
+               -c 'maintenance_work_mem=${POSTGRES_MAINTENANCE_WORK_MEM:-64MB}'
+               -c 'effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-4096MB}'
+               -c 'statement_timeout=${POSTGRES_STATEMENT_TIMEOUT:-0}'
+               -c 'idle_in_transaction_session_timeout=${POSTGRES_IDLE_IN_TRANSACTION_SESSION_TIMEOUT:-0}'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-h",
+          "db_postgres",
+          "-U",
+          "${DB_USERNAME:-postgres}",
+          "-d",
+          "${DB_DATABASE:-dify}",
+        ]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+  pgadmin:
+    image: dpage/pgadmin4
+    profiles:
+      - postgresql
+    container_name: pgadmin4_ui
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: litestaradmin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db_postgres
+
+  minio:
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    container_name: litestaradmin-minio
+    env_file:
+      - ./.env
+    profiles:
+      - milvus
+    ports:
+      - '${MINIO_PORT:-9000}:9000'
+      - '${MINIO_CONSOLE_PORT:-9001}:9001'
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
+    volumes:
+      - ./volumes/minio:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+  minio_data:
+    driver: local

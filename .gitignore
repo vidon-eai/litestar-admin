@@ -9,3 +9,4 @@ migrations/versions/*
 
 devops/
 backend/storage/
+docker/volumes/

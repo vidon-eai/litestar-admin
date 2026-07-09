@@ -14,8 +14,6 @@ class StoragePlugin(InitPluginProtocol):
         self._config = config or StorageConfig()
 
     def on_app_init(self, app_config: AppConfig) -> AppConfig:
-        print(f"StoragePlugin initialized with config: {self._config}")
-        
         app_config.lifespan.append(self._config.lifespan)
         app_config.dependencies.update(
             {

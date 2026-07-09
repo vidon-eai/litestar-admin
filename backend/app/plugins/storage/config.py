@@ -11,10 +11,18 @@ if TYPE_CHECKING:
 
 @dataclass
 class StorageConfig:
-    root_path: str = "./storage"
     storage_dependency_key: str = "storage_service"
     storage_app_state_key: str = "storage_service"
+    
+    root_path: str = "./storage"
+    storage_type: str = 'fs'
 
+    endpoint: str | None = None
+    bucket: str | None = None
+    access_key: str | None = None
+    secret_access_key: str | None = None
+    region: str | None = None
+    
     def create_storage_service(self) -> StorageService:
         return StorageService(self)
 
