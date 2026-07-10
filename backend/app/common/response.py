@@ -1,9 +1,7 @@
 from dataclasses import dataclass, field
-import struct
 from typing import TypeVar
 from datetime import datetime
 from typing import Any, Generic
-from advanced_alchemy.service import OffsetPagination
 from litestar import Response
 from litestar.status_codes import (
     HTTP_400_BAD_REQUEST,
@@ -13,22 +11,11 @@ from litestar.status_codes import (
     HTTP_200_OK,
 )
 from litestar.openapi.datastructures import ResponseSpec
-import msgspec
 from pydantic import BaseModel, Field
 
 from app.common.constant import RET
 
 T = TypeVar("T")
-
-
-class BaseStruct(msgspec.Struct):
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            f: getattr(self, f)
-            for f in self.__struct_fields__
-            if getattr(self, f, None) != msgspec.UNSET
-        }
-
 
 @dataclass(kw_only=True)
 class ApiResponse(Generic[T]):

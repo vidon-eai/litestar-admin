@@ -19,3 +19,8 @@ dependencies = [
     "pydantic-settings>=2.7.0",
     "sqlalchemy>=2.0.49",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.21",
+]

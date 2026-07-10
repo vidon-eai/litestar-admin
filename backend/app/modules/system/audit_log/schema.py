@@ -1,7 +1,7 @@
-from pydantic import BaseModel, Field
 from uuid import UUID
-from datetime import datetime
+
 from app.core.base_schema import BaseSchema
+from pydantic import BaseModel, Field
 
 
 class AuditLogBase(BaseSchema):

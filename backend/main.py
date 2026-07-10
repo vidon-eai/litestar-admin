@@ -21,7 +21,6 @@ async def spy_on_plugins(app: Litestar):
 def create_app() -> Litestar:
     from app.config.setting import app_setting
     from app.plugins.storage.config import StorageConfig
-    from app.server.core import ApplicationCore
     
     storage_config = {
         "storage_type": app_setting.STORAGE_TYPE,
@@ -41,6 +40,7 @@ def create_app() -> Litestar:
             "root_path": app_setting.STORAGE_PATH
         })
     
+    from app.core.application import ApplicationCore
     return Litestar(
         plugins=[
                 ApplicationCore(), 

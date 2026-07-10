@@ -1,9 +1,8 @@
-import hashlib
-from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
 from advanced_alchemy.repository import SQLAlchemyAsyncRepository
+from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
+from app.db.models.models import User
 from litestar.exceptions import NotFoundException, PermissionDeniedException
 from sqlalchemy.orm.strategy_options import undefer_group
-from app.db.models.models import User
 
 
 class AuthService(SQLAlchemyAsyncRepositoryService[User]):
