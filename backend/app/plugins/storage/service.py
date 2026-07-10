@@ -39,11 +39,11 @@ class StorageService:
 
     async def put(self, file_path: str, data: bytes) -> tuple[bool, str | None]:
         try:
-            result = await self.op.write(file_path, data)
-            return True, result
+            await self.op.write(file_path, data)
+            return True
         except Exception as e:
             print(f"文件保存失败: {e}")
-            return False, None
+            return False
 
     async def get(self, file_path: str) -> Optional[bytes]:
 
