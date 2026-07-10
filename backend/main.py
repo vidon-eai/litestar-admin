@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from app.cli.commands import cli
+from app.common.enums import StorageTypeEnum
 from app.plugins.storage.plugin import StoragePlugin
 from app.utils.route_log import RouteLoggerPlugin
 from litestar import Litestar
@@ -21,18 +22,33 @@ def create_app() -> Litestar:
     from app.config.setting import app_setting
     from app.plugins.storage.config import StorageConfig
     from app.server.core import ApplicationCore
+    
+    storage_config = {
+        "storage_type": app_setting.STORAGE_TYPE,
+        "storage_scheme": app_setting.STORAGE_SCHEME,
+    }
+    
+    if(app_setting.STORAGE_TYPE == StorageTypeEnum.S3):
+        storage_config.update({
+            "endpoint": app_setting.S3_ENDPOINT,
+            "bucket": app_setting.S3_BUCKET_NAME,
+            "access_key": app_setting.S3_ACCESS_KEY,
+            "secret_access_key": app_setting.S3_SECRET_KEY,
+            "region": app_setting.S3_REGION
+        })
+    else:
+        storage_config.update({
+            "root_path": app_setting.STORAGE_PATH
+        })
+    
     return Litestar(
-        plugins=[ApplicationCore(), StoragePlugin(
-            config=StorageConfig(
-                root_path=app_setting.STORAGE_PATH,
-                storage_type=app_setting.STORAGE_TYPE,
-                endpoint=app_setting.S3_ENDPOINT,
-                bucket=app_setting.S3_BUCKET_NAME,
-                access_key=app_setting.S3_ACCESS_KEY,
-                secret_access_key=app_setting.S3_SECRET_KEY,
-                region=app_setting.S3_REGION
-            )
-        ), RouteLoggerPlugin()],
+        plugins=[
+                ApplicationCore(), 
+                StoragePlugin(
+                    config=StorageConfig(**storage_config)
+                ), 
+                RouteLoggerPlugin()
+            ],
     )
 
 

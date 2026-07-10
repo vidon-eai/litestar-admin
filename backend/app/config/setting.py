@@ -106,6 +106,7 @@ class APIDocSetting(BaseSettings):
 
 class StorageSetting(BaseSettings):
     STORAGE_TYPE: StorageTypeEnum = Field(default=StorageTypeEnum.FS)
+    STORAGE_SCHEME: str = Field(default="fs")
     STORAGE_PATH: str = Field(default="./storage")
     S3_ENDPOINT: str | None = Field(default=None)
     S3_BUCKET_NAME: str | None = Field(default=None)

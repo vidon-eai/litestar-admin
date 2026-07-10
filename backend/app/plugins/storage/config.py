@@ -3,6 +3,8 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, cast
 
+from app.common.enums import StorageTypeEnum
+
 from .service import StorageService
 
 if TYPE_CHECKING:
@@ -15,7 +17,8 @@ class StorageConfig:
     storage_app_state_key: str = "storage_service"
     
     root_path: str = "./storage"
-    storage_type: str = 'fs'
+    storage_type: str = StorageTypeEnum.LOCAL
+    storage_scheme: str = "fs"
 
     endpoint: str | None = None
     bucket: str | None = None

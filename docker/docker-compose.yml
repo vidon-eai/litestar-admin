@@ -1,12 +1,15 @@
+name: litestaradmin
+
+x-shared-config: &shared-config
+  env_file:
+    - ./.env
+  restart: unless-stopped
+
 services:
   db_postgres:
+    <<: *shared-config
     image: postgres:15-alpine
     container_name: litestaradmin-postgres
-    profiles:
-      - postgresql
-    restart: unless-stopped
-    env_file:
-      - ./.env
     environment:
       POSTGRES_USER: ${DB_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-litestaradmin}
@@ -41,11 +44,9 @@ services:
       retries: 30
 
   pgadmin:
+    <<: *shared-config
     image: dpage/pgadmin4
-    profiles:
-      - postgresql
     container_name: pgadmin4_ui
-    restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: litestaradmin
@@ -55,12 +56,9 @@ services:
       - db_postgres
 
   minio:
+    <<: *shared-config
     image: minio/minio:RELEASE.2023-03-20T20-16-18Z
     container_name: litestaradmin-minio
-    env_file:
-      - ./.env
-    profiles:
-      - milvus
     ports:
       - '${MINIO_PORT:-9000}:9000'
       - '${MINIO_CONSOLE_PORT:-9001}:9001'

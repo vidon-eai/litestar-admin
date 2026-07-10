@@ -121,7 +121,7 @@ class FileController(Controller):
                 "location": file_key,
                 "size": filesize,
                 "type": data.content_type,
-                "source_type": storage_service.source_type,
+                "storage_type": storage_service.storage_type,
         })
 
         return ApiResponse(data=file_service.to_schema(file, schema_type=FileRead), detail="文件上傳成功")

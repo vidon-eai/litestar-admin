@@ -1,12 +1,20 @@
 from uuid import UUID
+
 from advanced_alchemy.base import UUIDv7AuditBase
-from sqlalchemy import ForeignKey, String, UniqueConstraint, JSON, Integer, BigInteger, Enum
-from sqlalchemy.orm import Mapped, mapped_column, relationship
 from advanced_alchemy.types import PasswordHash
 from advanced_alchemy.types.password_hash.argon2 import Argon2Hasher
-from sqlalchemy.ext.associationproxy import association_proxy, AssociationProxy
-
 from app.common.enums import StorageTypeEnum
+from sqlalchemy import (
+    JSON,
+    BigInteger,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    UniqueConstraint,
+)
+from sqlalchemy.ext.associationproxy import AssociationProxy, association_proxy
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 class UserRole(UUIDv7AuditBase):
@@ -153,6 +161,6 @@ class File(UUIDv7AuditBase):
         BigInteger, default=0, nullable=False, comment="文件大小"
     )
     type: Mapped[str] = mapped_column(String(50), nullable=False, comment="文件類型")
-    source_type: Mapped[StorageTypeEnum] = mapped_column(
+    storage_type: Mapped[StorageTypeEnum] = mapped_column(
         Enum(StorageTypeEnum), default=StorageTypeEnum.LOCAL, nullable=False, comment="文件來源"
     )

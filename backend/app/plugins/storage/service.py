@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import TYPE_CHECKING, List, Optional
 
+from app.common.enums import StorageTypeEnum
 from opendal import AsyncOperator
 
 if TYPE_CHECKING:
@@ -15,7 +16,7 @@ class StorageService:
     def __init__(self, config: "StorageConfig | None" = None) -> None:
         self.storage_type = config.storage_type.lower()
 
-        if self.storage_type == "s3":
+        if self.storage_type == StorageTypeEnum.S3:
             storage_config = {
                 "endpoint": config.endpoint,
                 "bucket": config.bucket,
@@ -23,7 +24,7 @@ class StorageService:
                 "secret_access_key": config.secret_access_key,
                 "region": config.region,
             }
-        elif self.storage_type == "fs":
+        elif self.storage_type == StorageTypeEnum.LOCAL:
             root_path = config.root_path
             Path(root_path).mkdir(parents=True, exist_ok=True)
             storage_config = {
@@ -33,8 +34,8 @@ class StorageService:
             raise ValueError(
                 (f"不支援的儲存類型: {self.storage_type}，僅支援 'fs' 或 's3'")
             )
-
-        self.op = AsyncOperator(scheme=self.storage_type, **storage_config)
+        print(config)
+        self.op = AsyncOperator(scheme=config.storage_scheme, **storage_config)
 
     async def put(self, file_path: str, data: bytes) -> tuple[bool, str | None]:
         try:
