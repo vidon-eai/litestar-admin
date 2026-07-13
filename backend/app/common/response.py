@@ -1,47 +1,38 @@
 from dataclasses import dataclass, field
-import struct
-from typing import TypeVar
 from datetime import datetime
-from typing import Any, Generic
-from advanced_alchemy.service import OffsetPagination
+from typing import Any, Generic, TypeVar
+
+from app.common.constant import RET
 from litestar import Response
+from litestar.openapi.datastructures import ResponseSpec
 from litestar.status_codes import (
+    HTTP_200_OK,
     HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
     HTTP_404_NOT_FOUND,
     HTTP_500_INTERNAL_SERVER_ERROR,
-    HTTP_200_OK,
 )
-from litestar.openapi.datastructures import ResponseSpec
-import msgspec
 from pydantic import BaseModel, Field
-
-from app.common.constant import RET
 
 T = TypeVar("T")
 
 
-class BaseStruct(msgspec.Struct):
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            f: getattr(self, f)
-            for f in self.__struct_fields__
-            if getattr(self, f, None) != msgspec.UNSET
-        }
-
-
 @dataclass(kw_only=True)
-class ApiResponse(Generic[T]):
+class BaseRespose(Generic[T]):
     code: int | str = RET.OK.code
     status_code: int = HTTP_200_OK
-    data: T | None
     is_success: bool = True
     detail: str | list[Any] | None | Any = RET.OK.msg
     timestamp: datetime = field(default_factory=datetime.now)
 
 
+@dataclass(kw_only=True)
+class ApiResponse(Generic[T]):
+    data: T | None
+
+
 @dataclass
-class PaginationResponse(ApiResponse[T]):
+class PaginationResponse(BaseRespose[T]):
     data: list[T]
     total: int
     limit: int

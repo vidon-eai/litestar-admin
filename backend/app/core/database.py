@@ -1,15 +1,16 @@
+from pathlib import Path
+
 from advanced_alchemy.alembic.commands import AlembicCommands
 from advanced_alchemy.base import UUIDv7AuditBase
-from pathlib import Path
-from app.config.setting import app_setting
 from advanced_alchemy.utils.fixtures import open_fixture_async
+from app.config.setting import app_setting
 from sqlalchemy.exc import DBAPIError
 
+
 async def create_tables() -> None:
-    import app.db.models
+    import app.db.models  # noqa: F401
 
     async with app_setting.DB_CONFIG.get_engine().begin() as conn:
-
         await conn.run_sync(UUIDv7AuditBase.metadata.create_all)
 
 
@@ -41,7 +42,7 @@ def upgrade_database(revision: str) -> None:
 def make_migrations(
     message: str, autogenerate: bool = True, head: str = "head"
 ) -> None:
-    import app.db.models
+    import app.db.models  # noqa: F401
 
     alembic_cmds = AlembicCommands(sqlalchemy_config=app_setting.DB_CONFIG)
     alembic_cmds.revision(message=message, autogenerate=autogenerate, head=head)

@@ -17,5 +17,6 @@ dependencies = [
     "opendal>=0.47.2",
     "pydantic>=2.12.5",
     "pydantic-settings>=2.7.0",
+    "ruff>=0.15.21",
     "sqlalchemy>=2.0.49",
 ]

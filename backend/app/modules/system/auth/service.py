@@ -1,13 +1,11 @@
-import hashlib
-from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
 from advanced_alchemy.repository import SQLAlchemyAsyncRepository
+from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
+from app.db.models.models import User
 from litestar.exceptions import NotFoundException, PermissionDeniedException
 from sqlalchemy.orm.strategy_options import undefer_group
-from app.db.models.models import User
 
 
 class AuthService(SQLAlchemyAsyncRepositoryService[User]):
-
     class Repo(SQLAlchemyAsyncRepository[User]):
         model_type = User
 
@@ -20,7 +18,6 @@ class AuthService(SQLAlchemyAsyncRepositoryService[User]):
         )
         if not user:
             raise NotFoundException(detail="找不到該用戶")
-
 
         if not user.password.verify(password):
             msg = "帳戶或密碼錯誤"
