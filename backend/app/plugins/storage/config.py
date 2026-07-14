@@ -11,11 +11,12 @@ if TYPE_CHECKING:
     from litestar import Litestar
     from litestar.datastructures.state import State
 
+
 @dataclass
 class StorageConfig:
     storage_dependency_key: str = "storage_service"
     storage_app_state_key: str = "storage_service"
-    
+
     root_path: str = "./storage"
     storage_type: str = StorageTypeEnum.LOCAL
     storage_scheme: str = "fs"
@@ -25,7 +26,7 @@ class StorageConfig:
     access_key: str | None = None
     secret_access_key: str | None = None
     region: str | None = None
-    
+
     def create_storage_service(self) -> StorageService:
         return StorageService(self)
 

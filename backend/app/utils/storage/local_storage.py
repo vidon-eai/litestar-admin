@@ -3,6 +3,7 @@ from opendal import AsyncOperator
 from pathlib import Path
 from typing import Optional, List
 
+
 class LocalStorage(AsyncStorageDriver):
     def __init__(self, root_path: str = "./storage"):
         Path(root_path).mkdir(parents=True, exist_ok=True)

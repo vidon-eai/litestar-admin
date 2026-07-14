@@ -4,6 +4,7 @@ from app.config.setting import app_setting
 from app.utils.storage.local_storage import LocalStorage
 from app.core.logger import log
 
+
 @asynccontextmanager
 async def storage_lifespan(app: Litestar):
     match app_setting.STORAGE_TYPE:

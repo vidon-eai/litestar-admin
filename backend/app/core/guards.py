@@ -1,14 +1,16 @@
 from __future__ import annotations
+
 from datetime import timedelta
 from typing import TYPE_CHECKING
-from litestar.security.jwt import OAuth2PasswordBearerAuth, Token
-from app.db.models.models import User
 
-from app.modules.system.user.service import UserService
 from app.config.setting import app_setting
+from app.db.models.models import User
+from app.modules.system.user.service import UserService
+from litestar.security.jwt import OAuth2PasswordBearerAuth, Token
 
 if TYPE_CHECKING:
     from typing import Any
+
     from litestar.connection import ASGIConnection
 
 
@@ -17,11 +19,8 @@ async def retrieve_user_handler(
 ) -> User | None:
 
     async with app_setting.DB_CONFIG.get_session() as db_session:
-
         user_service = UserService(session=db_session)
-
         user = await user_service.get_one_or_none(username=token.sub)
-
         if not user:
             return None
 

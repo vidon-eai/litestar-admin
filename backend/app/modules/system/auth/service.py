@@ -6,7 +6,6 @@ from sqlalchemy.orm.strategy_options import undefer_group
 
 
 class AuthService(SQLAlchemyAsyncRepositoryService[User]):
-
     class Repo(SQLAlchemyAsyncRepository[User]):
         model_type = User
 
@@ -19,7 +18,6 @@ class AuthService(SQLAlchemyAsyncRepositoryService[User]):
         )
         if not user:
             raise NotFoundException(detail="找不到該用戶")
-
 
         if not user.password.verify(password):
             msg = "帳戶或密碼錯誤"

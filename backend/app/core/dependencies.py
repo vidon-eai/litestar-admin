@@ -9,7 +9,7 @@ from advanced_alchemy.filters import (
 from litestar import Request
 from litestar.params import Parameter
 from app.common.enums import SortBy
-from app.db.models.models import User       
+from app.db.models.models import User
 from litestar.security.jwt import Token
 
 

@@ -22,4 +22,3 @@ class AuditLogCreate(BaseModel):
     request_ip: str | None = Field(None, description="請求ID")
     status_code: int | None = Field(None, description="狀態碼")
     response_body: dict | None = Field(None, description="回應內容")
-

@@ -107,7 +107,7 @@ class UserController(Controller):
         },
     )
     async def create_user(
-        self, user_service: UserService, data: UserCreate,current_user:UserRead
+        self, user_service: UserService, data: UserCreate, current_user: UserRead
     ) -> ApiResponse[UserRead]:
         data.created_by = current_user.id
         result = await user_service.create(data)
@@ -125,7 +125,11 @@ class UserController(Controller):
         },
     )
     async def update_user(
-        self, user_service: UserService, user_id: UUID, data: UserUpdate,current_user:UserRead
+        self,
+        user_service: UserService,
+        user_id: UUID,
+        data: UserUpdate,
+        current_user: UserRead,
     ) -> ApiResponse[UserRead]:
         data.updated_by = current_user.id
         result = await user_service.update(data, user_id)
@@ -153,16 +157,18 @@ class UserController(Controller):
             detail="用戶刪除成功",
         )
 
-
     @post(
-        '/{user_id:uuid}/roles',
+        "/{user_id:uuid}/roles",
         summary="分配用戶角色",
         responses={
             **COMMON_RESPONSES,
         },
     )
     async def assign_roles_to_user(
-        self, user_service: UserService, user_id: UUID, role_ids: list[UUID] | None = None
+        self,
+        user_service: UserService,
+        user_id: UUID,
+        role_ids: list[UUID] | None = None,
     ) -> ApiResponse[UserRead]:
         user = await user_service.get(user_id)
         user.role_ids = role_ids or []

@@ -31,11 +31,7 @@ class FileOrderFields(Enum):
     updated_at = "updated_at"
 
 
-
-
-
 class FileController(Controller):
-
     path = "/files"
     tags = ["文件管理模塊"]
     dependencies = {
@@ -43,9 +39,7 @@ class FileController(Controller):
             FileService,
             "file_service",
         ),
-        
     }
-
 
     @get(
         "/",
@@ -104,28 +98,34 @@ class FileController(Controller):
         storage_service: StorageService,
         file_service: FileService,
         data: MultipartBody[UploadFile],
-        current_user:UserRead = None,
+        current_user: UserRead = None,
     ) -> ApiResponse[FileRead]:
         content = data.file.read()
         filename = data.filename
         extension = os.path.splitext(filename)[1].lstrip(".").lower()
         filesize = len(content)
         file_uuid = uuid.uuid4()
-        file_key = str(current_user.id) + "/uploads" + "/" + str(file_uuid) + "." + extension
+        file_key = (
+            str(current_user.id) + "/uploads" + "/" + str(file_uuid) + "." + extension
+        )
         success = await storage_service.put(file_key, content)
         if not success:
             raise HTTPException(status_code=500, detail="文件保存失败")
-        file = await file_service.create({
-               "created_by": current_user.id,
+        file = await file_service.create(
+            {
+                "created_by": current_user.id,
                 "name": data.filename,
                 "location": file_key,
                 "size": filesize,
                 "type": data.content_type,
                 "storage_type": storage_service.storage_type,
-        })
+            }
+        )
 
-        return ApiResponse(data=file_service.to_schema(file, schema_type=FileRead), detail="文件上傳成功")
-      
+        return ApiResponse(
+            data=file_service.to_schema(file, schema_type=FileRead),
+            detail="文件上傳成功",
+        )
 
     @get("/download/{file_id:uuid}")
     async def download_file(
@@ -137,17 +137,15 @@ class FileController(Controller):
         file = await file_service.get_one_or_none(id=file_id)
         if file is None:
             raise NotFoundException(detail="文件不存在")
-        
+
         content = await storage_service.get(file.location)
         if not content:
             raise NotFoundException(detail="文件不存在")
-        
+
         return Response(
             content=content,
-            headers={
-                "Content-Disposition": f'attachment; filename="{file.name}"'
-            },
-            media_type="application/octet-stream"
+            headers={"Content-Disposition": f'attachment; filename="{file.name}"'},
+            media_type="application/octet-stream",
         )
 
     @delete(
@@ -156,7 +154,7 @@ class FileController(Controller):
         responses={
             **COMMON_RESPONSES,
         },
-        status_code=200
+        status_code=200,
     )
     async def delete_file(
         self,
@@ -168,9 +166,9 @@ class FileController(Controller):
         file = await file_service.get_one_or_none(id=file_id)
         if file is None:
             raise NotFoundException(detail="文件不存在")
-        
+
         # Delete from storage
         await storage_service.delete(file.location)
-        
+
         await file_service.delete(file_id)
-        return ApiResponse(data=None,detail="文件刪除成功")
+        return ApiResponse(data=None, detail="文件刪除成功")

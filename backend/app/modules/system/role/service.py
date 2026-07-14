@@ -4,7 +4,6 @@ from app.db.models.models import Role
 
 
 class RoleService(SQLAlchemyAsyncRepositoryService[Role]):
-
     class Repo(SQLAlchemyAsyncRepository[Role]):
         model_type = Role
 

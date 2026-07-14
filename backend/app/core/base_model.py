@@ -1,4 +1,3 @@
-
 from advanced_alchemy.extensions.litestar import base
 
 

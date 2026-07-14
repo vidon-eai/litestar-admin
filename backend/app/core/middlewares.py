@@ -24,7 +24,6 @@ class AuditLogMiddleware(ASGIMiddleware):
         headers_dict = dict(scope.get("headers", []))
         content_type = headers_dict.get(b"content-type", b"").decode("utf-8")
 
-
         cached_request_body = b""
         response_body_bytes = b""
         status_code = None
@@ -67,7 +66,7 @@ class AuditLogMiddleware(ASGIMiddleware):
                         payload = {"raw": body_str}
                 else:
                     payload = {"raw": body_str}
-                    
+
             body_json = None
             if response_body_bytes:
                 try:
@@ -75,13 +74,14 @@ class AuditLogMiddleware(ASGIMiddleware):
                 except Exception:
                     body_json = {"raw": "Non-JSON or dynamic stream response"}
 
-
             async with app_setting.DB_CONFIG.get_session() as db_session:
                 audit_log_service = AuditLogService(db_session)
                 data = AuditLogCreate(
                     user_id=request.user.id,
                     request_method=request.method,
-                    request_path=str(f"{request.url.path}{('?' + request.url.query) if request.url.query else ''}"),
+                    request_path=str(
+                        f"{request.url.path}{('?' + request.url.query) if request.url.query else ''}"
+                    ),
                     request_payload=payload,
                     request_ip=request_ip,
                     status_code=status_code,

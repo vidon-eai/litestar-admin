@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
 from uuid import UUID
+
 from app.core.base_schema import BaseSchema
+from pydantic import BaseModel, Field
 
 
 class UserBase(BaseSchema):
@@ -31,4 +32,4 @@ class Role(BaseSchema):
 
 
 class UserRead(UserBase):
-    role_list: list[Role]
+    pass

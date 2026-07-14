@@ -91,7 +91,6 @@ class DatabaseSetting(BaseSettings):
 
 
 class APIDocSetting(BaseSettings):
-
     API_DOCS_ENABLED: bool = Field(
         description="If True, API documentation will be enabled.",
         default=True,
@@ -103,6 +102,7 @@ class APIDocSetting(BaseSettings):
     DESCRIPTION: str = Field(
         default="This is a web service framework based on python, based on Litestar and sqlalchemy implementation.",
     )
+
 
 class StorageSetting(BaseSettings):
     STORAGE_TYPE: StorageTypeEnum = Field(default=StorageTypeEnum.FS)
@@ -147,7 +147,6 @@ class AppSetting(DatabaseSetting, APIDocSetting, LoggingSetting, StorageSetting)
     # Debug Configuration
     DEBUG: bool = Field(default=True)
     AUDIT_LOG_ENABLE: bool = Field(default=False)
-
 
     SECRET_KEY: str = Field(
         default_factory=lambda: binascii.hexlify(os.urandom(32)).decode(

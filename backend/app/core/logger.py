@@ -89,12 +89,16 @@ def setup_logging() -> None:
 
     # 3. 專門針對 SQLAlchemy 進行格式統一化
     # 這些是 SQLAlchemy 常用的日誌名稱
-    sql_loggers = app_setting.SQLALCHEMY_ECHO and [
-        "sqlalchemy.engine",  # 顯示 SQL 語句
-        "sqlalchemy.pool",  # 顯示連線池資訊
-        "sqlalchemy.dialects",
-        "sqlalchemy.orm",
-    ] or []
+    sql_loggers = (
+        app_setting.SQLALCHEMY_ECHO
+        and [
+            "sqlalchemy.engine",  # 顯示 SQL 語句
+            "sqlalchemy.pool",  # 顯示連線池資訊
+            "sqlalchemy.dialects",
+            "sqlalchemy.orm",
+        ]
+        or []
+    )
 
     for name in sql_loggers:
         specific_logger = logging.getLogger(name)

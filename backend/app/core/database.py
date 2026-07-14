@@ -10,7 +10,6 @@ async def create_tables() -> None:
     import app.db.models  # noqa: F401
 
     async with app_setting.DB_CONFIG.get_engine().begin() as conn:
-
         await conn.run_sync(UUIDv7AuditBase.metadata.create_all)
 
 

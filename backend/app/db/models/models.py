@@ -16,6 +16,8 @@ from sqlalchemy import (
 from sqlalchemy.ext.associationproxy import AssociationProxy, association_proxy
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from .base_model import UserMixin
+
 
 class UserRole(UUIDv7AuditBase):
     __tablename__ = "sys_user_role"
@@ -38,7 +40,7 @@ class UserRole(UUIDv7AuditBase):
     )
 
 
-class User(UUIDv7AuditBase):
+class User(UUIDv7AuditBase, UserMixin):
     __tablename__ = "sys_user"
 
     username: Mapped[str] = mapped_column(
@@ -57,16 +59,6 @@ class User(UUIDv7AuditBase):
         String(255), nullable=True, default=None, comment="描述"
     )
 
-    created_by: Mapped[UUID | None] = mapped_column(
-        ForeignKey("sys_user.id", ondelete="SET NULL"),
-        nullable=True,
-        comment="創建人ID",
-    )
-    updated_by: Mapped[UUID | None] = mapped_column(
-        ForeignKey("sys_user.id", ondelete="SET NULL"),
-        nullable=True,
-        comment="更新人ID",
-    )
     is_active: Mapped[bool] = mapped_column(
         default=True, nullable=False, comment="是否啟用"
     )
@@ -79,10 +71,20 @@ class User(UUIDv7AuditBase):
         cascade="all, delete-orphan",
     )
     creator: Mapped["User | None"] = relationship(
-        "User", remote_side="User.id", foreign_keys=[created_by], lazy="noload"
+        "User",
+        remote_side="User.id",
+        foreign_keys="User.created_by",
+        lazy="selectin",
+        uselist=False,
+        viewonly=True,
     )
     updater: Mapped["User | None"] = relationship(
-        "User", remote_side="User.id", foreign_keys=[updated_by], lazy="noload"
+        "User",
+        remote_side="User.id",
+        foreign_keys="User.updated_by",
+        lazy="selectin",
+        uselist=False,
+        viewonly=True,
     )
     role_list: AssociationProxy[list["Role"]] = association_proxy(
         "roles", "role", creator=lambda role: UserRole(role=role)
@@ -92,7 +94,7 @@ class User(UUIDv7AuditBase):
     )
 
 
-class Role(UUIDv7AuditBase):
+class Role(UUIDv7AuditBase, UserMixin):
     __tablename__ = "sys_role"
 
     name: Mapped[str] = mapped_column(String(64), nullable=False, comment="角色名稱")
@@ -162,5 +164,8 @@ class File(UUIDv7AuditBase):
     )
     type: Mapped[str] = mapped_column(String(50), nullable=False, comment="文件類型")
     storage_type: Mapped[StorageTypeEnum] = mapped_column(
-        Enum(StorageTypeEnum), default=StorageTypeEnum.LOCAL, nullable=False, comment="文件來源"
+        Enum(StorageTypeEnum),
+        default=StorageTypeEnum.LOCAL,
+        nullable=False,
+        comment="文件來源",
     )

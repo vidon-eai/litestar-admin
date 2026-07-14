@@ -4,13 +4,13 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from pydantic import model_validator
 
+
 class BaseSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID | None = Field(default=None, description="Primary Key")
     created_at: datetime = Field(..., description="Create record datetime")
     updated_at: datetime = Field(..., description="Update record datetime")
-
 
     @model_validator(mode="after")
     def move_fields_to_end(self) -> "BaseSchema":

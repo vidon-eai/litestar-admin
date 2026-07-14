@@ -1,15 +1,15 @@
 from typing import Annotated, Any
+
 from advanced_alchemy.extensions.litestar import providers
+from app.common.response import ApiResponse
+from app.core.guards import auth
+from app.db.models.models import User
+from app.modules.system.auth.service import AuthService
+from app.modules.system.user.schema import UserRead
 from litestar import Controller, Request, Response, get, post
 from litestar.enums import RequestEncodingType
 from litestar.params import Body
 from pydantic import BaseModel
-
-from app.common.response import ApiResponse
-from app.core.guards import auth
-from app.db.models.models import User
-from app.modules.system.user.schema import UserRead
-from app.modules.system.auth.service import AuthService
 
 
 class UserLogin(BaseModel):
