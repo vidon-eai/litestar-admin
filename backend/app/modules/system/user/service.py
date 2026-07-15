@@ -1,8 +1,8 @@
+from advanced_alchemy.repository import SQLAlchemyAsyncRepository
 from advanced_alchemy.service import (
     SQLAlchemyAsyncRepositoryService,
 )
-from advanced_alchemy.repository import SQLAlchemyAsyncRepository
-from app.db.models.models import User
+from app.db.models import User
 
 
 class UserService(SQLAlchemyAsyncRepositoryService[User]):

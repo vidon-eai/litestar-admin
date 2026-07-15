@@ -1,8 +1,9 @@
+from pathlib import Path
+
 from advanced_alchemy.alembic.commands import AlembicCommands
 from advanced_alchemy.base import UUIDv7AuditBase
-from pathlib import Path
-from app.config.setting import app_setting
 from advanced_alchemy.utils.fixtures import open_fixture_async
+from app.config.setting import app_setting
 from sqlalchemy.exc import DBAPIError
 
 

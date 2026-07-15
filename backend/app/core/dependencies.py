@@ -1,15 +1,16 @@
 from enum import Enum
 from typing import Annotated, Any, Literal, Sequence, Type, TypeVar
+
 from advanced_alchemy.filters import (
     ComparisonFilter,
     LimitOffset,
     OrderBy,
     SearchFilter,
 )
+from app.common.enums import SortBy
+from app.db.models import User
 from litestar import Request
 from litestar.params import Parameter
-from app.common.enums import SortBy
-from app.db.models.models import User
 from litestar.security.jwt import Token
 
 

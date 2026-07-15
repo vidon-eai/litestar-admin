@@ -4,7 +4,7 @@ from datetime import timedelta
 from typing import TYPE_CHECKING
 
 from app.config.setting import app_setting
-from app.db.models.models import User
+from app.db.models import User
 from app.modules.system.user.service import UserService
 from litestar.security.jwt import OAuth2PasswordBearerAuth, Token
 

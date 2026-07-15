@@ -1,6 +1,6 @@
-from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
 from advanced_alchemy.repository import SQLAlchemyAsyncRepository
-from app.db.models.models import Role
+from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
+from app.db.models import Role
 
 
 class RoleService(SQLAlchemyAsyncRepositoryService[Role]):
