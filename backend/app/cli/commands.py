@@ -1,8 +1,8 @@
 import os
 import sys
+
 import anyio
 import click
-
 from app.core.database import make_migrations, upgrade_database
 
 
@@ -29,9 +29,8 @@ def start_app(env: str, port: int | None) -> None:
     os.environ["ENVIRONMENT"] = env
 
     import uvicorn
-    from app.core.logger import setup_logging
-
     from app.config.setting import get_app_setting
+    from app.core.logger import setup_logging
 
     app_setting = get_app_setting()
     get_app_setting.cache_clear()
@@ -72,6 +71,29 @@ def init_db(env: str) -> None:
         click.echo(click.style("Database tables initialized.", fg="green"))
     except Exception as e:
         click.echo(click.style(f"Database tables initialization failed: {e}", fg="red"))
+        sys.exit(1)
+
+
+@db_group.command(name="reset", help="重設數據庫")
+@click.option(
+    "--env",
+    help="服務器環境",
+    type=click.Choice(["dev", "prod"]),
+    default="dev",
+    show_default=True,
+    required=False,
+)
+def reset_db(env: str) -> None:
+    """Reset database tables."""
+    try:
+        os.environ["ENVIRONMENT"] = env
+        click.echo(click.style("reset database tables", fg="green"))
+        from app.core.database import reset_tables
+
+        anyio.run(reset_tables)
+        click.echo(click.style("Database tables has been reseted.", fg="green"))
+    except Exception as e:
+        click.echo(click.style(f"Database tables reset failed: {e}", fg="red"))
         sys.exit(1)
 
 

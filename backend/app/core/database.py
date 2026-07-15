@@ -14,6 +14,14 @@ async def create_tables() -> None:
         await conn.run_sync(UUIDv7AuditBase.metadata.create_all)
 
 
+async def reset_tables() -> None:
+    import app.db.models  # noqa: F401
+
+    async with app_setting.DB_CONFIG.get_engine().begin() as conn:
+        await conn.run_sync(UUIDv7AuditBase.metadata.drop_all)
+        await conn.run_sync(UUIDv7AuditBase.metadata.create_all)
+
+
 async def seed_database() -> None:
     fixtures_path = Path("app/db/fixtures")
     from app.core.logger import log
