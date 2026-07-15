@@ -13,7 +13,7 @@ class StorageService:
     A service class for handling storage operations.
     """
 
-    def __init__(self, config: "StorageConfig | None" = None) -> None:
+    def __init__(self, config: "StorageConfig") -> None:
         self.storage_type = config.storage_type.lower()
 
         if self.storage_type == StorageTypeEnum.S3:
@@ -24,20 +24,21 @@ class StorageService:
                 "secret_access_key": config.secret_access_key,
                 "region": config.region,
             }
+            storage_config = {k: v for k, v in storage_config.items() if v is not None}
         elif self.storage_type == StorageTypeEnum.LOCAL:
             root_path = config.root_path
             Path(root_path).mkdir(parents=True, exist_ok=True)
             storage_config = {
                 "root": root_path,
             }
+
         else:
             raise ValueError(
                 (f"不支援的儲存類型: {self.storage_type}，僅支援 'fs' 或 's3'")
             )
-        print(config)
-        self.op = AsyncOperator(scheme=config.storage_scheme, **storage_config)
+        self.op = AsyncOperator(config.storage_scheme, **storage_config)
 
-    async def put(self, file_path: str, data: bytes) -> tuple[bool, str | None]:
+    async def put(self, file_path: str, data: bytes) -> bool:
         try:
             await self.op.write(file_path, data)
             return True
@@ -64,9 +65,12 @@ class StorageService:
     async def list(self, prefix: str = "") -> List[str]:
         try:
             entries = await self.op.list(prefix)
-            return [e.path for e in entries if not e.is_dir]
+            result = []
+            async for e in entries:
+                result.append(e.path)
+            return result
         except Exception:
             return []
 
-    def exists(self, filename: str) -> bool:
-        return self.op.exists(path=filename)
+    async def exists(self, filename: str) -> bool:
+        return await self.op.exists(path=filename)
