@@ -1,4 +1,5 @@
 import asyncio
+import mimetypes
 import os
 import uuid
 from enum import Enum
@@ -31,6 +32,9 @@ from litestar.params import Dependency, MultipartBody
 class FileOrderFields(Enum):
     created_at = "created_at"
     updated_at = "updated_at"
+
+
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8002/api/v1")
 
 
 class FileController(Controller):
@@ -146,33 +150,35 @@ class FileController(Controller):
             url = await storage_service.get_url(file.location)
         else:
             raise ValueError("not support storage type")
+
         if not url:
             raise HTTPException(status_code=500, detail="生成文件 URL 失敗")
 
-        parser = DoclingParser(file_path=url)
-        documents = parser.load_documents()
-        images = parser.extract_base64_images(documents)
-
-        doc_contents = [doc.page_content for doc in documents]
-
         semaphore = asyncio.Semaphore(5)
 
-        async def upload_image(image: dict):
+        async def handle_image_upload(content: bytes, extension: str) -> str:
             async with semaphore:
-                content = image["data_uri"]
-                extension = image["format"]
                 file_uuid = uuid.uuid4()
-                file_key = f"{current_user.id}/datasets/images/{file_uuid}.{extension}"
-                return await storage_service.put(file_key, content)
+                user_id = current_user.id if current_user else "system"
+                file_key = f"{user_id}/datasets/images/{file_uuid}.{extension}"
 
-        if images:
-            await asyncio.gather(*(upload_image(img) for img in images))
+                success = await storage_service.put(file_key, content)
+                if not success:
+                    raise HTTPException(status_code=500, detail="圖片上傳失敗")
 
+                # 替换为前端可以直接访问的图片预览接口路由路径
+                return f"{API_BASE_URL}/files/preview/{file_key}"
+
+        parser = DoclingParser(file_path=url)
+        documents = parser.load_documents()
+        await parser.extract_base64_images(documents, upload_fn=handle_image_upload)
+
+        markdown_content = "\n\n".join(doc.page_content for doc in documents)
         return ApiResponse(
             data={
                 "url": url,
                 "filename": file.name,
-                "documents": doc_contents,
+                "markdown": markdown_content,
             },
             detail="文件 URL 獲取成功",
         )
@@ -222,3 +228,41 @@ class FileController(Controller):
 
         await file_service.delete(file_id)
         return ApiResponse(data=None, detail="文件刪除成功")
+
+    @get(
+        "/preview/{file_key:path}",
+        summary="預覽圖片/文件",
+        description="根據存储 file_key 直接返回文件流或重定向至 S3 預覽链接",
+    )
+    async def preview_file(
+        self,
+        file_key: str,
+        storage_service: StorageService,
+    ) -> Response[bytes]:
+        # 1. 如果是 S3 存储，直接获取预签名 URL 重定向
+        if storage_service.storage_type == "s3":
+            url = await storage_service.get_url(file_key)
+            if not url:
+                raise NotFoundException(detail="圖片不存在或無法生成預覽 URL")
+
+        # 2. 如果是本地存储，从存储中读取内容字节流
+        content = await storage_service.get(file_key)
+        if not content:
+            raise NotFoundException(detail="圖片不存在")
+
+        # 动态推断 Content-Type (例如 image/png, image/jpeg)
+        media_type, _ = mimetypes.guess_type(file_key)
+        if not media_type:
+            media_type = "image/png"  # 默认降级格式
+
+        return Response(
+            content=content,
+            media_type=media_type,
+            headers={
+                "Content-Disposition": f'inline; filename="{os.path.basename(file_key)}"',
+                "Cache-Control": "public, max-age=86400",
+                # 显式允许前端跨域加载图片
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, OPTIONS",
+            },
+        )

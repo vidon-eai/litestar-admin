@@ -1,6 +1,6 @@
 import base64
 import re
-from pathlib import Path
+from typing import Awaitable, Callable
 
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
@@ -41,31 +41,52 @@ class DoclingParser:
     def load_documents(self) -> list[Document]:
         return self._loader.load()
 
-    def extract_base64_images(self, documents: list[Document]) -> list[dict]:
+    async def extract_base64_images(
+        self,
+        documents: list[Document],
+        upload_fn: Callable[[bytes, str], Awaitable[str]] | None = None,
+    ) -> list[dict]:
+        """
+        提取 Base64 圖片。如果傳入 upload_fn，则上传图片并直接替换 Document 中的图片路径。
+
+        :param documents: Document 列表
+        :param upload_fn: 异步回调函数，接收 (image_bytes, format_ext)，返回替换后的 URL 或文件 key
+        :return: 提取/处理后的图片元数据列表
+        """
         pattern = r"!\[(?P<alt>[^\]]*)\]\((?P<data_uri>data:image/(?P<format>[a-zA-Z0-9\+\.-]+);base64,(?P<base64_data>[A-Za-z0-9+/=]+))\)"
-        matches = []
+        extracted_images = []
 
         for doc in documents:
+            # 记录需要替换的字符串 mapping: {原始 data_uri 文本: 新的 URL/路径}
+            replacements = {}
+
             for match in re.finditer(pattern, doc.page_content):
-                data_uri = match.group("data_uri")
-                if "," in data_uri:
-                    base64_str = data_uri.split(",", 1)[1]
-                else:
-                    base64_str = data_uri
-                matches.append(
+                data_uri_str = match.group("data_uri")
+                img_format = match.group("format")
+                base64_str = match.group("base64_data")
+                img_bytes = base64.b64decode(base64_str)
+
+                new_src = None
+                if upload_fn:
+                    # 调用传入的上传函数上传图片，并获取新路径/URL
+                    new_src = await upload_fn(img_bytes, img_format)
+                    if new_src:
+                        replacements[data_uri_str] = new_src
+
+                extracted_images.append(
                     {
-                        "alt": match.group("alt"),  # 圖片替代文字
-                        "format": match.group(
-                            "format"
-                        ),  # 圖片格式 (例如: png, jpeg, webp)
-                        "data_uri": base64.b64decode(
-                            base64_str
-                        ),  # 完整的 Data URI 標籤
-                        "base64_data": match.group("base64_data"),  #
+                        "alt": match.group("alt"),
+                        "format": img_format,
+                        "data_bytes": img_bytes,
+                        "new_src": new_src,
                     }
                 )
 
-        return matches
+            # 替换当前文档中的 base64 路径为上传后的路径
+            for old_uri, new_path in replacements.items():
+                doc.page_content = doc.page_content.replace(old_uri, new_path)
+
+        return extracted_images
 
     def parse(self, documents: list[Document]):
         splitter = MarkdownHeaderTextSplitter(
@@ -82,87 +103,3 @@ class DoclingParser:
         ]
 
         return splits
-
-    def _replacer(self, match):
-        alt_text = match.group(1)
-        img_type = match.group(2)
-        base64_str = match.group(3)
-
-        # 解碼並保存
-        img_data = base64.b64decode(base64_str)
-
-        # 判斷格式
-        if img_data[:2] == b"\x89P":
-            ext = "png"
-        elif img_data[:2] == b"\xff\xd8":
-            ext = "jpg"
-        else:
-            ext = img_type
-
-        filename = f"image_{self._replacer.counter}.{ext}"
-        filepath = Path("storage", "uuid", filename)
-        self._replacer.counter += 1
-        return f"![{alt_text}]({filepath})"
-
-
-# parser = DoclingParser(file_path="../../../storage/c4611_sample_explain.pdf")
-# documents = parser.load_documents()
-
-# if EXPORT_TYPE == ExportType.DOC_CHUNKS:
-#     splits = documents
-# elif EXPORT_TYPE == ExportType.MARKDOWN:
-#     from langchain_text_splitters import MarkdownHeaderTextSplitter
-
-#     splitter = MarkdownHeaderTextSplitter(
-#         headers_to_split_on=[
-#             ("#", "Header_1"),
-#             ("##", "Header_2"),
-#             ("###", "Header_3"),
-#         ],
-#     )
-#     splits = [
-#         split for doc in documents for split in splitter.split_text(doc.page_content)
-#     ]
-
-# pattern = r"!\[(.*?)\]\(data:image/([^;]+);base64,([^)]+)\)"
-
-
-# def replacer(match):
-#     alt_text = match.group(1)
-#     img_type = match.group(2)
-#     base64_str = match.group(3)
-
-#     # 解碼並保存
-#     img_data = base64.b64decode(base64_str)
-
-#     # 判斷格式
-#     if img_data[:2] == b"\x89P":
-#         ext = "png"
-#     elif img_data[:2] == b"\xff\xd8":
-#         ext = "jpg"
-#     else:
-#         ext = img_type
-
-#     filename = f"image_{replacer.counter}.{ext}"
-#     filepath = Path("storage", "uuid", filename)
-#     replacer.counter += 1
-#     return f"![{alt_text}]({filepath})"
-
-
-# replacer.counter = 1
-# for doc in documents:
-#     doc.page_content = re.sub(pattern, replacer, doc.page_content)
-
-
-# splitter = MarkdownHeaderTextSplitter(
-#     headers_to_split_on=[
-#         ("#", "Header_1"),
-#         ("##", "Header_2"),
-#         ("###", "Header_3"),
-#     ],
-# )
-# splits = [split for doc in documents for split in splitter.split_text(doc.page_content)]
-
-# for doc in splits:
-#     print("------------------------")
-#     print(doc.page_content)
