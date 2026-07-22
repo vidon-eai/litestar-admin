@@ -2,8 +2,8 @@ from contextlib import asynccontextmanager
 
 from app.cli.commands import cli
 from app.common.enums import StorageTypeEnum
+from app.plugins.route_log.plugin import RouteLoggerPlugin
 from app.plugins.storage.plugin import StoragePlugin
-from app.utils.route_log import RouteLoggerPlugin
 from litestar import Litestar
 
 

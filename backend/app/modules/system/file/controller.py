@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 from enum import Enum
@@ -19,6 +20,7 @@ from app.modules.system.file.schema import FileRead
 from app.modules.system.file.service import FileService
 from app.modules.system.user.schema import UserRead
 from app.plugins.storage.service import StorageService
+from app.utils.parser.docling_parser import DoclingParser
 from litestar import Controller, Response, delete, get, post
 from litestar.datastructures import UploadFile
 from litestar.di import Provide
@@ -106,7 +108,7 @@ class FileController(Controller):
         filesize = len(content)
         file_uuid = uuid.uuid4()
         file_key = (
-            str(current_user.id) + "/uploads" + "/" + str(file_uuid) + "." + extension
+            str(current_user.id) + "/datasets/" + str(file_uuid) + "." + extension
         )
         success = await storage_service.put(file_key, content)
         if not success:
@@ -125,6 +127,54 @@ class FileController(Controller):
         return ApiResponse(
             data=file_service.to_schema(file, schema_type=FileRead),
             detail="文件上傳成功",
+        )
+
+    @get("/ingest/{file_id:uuid}")
+    async def ingest(
+        self,
+        file_id: uuid.UUID,
+        file_service: FileService,
+        storage_service: StorageService,
+        current_user: UserRead = None,
+    ) -> ApiResponse[dict[str, str | list]]:
+        file = await file_service.get_one_or_none(id=file_id)
+        if file is None:
+            raise NotFoundException(detail="文件不存在")
+        if file.storage_type == "local":
+            url = f"./storage/{file.location}"
+        elif file.storage_type == "s3":
+            url = await storage_service.get_url(file.location)
+        else:
+            raise ValueError("not support storage type")
+        if not url:
+            raise HTTPException(status_code=500, detail="生成文件 URL 失敗")
+
+        parser = DoclingParser(file_path=url)
+        documents = parser.load_documents()
+        images = parser.extract_base64_images(documents)
+
+        doc_contents = [doc.page_content for doc in documents]
+
+        semaphore = asyncio.Semaphore(5)
+
+        async def upload_image(image: dict):
+            async with semaphore:
+                content = image["data_uri"]
+                extension = image["format"]
+                file_uuid = uuid.uuid4()
+                file_key = f"{current_user.id}/datasets/images/{file_uuid}.{extension}"
+                return await storage_service.put(file_key, content)
+
+        if images:
+            await asyncio.gather(*(upload_image(img) for img in images))
+
+        return ApiResponse(
+            data={
+                "url": url,
+                "filename": file.name,
+                "documents": doc_contents,
+            },
+            detail="文件 URL 獲取成功",
         )
 
     @get("/download/{file_id:uuid}")

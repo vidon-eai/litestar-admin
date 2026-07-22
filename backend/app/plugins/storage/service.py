@@ -72,5 +72,14 @@ class StorageService:
         except Exception:
             return []
 
+    async def get_url(self, filename: str, expires_in: int = 3600) -> str | None:
+        try:
+            # opendal 的 presign_read 需要傳入過期時間，單位為 datetime.timedelta 或秒數 (int)
+            req = await self.op.presign_read(filename, expires_in)
+            return req.url
+        except Exception as e:
+            print(f"生成文件 URL 失敗: {e}")
+            return None
+
     async def exists(self, filename: str) -> bool:
         return await self.op.exists(path=filename)
