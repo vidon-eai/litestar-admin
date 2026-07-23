@@ -35,5 +35,9 @@ auth = OAuth2PasswordBearerAuth[User](
     token_secret=app_setting.SECRET_KEY,
     default_token_expiration=ACCESS_TOKEN_EXPIRATION,
     token_url="/api/v1/auth/login",
-    exclude=["^/api/v1/schema", "/api/v1/auth/login", "/api/v1/auth/logout"],
+    exclude=[
+        "^/api/v1/schema",
+        "/api/v1/auth/login",
+        "/api/v1/auth/logout",
+    ],
 )

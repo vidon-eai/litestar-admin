@@ -88,7 +88,7 @@ class DoclingParser:
 
         return extracted_images
 
-    def parse(self, documents: list[Document]):
+    def parse(self, documents: list[Document], extra_metadata: dict | None = None):
         splitter = MarkdownHeaderTextSplitter(
             headers_to_split_on=[
                 ("#", "Header_1"),
@@ -96,10 +96,19 @@ class DoclingParser:
                 ("###", "Header_3"),
             ],
         )
-        splits = [
-            split
-            for doc in documents
-            for split in splitter.split_text(doc.page_content)
-        ]
+        splits = []
+        for doc in documents:
+            # 進行切片
+            doc_splits = splitter.split_text(doc.page_content)
+
+            for split in doc_splits:
+                # 1. 保留原本 doc 的 metadata（如果有的话）
+                split.metadata.update(doc.metadata)
+
+                # 2. 注入外部傳入的額外 metadata（如 file_id）
+                if extra_metadata:
+                    split.metadata.update(extra_metadata)
+
+                splits.append(split)
 
         return splits

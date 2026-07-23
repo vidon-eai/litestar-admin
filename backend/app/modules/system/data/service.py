@@ -1,10 +1,10 @@
 from advanced_alchemy.repository import SQLAlchemyAsyncRepository
 from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
-from app.db.models import File
+from app.db.models import Data
 
 
-class FileService(SQLAlchemyAsyncRepositoryService[File]):
-    class Repo(SQLAlchemyAsyncRepository[File]):
-        model_type = File
+class DataService(SQLAlchemyAsyncRepositoryService[Data]):
+    class Repo(SQLAlchemyAsyncRepository[Data]):
+        model_type = Data
 
     repository_type = Repo

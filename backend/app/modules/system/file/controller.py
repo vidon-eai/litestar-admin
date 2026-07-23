@@ -133,7 +133,7 @@ class FileController(Controller):
             detail="文件上傳成功",
         )
 
-    @get("/ingest/{file_id:uuid}")
+    @post("/ingest/{file_id:uuid}")
     async def ingest(
         self,
         file_id: uuid.UUID,
@@ -172,14 +172,16 @@ class FileController(Controller):
         parser = DoclingParser(file_path=url)
         documents = parser.load_documents()
         await parser.extract_base64_images(documents, upload_fn=handle_image_upload)
-
-        markdown_content = "\n\n".join(doc.page_content for doc in documents)
-        return ApiResponse(
-            data={
-                "url": url,
+        splits = parser.parse(
+            documents,
+            extra_metadata={
                 "filename": file.name,
-                "markdown": markdown_content,
+                "source": file.location,
             },
+        )
+
+        return ApiResponse(
+            data=splits,
             detail="文件 URL 獲取成功",
         )
 
@@ -233,6 +235,7 @@ class FileController(Controller):
         "/preview/{file_key:path}",
         summary="預覽圖片/文件",
         description="根據存储 file_key 直接返回文件流或重定向至 S3 預覽链接",
+        exclude_from_auth=True,
     )
     async def preview_file(
         self,
