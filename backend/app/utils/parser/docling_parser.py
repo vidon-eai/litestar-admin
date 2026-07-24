@@ -1,6 +1,6 @@
 import base64
 import re
-from typing import Awaitable, Callable
+from typing import Awaitable, Callable, Iterator
 
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
@@ -11,13 +11,15 @@ from langchain_docling.loader import DoclingLoader, ExportType
 from langchain_text_splitters import MarkdownHeaderTextSplitter
 
 EXPORT_TYPE = ExportType.MARKDOWN
-IMAGE_RESOLUTION_SCALE = 1
+IMAGE_RESOLUTION_SCALE = 2
 
 
 class DoclingParser:
     def __init__(self, file_path: str):
         pipeline_options = PdfPipelineOptions(
-            images_scale=IMAGE_RESOLUTION_SCALE, generate_picture_images=True
+            images_scale=IMAGE_RESOLUTION_SCALE,
+            generate_picture_images=True,
+            do_ocr=True,
         )
 
         converter = DocumentConverter(
@@ -38,10 +40,10 @@ class DoclingParser:
         self._documents: list[Document] = []
         self._images: list[bytes] = []
 
-    def load_documents(self) -> list[Document]:
-        return self._loader.load()
+    def load_documents(self) -> Iterator[Document]:
+        return self._loader.lazy_load()
 
-    async def extract_base64_images(
+    async def extract_images(
         self,
         documents: list[Document],
         upload_fn: Callable[[bytes, str], Awaitable[str]] | None = None,

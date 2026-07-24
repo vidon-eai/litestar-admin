@@ -62,6 +62,15 @@ class StorageService:
             print(f"文件删除失败: {e}")
             return False
 
+    async def delete_dir(self, dir_path: str) -> bool:
+        print("Delete directory:", dir_path)
+        try:
+            await self.op.remove_all(dir_path)
+            return True
+        except Exception as e:
+            print(f"目录删除失败: {e}")
+            return False
+
     async def list(self, prefix: str = "") -> List[str]:
         try:
             entries = await self.op.list(prefix)

@@ -159,8 +159,12 @@ class FileController(Controller):
         async def handle_image_upload(content: bytes, extension: str) -> str:
             async with semaphore:
                 file_uuid = uuid.uuid4()
-                user_id = current_user.id if current_user else "system"
-                file_key = f"{user_id}/datasets/images/{file_uuid}.{extension}"
+                if not current_user:
+                    raise NotFoundException(detail="用戶不存在")
+                user_id = current_user.id
+                file_key = (
+                    f"{user_id}/datasets/{file.id}/images/{file_uuid}.{extension}"
+                )
 
                 success = await storage_service.put(file_key, content)
                 if not success:
@@ -170,8 +174,11 @@ class FileController(Controller):
                 return f"{API_BASE_URL}/files/preview/{file_key}"
 
         parser = DoclingParser(file_path=url)
-        documents = parser.load_documents()
-        await parser.extract_base64_images(documents, upload_fn=handle_image_upload)
+
+        documents = list(parser.load_documents())
+
+        await storage_service.delete_dir(f"{current_user.id}/datasets/{file.id}/images")
+        await parser.extract_images(documents, upload_fn=handle_image_upload)
         splits = parser.parse(
             documents,
             extra_metadata={
