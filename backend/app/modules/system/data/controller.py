@@ -5,23 +5,24 @@ from uuid import UUID
 from advanced_alchemy.extensions.litestar import providers
 from advanced_alchemy.filters import LimitOffset, OrderBy, SearchFilter
 from advanced_alchemy.service import OffsetPagination
-from litestar import Controller, delete, get, patch, post
-from litestar.di import Provide
-from litestar.params import Dependency
-from litestar.status_codes import HTTP_200_OK
-
-from app.common.response import ApiResponse, COMMON_RESPONSES
+from app.common.response import COMMON_RESPONSES, ApiResponse
 from app.core.dependencies import (
     create_order_provider,
     create_search_provider,
     provide_pagination,
 )
+from app.db.models.dataset import Collection
 from app.modules.system.data.schema import (
     DataCreate,
     DataRead,
     DataUpdate,
 )
 from app.modules.system.data.service import DataService
+from litestar import Controller, delete, get, patch, post
+from litestar.di import Provide
+from litestar.params import Dependency
+from litestar.status_codes import HTTP_200_OK
+
 
 class DataOrderFields(Enum):
     created_at = "created_at"
@@ -29,8 +30,8 @@ class DataOrderFields(Enum):
 
 
 class DataController(Controller):
-    path = "/datas"
-    tags = ["Data模塊"]
+    path = "/{collection_id:uuid}/datas"
+    tags = ["文檔切片數據模塊"]
     dependencies = {
         **providers.create_service_dependencies(
             DataService,
@@ -40,7 +41,7 @@ class DataController(Controller):
 
     @get(
         "/",
-        summary="Data模塊列表",
+        summary="文檔切片數據模塊列表",
         responses={
             **COMMON_RESPONSES,
         },
@@ -56,6 +57,7 @@ class DataController(Controller):
     )
     async def list_datas(
         self,
+        collection_id: UUID,
         data_service: DataService,
         pagination: Annotated[LimitOffset, Dependency(skip_validation=True)],
         search_filter: Annotated[
@@ -73,18 +75,21 @@ class DataController(Controller):
         if order_filter:
             filters.append(order_filter)
 
-        results, total_count = await data_service.list_and_count(*filters)
+        results, total_count = await data_service.list_and_count(
+            *filters,
+            Collection.id == collection_id,
+        )
 
         return ApiResponse(
             data=data_service.to_schema(
                 results, total=total_count, filters=filters, schema_type=DataRead
             ),
-            detail="Data模塊列表獲取成功",
+            detail="文檔切片數據模塊列表獲取成功",
         )
 
     @get(
         "/{data_id:uuid}",
-        summary="Data模塊詳情",
+        summary="文檔切片數據模塊詳情",
         responses={
             **COMMON_RESPONSES,
         },
@@ -98,11 +103,11 @@ class DataController(Controller):
 
         return ApiResponse(
             data=data_service.to_schema(result, schema_type=DataRead),
-            detail="Data模塊詳情獲取成功",
+            detail="文檔切片數據模塊詳情獲取成功",
         )
 
     @post(
-        summary="創建Data模塊",
+        summary="創建文檔切片數據模塊",
         responses={
             **COMMON_RESPONSES,
         },
@@ -116,12 +121,12 @@ class DataController(Controller):
 
         return ApiResponse(
             data=data_service.to_schema(result, schema_type=DataRead),
-            detail="Data模塊創建成功",
+            detail="文檔切片數據模塊創建成功",
         )
 
     @patch(
         "/{data_id:uuid}",
-        summary="更新Data模塊",
+        summary="更新文檔切片數據模塊",
         responses={
             **COMMON_RESPONSES,
         },
@@ -136,12 +141,12 @@ class DataController(Controller):
 
         return ApiResponse(
             data=data_service.to_schema(result, schema_type=DataRead),
-            detail="Data模塊更新成功",
+            detail="文檔切片數據模塊更新成功",
         )
 
     @delete(
         "/{data_id:uuid}",
-        summary="刪除Data模塊",
+        summary="刪除文檔切片數據模塊",
         responses={
             **COMMON_RESPONSES,
         },
@@ -156,5 +161,5 @@ class DataController(Controller):
 
         return ApiResponse(
             data=None,
-            detail="Data模塊刪除成功",
+            detail="文檔切片數據模塊刪除成功",
         )

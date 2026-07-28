@@ -2,13 +2,14 @@ from uuid import UUID
 
 from advanced_alchemy.base import UUIDv7AuditBase
 from app.common.enums import StorageTypeEnum
+from app.db.models.dataset import Collection
 from sqlalchemy import (
     BigInteger,
     Enum,
     ForeignKey,
     String,
 )
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 class File(UUIDv7AuditBase):
@@ -37,4 +38,9 @@ class File(UUIDv7AuditBase):
         default=StorageTypeEnum.LOCAL,
         nullable=False,
         comment="文件來源",
+    )
+    collections: Mapped[list["Collection"]] = relationship(
+        "Collection",
+        back_populates="file",
+        cascade="all, delete-orphan",
     )

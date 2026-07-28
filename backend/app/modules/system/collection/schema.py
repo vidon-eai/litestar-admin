@@ -1,6 +1,8 @@
 from uuid import UUID
 
 from app.core.base_schema import BaseSchema
+from app.modules.system.data.schema import DataRead
+from app.modules.system.file.schema import FileRead
 from pydantic import BaseModel, Field
 
 
@@ -20,3 +22,11 @@ class CollectionUpdate(BaseModel):
 
 
 class CollectionRead(CollectionBase): ...
+
+
+class CollectionWithFileRead(CollectionBase):
+    file: FileRead | None
+
+
+class CollectionWithDatas(CollectionBase):
+    datas: list[DataRead] = Field([], description="數據集分片數據")

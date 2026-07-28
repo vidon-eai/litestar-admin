@@ -19,7 +19,6 @@ class DoclingParser:
         pipeline_options = PdfPipelineOptions(
             images_scale=IMAGE_RESOLUTION_SCALE,
             generate_picture_images=True,
-            do_ocr=True,
         )
 
         converter = DocumentConverter(
@@ -98,7 +97,7 @@ class DoclingParser:
                 ("###", "Header_3"),
             ],
         )
-        splits = []
+        splits: list[Document] = []
         for doc in documents:
             # 進行切片
             doc_splits = splitter.split_text(doc.page_content)

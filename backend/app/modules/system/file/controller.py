@@ -1,4 +1,3 @@
-import asyncio
 import mimetypes
 import os
 import uuid
@@ -17,13 +16,12 @@ from app.core.dependencies import (
     create_search_provider,
     provide_pagination,
 )
-from app.modules.system.file.schema import FileRead
+from app.modules.system.collection.service import CollectionService
+from app.modules.system.file.schema import FileRead, UploadFileFormData
 from app.modules.system.file.service import FileService
 from app.modules.system.user.schema import UserRead
 from app.plugins.storage.service import StorageService
-from app.utils.parser.docling_parser import DoclingParser
 from litestar import Controller, Response, delete, get, post
-from litestar.datastructures import UploadFile
 from litestar.di import Provide
 from litestar.exceptions import HTTPException, NotFoundException
 from litestar.params import Dependency, MultipartBody
@@ -98,21 +96,35 @@ class FileController(Controller):
             **COMMON_RESPONSES,
         },
         request_max_body_size=100 * 1024 * 1024,  # 100MB
+        dependencies={
+            **providers.create_service_dependencies(
+                CollectionService, "collection_service"
+            )
+        },
     )
     async def upload_file(
         self,
         storage_service: StorageService,
         file_service: FileService,
-        data: MultipartBody[UploadFile],
+        collection_service: CollectionService,
+        data: MultipartBody[UploadFileFormData],
         current_user: UserRead = None,
     ) -> ApiResponse[FileRead]:
-        content = data.file.read()
-        filename = data.filename
+        dataset_id = data.dataset_id
+        content = await data.file.read()
+        filename = data.file.filename
+        content_type = data.file.content_type
         extension = os.path.splitext(filename)[1].lstrip(".").lower()
         filesize = len(content)
         file_uuid = uuid.uuid4()
         file_key = (
-            str(current_user.id) + "/datasets/" + str(file_uuid) + "." + extension
+            str(current_user.id)
+            + "/datasets/"
+            + str(dataset_id)
+            + "/"
+            + str(file_uuid)
+            + "."
+            + extension
         )
         success = await storage_service.put(file_key, content)
         if not success:
@@ -120,76 +132,27 @@ class FileController(Controller):
         file = await file_service.create(
             {
                 "created_by": current_user.id,
-                "name": data.filename,
+                "name": filename,
                 "location": file_key,
                 "size": filesize,
-                "type": data.content_type,
+                "type": content_type,
                 "storage_type": storage_service.storage_type,
             }
         )
 
+        try:
+            await collection_service.create(
+                {"file": file, "dataset_id": dataset_id, "name": file.name}
+            )
+        except Exception as e:
+            await storage_service.delete(file_key)
+            await file_service.delete(file.id)
+
+            raise HTTPException(status_code=500, detail=e)
+
         return ApiResponse(
             data=file_service.to_schema(file, schema_type=FileRead),
             detail="文件上傳成功",
-        )
-
-    @post("/ingest/{file_id:uuid}")
-    async def ingest(
-        self,
-        file_id: uuid.UUID,
-        file_service: FileService,
-        storage_service: StorageService,
-        current_user: UserRead = None,
-    ) -> ApiResponse[dict[str, str | list]]:
-        file = await file_service.get_one_or_none(id=file_id)
-        if file is None:
-            raise NotFoundException(detail="文件不存在")
-        if file.storage_type == "local":
-            url = f"./storage/{file.location}"
-        elif file.storage_type == "s3":
-            url = await storage_service.get_url(file.location)
-        else:
-            raise ValueError("not support storage type")
-
-        if not url:
-            raise HTTPException(status_code=500, detail="生成文件 URL 失敗")
-
-        semaphore = asyncio.Semaphore(5)
-
-        async def handle_image_upload(content: bytes, extension: str) -> str:
-            async with semaphore:
-                file_uuid = uuid.uuid4()
-                if not current_user:
-                    raise NotFoundException(detail="用戶不存在")
-                user_id = current_user.id
-                file_key = (
-                    f"{user_id}/datasets/{file.id}/images/{file_uuid}.{extension}"
-                )
-
-                success = await storage_service.put(file_key, content)
-                if not success:
-                    raise HTTPException(status_code=500, detail="圖片上傳失敗")
-
-                # 替换为前端可以直接访问的图片预览接口路由路径
-                return f"{API_BASE_URL}/files/preview/{file_key}"
-
-        parser = DoclingParser(file_path=url)
-
-        documents = list(parser.load_documents())
-
-        await storage_service.delete_dir(f"{current_user.id}/datasets/{file.id}/images")
-        await parser.extract_images(documents, upload_fn=handle_image_upload)
-        splits = parser.parse(
-            documents,
-            extra_metadata={
-                "filename": file.name,
-                "source": file.location,
-            },
-        )
-
-        return ApiResponse(
-            data=splits,
-            detail="文件 URL 獲取成功",
         )
 
     @get("/download/{file_id:uuid}")

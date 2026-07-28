@@ -11,10 +11,12 @@ from app.core.dependencies import (
     create_search_provider,
     provide_pagination,
 )
+from app.db.models.dataset import Collection
 from app.modules.system.collection.schema import (
     CollectionCreate,
     CollectionRead,
     CollectionUpdate,
+    CollectionWithDatas,
 )
 from app.modules.system.collection.service import CollectionService
 from litestar import Controller, delete, get, patch, post
@@ -29,7 +31,7 @@ class CollectionOrderFields(Enum):
 
 
 class CollectionController(Controller):
-    path = "/collections"
+    path = "/{dataset_id:uuid}/collections"
     tags = ["知識庫文檔模塊"]
     dependencies = {
         **providers.create_service_dependencies(
@@ -56,6 +58,7 @@ class CollectionController(Controller):
     )
     async def list_collections(
         self,
+        dataset_id: UUID,
         collection_service: CollectionService,
         pagination: Annotated[LimitOffset, Dependency(skip_validation=True)],
         search_filter: Annotated[
@@ -65,7 +68,6 @@ class CollectionController(Controller):
             OrderBy | None, Dependency(skip_validation=True)
         ] = None,
     ) -> ApiResponse[OffsetPagination[CollectionRead]]:
-
         filters = [pagination]
         if search_filter:
             filters.append(search_filter)
@@ -73,7 +75,9 @@ class CollectionController(Controller):
         if order_filter:
             filters.append(order_filter)
 
-        results, total_count = await collection_service.list_and_count(*filters)
+        results, total_count = await collection_service.list_and_count(
+            *filters, Collection.dataset_id == dataset_id
+        )
 
         return ApiResponse(
             data=collection_service.to_schema(
@@ -93,11 +97,11 @@ class CollectionController(Controller):
         self,
         collection_service: CollectionService,
         collection_id: UUID,
-    ) -> ApiResponse[CollectionRead]:
+    ) -> ApiResponse[CollectionWithDatas]:
         result = await collection_service.get(collection_id)
 
         return ApiResponse(
-            data=collection_service.to_schema(result, schema_type=CollectionRead),
+            data=collection_service.to_schema(result, schema_type=CollectionWithDatas),
             detail="詳情獲取成功",
         )
 
