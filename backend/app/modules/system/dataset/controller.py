@@ -2,11 +2,11 @@ import asyncio
 import os
 import uuid
 from enum import Enum
-from typing import Annotated
+from typing import Annotated, Any
 from uuid import UUID
 
 from advanced_alchemy.extensions.litestar import providers
-from advanced_alchemy.filters import LimitOffset, OrderBy, SearchFilter
+from advanced_alchemy.filters import FilterTypes, LimitOffset, OrderBy, SearchFilter
 from advanced_alchemy.service import OffsetPagination
 from app.common.response import (
     COMMON_RESPONSES,
@@ -24,7 +24,7 @@ from app.modules.system.dataset.schema import (
     DatasetCreate,
     DatasetRead,
     DatasetUpdate,
-    DatesetWithCollectionsRead,
+    DatasetWithCollectionsRead,
 )
 from app.modules.system.dataset.service import DatasetService
 from app.modules.system.user.schema import UserRead
@@ -82,12 +82,10 @@ class DatasetController(Controller):
         ] = None,
     ) -> ApiResponse[OffsetPagination[DatasetRead]]:
 
-        filters = [pagination]
-        if search_filter:
-            filters.append(search_filter)
-
-        if order_filter:
-            filters.append(order_filter)
+        filters: list[FilterTypes] = []
+        for filter_item in (pagination, search_filter, order_filter):
+            if filter_item:
+                filters.append(filter_item)
 
         results, total_count = await dataset_service.list_and_count(*filters)
 
@@ -127,7 +125,7 @@ class DatasetController(Controller):
         self,
         dataset_service: DatasetService,
         data: DatasetCreate,
-        current_user: UserRead = None,
+        current_user: UserRead,
     ) -> ApiResponse[DatasetRead]:
         data.created_by = current_user.id
         result = await dataset_service.create(data)
@@ -162,7 +160,7 @@ class DatasetController(Controller):
         },
         status_code=HTTP_200_OK,
     )
-    async def delete_role(
+    async def delete_dataset(
         self, dataset_service: DatasetService, dataset_id: UUID
     ) -> ApiResponse[None]:
         await dataset_service.delete(dataset_id)
@@ -174,7 +172,7 @@ class DatasetController(Controller):
 
     @get(
         "/{dataset_id:uuid}/documents",
-        summary="知識庫詳情",
+        summary="知識庫文檔列表(含分組)",
         responses={
             **COMMON_RESPONSES,
         },
@@ -183,16 +181,16 @@ class DatasetController(Controller):
         self,
         dataset_service: DatasetService,
         dataset_id: UUID,
-    ) -> ApiResponse[DatesetWithCollectionsRead]:
+    ) -> ApiResponse[DatasetWithCollectionsRead]:
         result = await dataset_service.get_dataset_with_collections(
             dataset_id=dataset_id
         )
 
         return ApiResponse(
             data=dataset_service.to_schema(
-                result, schema_type=DatesetWithCollectionsRead
+                result, schema_type=DatasetWithCollectionsRead
             ),
-            detail="知識庫詳情獲取成功",
+            detail="知識庫文檔列表(含分組)獲取成功",
         )
 
     @post(
@@ -206,12 +204,12 @@ class DatasetController(Controller):
     )
     async def ingest(
         self,
-        collection_id: uuid.UUID,
+        collection_id: UUID,
         collection_service: CollectionService,
         data_service: DataService,
         storage_service: StorageService,
-        current_user: UserRead = None,
-    ) -> ApiResponse[dict[str, str | list]]:
+        current_user: UserRead,
+    ) -> ApiResponse[list[Any]]:
 
         result = await collection_service.get_one(id=collection_id)
         collection = collection_service.to_schema(
@@ -222,7 +220,7 @@ class DatasetController(Controller):
         if file is None:
             raise NotFoundException(detail="文件不存在")
         if file.storage_type == "local":
-            url = f"./storage/{file.location}"
+            url = url = os.path.join("./storage", file.location)
         elif file.storage_type == "s3":
             url = await storage_service.get_url(file.location)
         else:
@@ -233,22 +231,23 @@ class DatasetController(Controller):
 
         semaphore = asyncio.Semaphore(5)
 
-        async def handle_image_upload(content: bytes, extension: str) -> str:
+        async def handle_image_upload(content: bytes, extension: str) -> str | None:
             async with semaphore:
-                file_uuid = uuid.uuid4()
-                if not current_user:
-                    raise NotFoundException(detail="用戶不存在")
-                user_id = current_user.id
-                file_key = (
-                    f"{user_id}/datasets/{file.id}/images/{file_uuid}.{extension}"
-                )
+                try:
+                    file_uuid = uuid.uuid4()
+                    if not current_user:
+                        raise NotFoundException(detail="用戶不存在")
+                    user_id = current_user.id
+                    file_key = f"{user_id}/datasets/{collection.dataset_id}/{file.id}/images/{file_uuid}.{extension}"
 
-                success = await storage_service.put(file_key, content)
-                if not success:
-                    raise HTTPException(status_code=500, detail="圖片上傳失敗")
+                    success = await storage_service.put(file_key, content)
+                    if not success:
+                        raise HTTPException(status_code=500, detail="圖片上傳失敗")
 
-                # 替换为前端可以直接访问的图片预览接口路由路径
-                return f"{API_BASE_URL}/files/preview/{file_key}"
+                    # 替换为前端可以直接访问的图片预览接口路由路径
+                    return f"{API_BASE_URL}/files/preview/{file_key}"
+                except Exception:
+                    return None
 
         parser = DoclingParser(file_path=url)
 
@@ -278,5 +277,5 @@ class DatasetController(Controller):
 
         return ApiResponse(
             data=data,
-            detail="文件 URL 獲取成功",
+            detail="文檔切片導入知識庫成功",
         )

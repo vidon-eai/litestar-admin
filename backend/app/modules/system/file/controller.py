@@ -5,7 +5,7 @@ from enum import Enum
 from typing import Annotated
 
 from advanced_alchemy.extensions.litestar import providers
-from advanced_alchemy.filters import LimitOffset, OrderBy, SearchFilter
+from advanced_alchemy.filters import FilterTypes, LimitOffset, OrderBy, SearchFilter
 from advanced_alchemy.service import OffsetPagination
 from app.common.response import (
     COMMON_RESPONSES,
@@ -73,12 +73,10 @@ class FileController(Controller):
         ] = None,
     ) -> ApiResponse[OffsetPagination[FileRead]]:
 
-        filters = [pagination]
-        if search_filter:
-            filters.append(search_filter)
-
-        if order_filter:
-            filters.append(order_filter)
+        filters: list[FilterTypes] = []
+        for filter_item in (pagination, search_filter, order_filter):
+            if filter_item:
+                filters.append(filter_item)
 
         results, total_count = await file_service.list_and_count(*filters)
 
@@ -108,7 +106,7 @@ class FileController(Controller):
         file_service: FileService,
         collection_service: CollectionService,
         data: MultipartBody[UploadFileFormData],
-        current_user: UserRead = None,
+        current_user: UserRead,
     ) -> ApiResponse[FileRead]:
         dataset_id = data.dataset_id
         content = await data.file.read()
@@ -148,7 +146,7 @@ class FileController(Controller):
             await storage_service.delete(file_key)
             await file_service.delete(file.id)
 
-            raise HTTPException(status_code=500, detail=e)
+            raise HTTPException(status_code=500, detail=str(e))
 
         return ApiResponse(
             data=file_service.to_schema(file, schema_type=FileRead),

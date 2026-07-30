@@ -26,5 +26,5 @@ class DatasetUpdate(BaseModel):
 class DatasetRead(DatasetBase): ...
 
 
-class DatesetWithCollectionsRead(DatasetBase):
+class DatasetWithCollectionsRead(DatasetBase):
     collections: list[CollectionRead] = Field([])

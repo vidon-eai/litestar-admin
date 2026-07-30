@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Annotated, Any, Literal, Sequence, Type, TypeVar
+from typing import Annotated, Any, Literal, Type, TypeVar
 
 from advanced_alchemy.filters import (
     ComparisonFilter,
@@ -24,7 +24,7 @@ async def provide_pagination(
     return LimitOffset(limit=page_size, offset=(page - 1) * page_size)
 
 
-def create_search_provider(field_names: Sequence[str]):
+def create_search_provider(field_names: set[str]):
     """
     搜索工廠：根據傳入的字段列表生成專用的 SearchFilter Provider
     """
@@ -48,6 +48,9 @@ def create_search_provider(field_names: Sequence[str]):
 
 T = TypeVar("T", bound=Enum)
 
+QUERY_ORDER_BY = "orderBy"
+QUERY_SORT_ORDER = "sortOrder"
+
 
 def create_order_provider(order_enum: Type[T], default_field: str | None = None):
     """
@@ -56,10 +59,10 @@ def create_order_provider(order_enum: Type[T], default_field: str | None = None)
 
     async def provide_order(
         order_by: Annotated[
-            order_enum | None, Parameter(query="orderBy", default=None)
+            order_enum | None, Parameter(query=QUERY_ORDER_BY, default=None)
         ] = None,
         sort_order: Annotated[
-            SortBy, Parameter(query="sortOrder", default=SortBy.DESC)
+            SortBy, Parameter(query=QUERY_SORT_ORDER, default=SortBy.DESC)
         ] = SortBy.DESC,
     ) -> OrderBy | None:
         field = order_by.value if order_by else default_field

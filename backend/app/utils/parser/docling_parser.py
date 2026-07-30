@@ -5,7 +5,7 @@ from typing import Awaitable, Callable, Iterator
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter, PdfFormatOption
-from docling_core.types.doc import ImageRefMode
+from docling_core.types.doc.base import ImageRefMode
 from langchain_core.documents import Document
 from langchain_docling.loader import DoclingLoader, ExportType
 from langchain_text_splitters import MarkdownHeaderTextSplitter
@@ -45,7 +45,7 @@ class DoclingParser:
     async def extract_images(
         self,
         documents: list[Document],
-        upload_fn: Callable[[bytes, str], Awaitable[str]] | None = None,
+        upload_fn: Callable[[bytes, str], Awaitable[str | None]] | None = None,
     ) -> list[dict]:
         """
         提取 Base64 圖片。如果傳入 upload_fn，则上传图片并直接替换 Document 中的图片路径。
