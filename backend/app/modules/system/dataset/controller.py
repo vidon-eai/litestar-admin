@@ -1,25 +1,22 @@
 import asyncio
 import os
 import uuid
-from enum import Enum
 from typing import Annotated, Any
 from uuid import UUID
 
 from advanced_alchemy.extensions.litestar import providers
-from advanced_alchemy.filters import FilterTypes, LimitOffset, OrderBy, SearchFilter
+from advanced_alchemy.filters import (
+    FilterTypes,
+)
 from advanced_alchemy.service import OffsetPagination
 from app.common.response import (
     COMMON_RESPONSES,
     ApiResponse,
 )
-from app.core.dependencies import (
-    create_order_provider,
-    create_search_provider,
-    provide_pagination,
-)
 from app.modules.system.collection.schema import CollectionWithFileRead
 from app.modules.system.collection.service import CollectionService
 from app.modules.system.data.service import DataService
+from app.modules.system.dataset.deps import provide_dataset_filters
 from app.modules.system.dataset.schema import (
     DatasetCreate,
     DatasetRead,
@@ -39,19 +36,11 @@ from litestar.status_codes import HTTP_200_OK
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8002/api/v1")
 
 
-class DatasetOrderFields(Enum):
-    created_at = "created_at"
-    updated_at = "updated_at"
-
-
 class DatasetController(Controller):
     path = "/datasets"
     tags = ["知識庫管理模塊"]
     dependencies = {
-        **providers.create_service_dependencies(
-            DatasetService,
-            "dataset_service",
-        ),
+        **providers.create_service_dependencies(DatasetService, "dataset_service"),
     }
 
     @get(
@@ -60,32 +49,13 @@ class DatasetController(Controller):
         responses={
             **COMMON_RESPONSES,
         },
-        dependencies={
-            "pagination": Provide(provide_pagination),
-            "search_filter": Provide(create_search_provider({"name"})),
-            "order_filter": Provide(
-                create_order_provider(
-                    order_enum=DatasetOrderFields, default_field="created_at"
-                )
-            ),
-        },
+        dependencies={"filters": Provide(provide_dataset_filters)},
     )
     async def list_datasets(
         self,
         dataset_service: DatasetService,
-        pagination: Annotated[LimitOffset, Dependency(skip_validation=True)],
-        search_filter: Annotated[
-            SearchFilter | None, Dependency(skip_validation=True)
-        ] = None,
-        order_filter: Annotated[
-            OrderBy | None, Dependency(skip_validation=True)
-        ] = None,
+        filters: Annotated[list[FilterTypes], Dependency(skip_validation=True)],
     ) -> ApiResponse[OffsetPagination[DatasetRead]]:
-
-        filters: list[FilterTypes] = []
-        for filter_item in (pagination, search_filter, order_filter):
-            if filter_item:
-                filters.append(filter_item)
 
         results, total_count = await dataset_service.list_and_count(*filters)
 

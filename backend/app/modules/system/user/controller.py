@@ -1,24 +1,25 @@
 from enum import Enum
 from typing import Annotated
 from uuid import UUID
+
 from advanced_alchemy.extensions.litestar import providers
 from advanced_alchemy.filters import LimitOffset, OrderBy, SearchFilter
 from advanced_alchemy.service import OffsetPagination
-from litestar import Controller, get, post, patch, delete
-from litestar.di import Provide
-from litestar.params import Dependency
-from litestar.status_codes import HTTP_200_OK
-from app.core.dependencies import (
-    create_order_provider,
-    create_search_provider,
-    provide_pagination,
-)
 from app.common.response import (
     COMMON_RESPONSES,
     ApiResponse,
 )
-from app.modules.system.user.service import UserService
+from app.core.dependencies import (
+    create_order_provider,
+    create_pagination_provider,
+    create_search_provider,
+)
 from app.modules.system.user.schema import UserCreate, UserRead, UserUpdate
+from app.modules.system.user.service import UserService
+from litestar import Controller, delete, get, patch, post
+from litestar.di import Provide
+from litestar.params import Dependency
+from litestar.status_codes import HTTP_200_OK
 
 
 class UserOrderFields(str, Enum):
@@ -44,7 +45,7 @@ class UserController(Controller):
             **COMMON_RESPONSES,
         },
         dependencies={
-            "pagination": Provide(provide_pagination),
+            "pagination": Provide(create_pagination_provider),
             "search_filter": Provide(create_search_provider({"username", "email"})),
             "order_filter": Provide(
                 create_order_provider(

@@ -8,8 +8,8 @@ from advanced_alchemy.service import OffsetPagination
 from app.common.response import COMMON_RESPONSES, ApiResponse
 from app.core.dependencies import (
     create_order_provider,
+    create_pagination_provider,
     create_search_provider,
-    provide_pagination,
 )
 from app.db.models.dataset import Collection
 from app.modules.system.data.schema import (
@@ -46,7 +46,7 @@ class DataController(Controller):
             **COMMON_RESPONSES,
         },
         dependencies={
-            "pagination": Provide(provide_pagination),
+            "pagination": Provide(create_pagination_provider),
             "search_filter": Provide(create_search_provider({"name"})),
             "order_filter": Provide(
                 create_order_provider(

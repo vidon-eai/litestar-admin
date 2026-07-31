@@ -1,8 +1,9 @@
 from enum import Enum
-from typing import Annotated, Any, Literal, Type, TypeVar
+from typing import Annotated, Any, Literal, Sequence, Type, TypeVar
 
 from advanced_alchemy.filters import (
     ComparisonFilter,
+    FilterTypes,
     LimitOffset,
     OrderBy,
     SearchFilter,
@@ -14,7 +15,7 @@ from litestar.params import Parameter
 from litestar.security.jwt import Token
 
 
-async def provide_pagination(
+async def create_pagination_provider(
     page: Annotated[int, Parameter(ge=1, default=1, description="頁碼")],
     page_size: Annotated[
         Literal[10, 20, 30, 50],
@@ -58,12 +59,10 @@ def create_order_provider(order_enum: Type[T], default_field: str | None = None)
     """
 
     async def provide_order(
-        order_by: Annotated[
-            order_enum | None, Parameter(query=QUERY_ORDER_BY, default=None)
-        ] = None,
+        order_by: Annotated[order_enum, Parameter(query=QUERY_ORDER_BY, default=None)],
         sort_order: Annotated[
             SortBy, Parameter(query=QUERY_SORT_ORDER, default=SortBy.DESC)
-        ] = SortBy.DESC,
+        ],
     ) -> OrderBy | None:
         field = order_by.value if order_by else default_field
         if not field:
@@ -109,3 +108,42 @@ def provide_user(request: Request[User, Token, Any]) -> Any:
         User
     """
     return request.user
+
+
+def build_query_filters(
+    page: int = 1,
+    page_size: int = 10,
+    search: str | None = None,
+    search_fields: Sequence[str] = ("name", "description"),
+    order_by: Enum | str | None = None,
+    sort_order: SortBy | None = None,
+    exact_matches: list[tuple[str, str, Any]] | None = None,
+    custom_filters: list[Any] | None = None,
+) -> list[FilterTypes]:
+    filters: list[FilterTypes] = []
+
+    # 1. 模糊搜索
+    if search and search_fields:
+        filters.append(SearchFilter(field_name=list(search_fields), value=search))
+
+    # 2. 精准匹配列表 (field_name, operator, value)
+    if exact_matches:
+        for field_name, op, val in exact_matches:
+            if val is not None:
+                filters.append(
+                    ComparisonFilter(field_name=field_name, operator=op, value=val)
+                )
+
+    # 3. 排序
+    if order_by and sort_order:
+        field_val = order_by.value if isinstance(order_by, Enum) else order_by
+        filters.append(OrderBy(field_name=field_val, sort_order=sort_order.value))
+
+    # 4. 自定义拓展的复杂 Filter 实例
+    if custom_filters:
+        filters.extend(custom_filters)
+
+    # 5. 分页
+    filters.append(LimitOffset(limit=page_size, offset=(page - 1) * page_size))
+
+    return filters

@@ -7,6 +7,11 @@ class SortBy(str, Enum):
     DESC = "desc"
 
 
+class SortFields(Enum):
+    CREATED_AT = "created_at"
+    UPDATED_AT = "updated_at"
+
+
 class StatusEnum(StrEnum):
     VALID = "1"
     INVALID = "0"

@@ -71,7 +71,7 @@ class DatabaseSetting(BaseSettings):
             if self.DB_TYPE == "sqlite"
             else (
                 f"{self.SQLALCHEMY_DATABASE_URI_SCHEME}://"
-                f"{quote_plus(self.DB_USERNAME)}:{quote_plus(self.DB_PASSWORD)}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_DATABASE}"
+                f"{quote_plus(self.DB_USERNAME)}:{quote_plus(self.DB_PASSWORD)}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_DATABASE}?ssl=disable"
             )
         )
 
@@ -82,7 +82,9 @@ class DatabaseSetting(BaseSettings):
             connection_string=self.SQLALCHEMY_DATABASE_URI,
             before_send_handler="autocommit",
             session_config=AsyncSessionConfig(expire_on_commit=False),
-            engine_config=EngineConfig(echo=self.SQLALCHEMY_ECHO),
+            engine_config=EngineConfig(
+                echo=self.SQLALCHEMY_ECHO, pool_pre_ping=True, pool_recycle=300
+            ),
             alembic_config=AlembicAsyncConfig(
                 script_location=f"{ALEMBIC_CONFIG_DIR}",
                 script_config=f"{ALEMBIC_CONFIG_FILE}",
