@@ -7,7 +7,8 @@ class SortBy(str, Enum):
     DESC = "desc"
 
 
-class SortFields(Enum):
+@unique
+class SortFields(StrEnum):
     CREATED_AT = "created_at"
     UPDATED_AT = "updated_at"
 

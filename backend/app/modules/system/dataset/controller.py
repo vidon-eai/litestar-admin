@@ -13,10 +13,10 @@ from app.common.response import (
     COMMON_RESPONSES,
     ApiResponse,
 )
+from app.core.dependencies import provide_filters
 from app.modules.system.collection.schema import CollectionWithFileRead
 from app.modules.system.collection.service import CollectionService
 from app.modules.system.data.service import DataService
-from app.modules.system.dataset.deps import provide_dataset_filters
 from app.modules.system.dataset.schema import (
     DatasetCreate,
     DatasetRead,
@@ -49,7 +49,7 @@ class DatasetController(Controller):
         responses={
             **COMMON_RESPONSES,
         },
-        dependencies={"filters": Provide(provide_dataset_filters)},
+        dependencies={"filters": Provide(provide_filters)},
     )
     async def list_datasets(
         self,

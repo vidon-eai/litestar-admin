@@ -2,19 +2,16 @@ import mimetypes
 import os
 import uuid
 from enum import Enum
-from typing import Annotated
 
 from advanced_alchemy.extensions.litestar import providers
-from advanced_alchemy.filters import FilterTypes, LimitOffset, OrderBy, SearchFilter
+from advanced_alchemy.filters import FilterTypes
 from advanced_alchemy.service import OffsetPagination
 from app.common.response import (
     COMMON_RESPONSES,
     ApiResponse,
 )
 from app.core.dependencies import (
-    create_order_provider,
-    create_pagination_provider,
-    create_search_provider,
+    provide_filters,
 )
 from app.modules.system.collection.service import CollectionService
 from app.modules.system.file.schema import FileRead, UploadFileFormData
@@ -24,7 +21,7 @@ from app.plugins.storage.service import StorageService
 from litestar import Controller, Response, delete, get, post
 from litestar.di import Provide
 from litestar.exceptions import HTTPException, NotFoundException
-from litestar.params import Dependency, MultipartBody
+from litestar.params import MultipartBody
 
 
 class FileOrderFields(Enum):
@@ -52,31 +49,14 @@ class FileController(Controller):
             **COMMON_RESPONSES,
         },
         dependencies={
-            "pagination": Provide(create_pagination_provider),
-            "search_filter": Provide(create_search_provider({"name"})),
-            "order_filter": Provide(
-                create_order_provider(
-                    order_enum=FileOrderFields, default_field="created_at"
-                )
-            ),
+            "filters": Provide(provide_filters),
         },
     )
     async def list_files(
         self,
         file_service: FileService,
-        pagination: Annotated[LimitOffset, Dependency(skip_validation=True)],
-        search_filter: Annotated[
-            SearchFilter | None, Dependency(skip_validation=True)
-        ] = None,
-        order_filter: Annotated[
-            OrderBy | None, Dependency(skip_validation=True)
-        ] = None,
+        filters: list[FilterTypes],
     ) -> ApiResponse[OffsetPagination[FileRead]]:
-
-        filters: list[FilterTypes] = []
-        for filter_item in (pagination, search_filter, order_filter):
-            if filter_item:
-                filters.append(filter_item)
 
         results, total_count = await file_service.list_and_count(*filters)
 

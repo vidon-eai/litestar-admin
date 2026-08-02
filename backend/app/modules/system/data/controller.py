@@ -1,15 +1,12 @@
 from enum import Enum
-from typing import Annotated
 from uuid import UUID
 
 from advanced_alchemy.extensions.litestar import providers
-from advanced_alchemy.filters import LimitOffset, OrderBy, SearchFilter
+from advanced_alchemy.filters import FilterTypes
 from advanced_alchemy.service import OffsetPagination
 from app.common.response import COMMON_RESPONSES, ApiResponse
 from app.core.dependencies import (
-    create_order_provider,
-    create_pagination_provider,
-    create_search_provider,
+    provide_filters,
 )
 from app.db.models.dataset import Collection
 from app.modules.system.data.schema import (
@@ -20,7 +17,6 @@ from app.modules.system.data.schema import (
 from app.modules.system.data.service import DataService
 from litestar import Controller, delete, get, patch, post
 from litestar.di import Provide
-from litestar.params import Dependency
 from litestar.status_codes import HTTP_200_OK
 
 
@@ -46,34 +42,15 @@ class DataController(Controller):
             **COMMON_RESPONSES,
         },
         dependencies={
-            "pagination": Provide(create_pagination_provider),
-            "search_filter": Provide(create_search_provider({"name"})),
-            "order_filter": Provide(
-                create_order_provider(
-                    order_enum=DataOrderFields, default_field="created_at"
-                )
-            ),
+            "filters": Provide(provide_filters),
         },
     )
     async def list_datas(
         self,
         collection_id: UUID,
         data_service: DataService,
-        pagination: Annotated[LimitOffset, Dependency(skip_validation=True)],
-        search_filter: Annotated[
-            SearchFilter | None, Dependency(skip_validation=True)
-        ] = None,
-        order_filter: Annotated[
-            OrderBy | None, Dependency(skip_validation=True)
-        ] = None,
+        filters: list[FilterTypes],
     ) -> ApiResponse[OffsetPagination[DataRead]]:
-
-        filters = [pagination]
-        if search_filter:
-            filters.append(search_filter)
-
-        if order_filter:
-            filters.append(order_filter)
 
         results, total_count = await data_service.list_and_count(
             *filters,
