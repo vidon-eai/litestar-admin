@@ -2,7 +2,7 @@ import sys
 
 from advanced_alchemy.exceptions import IntegrityError, RepositoryError
 from app.common.exceptions import unified_exception_handler
-from app.core.dependencies import provide_filters, provide_user
+from app.core import dependencies
 from app.core.guards import auth
 from litestar.config.app import AppConfig
 from litestar.di import Provide
@@ -89,8 +89,10 @@ class ApplicationCore(InitPlugin):
 
         app_config.dependencies.update(
             {
-                "current_user": Provide(provide_user, sync_to_thread=False),
-                "filters": Provide(provide_filters, sync_to_thread=False),
+                "current_user": Provide(
+                    dependencies.provide_user, sync_to_thread=False
+                ),
+                "filters": Provide(dependencies.provide_filters, sync_to_thread=False),
             }
         )
 
