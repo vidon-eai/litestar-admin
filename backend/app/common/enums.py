@@ -2,7 +2,7 @@ from enum import Enum, StrEnum, unique
 
 
 @unique
-class SortBy(str, Enum):
+class SortOrder(str, Enum):
     ASC = "asc"
     DESC = "desc"
 
@@ -11,11 +11,6 @@ class SortBy(str, Enum):
 class SortFields(StrEnum):
     CREATED_AT = "created_at"
     UPDATED_AT = "updated_at"
-
-
-class StatusEnum(StrEnum):
-    VALID = "1"
-    INVALID = "0"
 
 
 class StorageTypeEnum(StrEnum):

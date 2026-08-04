@@ -12,7 +12,7 @@ from advanced_alchemy.filters import (
     OrderBy,
     SearchFilter,
 )
-from app.common.enums import SortBy, SortFields
+from app.common.enums import SortFields, SortOrder
 from app.db.models import User
 from litestar import Request
 from litestar.params import Parameter
@@ -20,14 +20,6 @@ from litestar.security.jwt import Token
 
 
 def provide_user(request: Request[User, Token, Any]) -> Any:
-    """Get the user from the connection.
-
-    Args:
-        request: current connection.
-
-    Returns:
-        User
-    """
     return request.user
 
 
@@ -47,66 +39,44 @@ class ComparisonCondition:
 
 @dataclass(slots=True)
 class QueryFilterParams:
-    """查詢參數的集中承載物件，避免函式參數過多。"""
-
     page: int = 1
     page_size: int = 10
     search: str | None = None
     search_fields: Sequence[str] = ("name", "description")
-    order_by: SortFields | str | None = None
-    sort_order: SortBy | None = None
+    sort_by: Enum | None = None
+    sort_order: Enum | None = None
     custom_filters: list[FilterTypes] = field(default_factory=list)
     comparison_conditions: list[ComparisonCondition] = field(default_factory=list)
-    enable_pagination: bool = True
-    max_page_size: int = 100
-
-    def normalized(self) -> QueryFilterParams:
-        """回傳邊界校正後的新實例（immutable 風格）。"""
-        page = max(self.page, 1)
-        page_size = max(1, min(self.page_size, self.max_page_size))
-        return QueryFilterParams(
-            page=page,
-            page_size=page_size,
-            search=self.search,
-            search_fields=self.search_fields or ("name", "description"),
-            order_by=self.order_by,
-            sort_order=self.sort_order,
-            custom_filters=list(self.custom_filters),
-            comparison_conditions=list(self.comparison_conditions),
-            enable_pagination=self.enable_pagination,
-            max_page_size=self.max_page_size,
-        )
 
 
 def build_query_filters(params: QueryFilterParams) -> list[FilterTypes]:
-    """
-    根據參數物件組裝 FilterTypes 列表。
-    職責單一：只負責把「已正規化的參數」轉成 filter 列表。
-    """
-    p = params.normalized()
     filters: list[FilterTypes] = []
 
-    # 1. 全文 / 模糊搜尋
-    if p.search and p.search_fields:
-        filters.append(SearchFilter(field_name=set(p.search_fields), value=p.search))
+    if params.search and params.search_fields:
+        filters.append(
+            SearchFilter(field_name=set(params.search_fields), value=params.search)
+        )
 
-    # 2. 比較條件
-    for cond in p.comparison_conditions:
-        if cond.value is not None:
+    for cond in params.comparison_conditions:
+        if cond.field and cond.operator and cond.value is not None:
             filters.append(cond.to_filter())
 
-    # 3. 排序（必須同時有欄位與方向）
-    if p.order_by is not None and p.sort_order is not None:
-        field_name = p.order_by.value if isinstance(p.order_by, Enum) else p.order_by
-        filters.append(OrderBy(field_name=field_name, sort_order=p.sort_order.value))
+    if params.sort_by is not None and params.sort_order is not None:
+        field_name = (
+            params.sort_by.value if isinstance(params.sort_by, Enum) else params.sort_by
+        )
+        sort_order = (
+            params.sort_order.value
+            if isinstance(params.sort_order, Enum)
+            else params.sort_order
+        )
+        filters.append(OrderBy(field_name=field_name, sort_order=sort_order))
 
-    # 4. 自訂過濾器
-    filters.extend(p.custom_filters)
+    filters.extend(params.custom_filters)
 
-    # 5. 分頁
-    if p.enable_pagination:
-        offset = (p.page - 1) * p.page_size
-        filters.append(LimitOffset(limit=p.page_size, offset=offset))
+    if params.page is not None and params.page_size is not None:
+        offset = (params.page - 1) * params.page_size
+        filters.append(LimitOffset(limit=params.page_size, offset=offset))
 
     return filters
 
@@ -125,12 +95,12 @@ def provide_filters(
     search: Annotated[
         str | None, Parameter(description="模糊查詢", required=False)
     ] = None,
-    order_by: Annotated[
+    sort_by: Annotated[
         SortFields | None,
         Parameter(query=QUERY_ORDER_BY, description="字段排序", required=False),
     ] = None,
     sort_order: Annotated[
-        SortBy | None,
+        SortOrder | None,
         Parameter(query=QUERY_SORT_ORDER, description="排序", required=False),
     ] = None,
 ):
@@ -140,7 +110,7 @@ def provide_filters(
         page_size=page_size,
         search=search,
         search_fields=["name", "description"],  # 這裡仍可客製
-        order_by=order_by,
+        sort_by=sort_by,
         sort_order=sort_order,
     )
     return build_query_filters(params)

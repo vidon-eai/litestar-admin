@@ -13,8 +13,6 @@ from app.common.response import (
     COMMON_RESPONSES,
     ApiResponse,
 )
-from app.core.dependencies import provide_filters
-from app.modules.system.collection.schema import CollectionWithFileRead
 from app.modules.system.collection.service import CollectionService
 from app.modules.system.data.service import DataService
 from app.modules.system.dataset.schema import (
@@ -28,7 +26,6 @@ from app.modules.system.user.schema import UserRead
 from app.plugins.storage.service import StorageService
 from app.utils.parser.docling_parser import DoclingParser
 from litestar import Controller, delete, get, patch, post
-from litestar.di import Provide
 from litestar.exceptions import HTTPException, NotFoundException
 from litestar.params import Dependency
 from litestar.status_codes import HTTP_200_OK
@@ -49,7 +46,6 @@ class DatasetController(Controller):
         responses={
             **COMMON_RESPONSES,
         },
-        dependencies={"filters": Provide(provide_filters)},
     )
     async def list_datasets(
         self,
@@ -181,10 +177,7 @@ class DatasetController(Controller):
         current_user: UserRead,
     ) -> ApiResponse[list[Any]]:
 
-        result = await collection_service.get_one(id=collection_id)
-        collection = collection_service.to_schema(
-            result, schema_type=CollectionWithFileRead
-        )
+        collection = await collection_service.get_one(id=collection_id)
 
         file = collection.file
         if file is None:

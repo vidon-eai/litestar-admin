@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Annotated
 from uuid import UUID
 
 from advanced_alchemy.extensions.litestar import providers
@@ -8,13 +9,10 @@ from app.common.response import (
     COMMON_RESPONSES,
     ApiResponse,
 )
-from app.core.dependencies import (
-    provide_filters,
-)
 from app.modules.system.user.schema import UserCreate, UserRead, UserUpdate
 from app.modules.system.user.service import UserService
 from litestar import Controller, delete, get, patch, post
-from litestar.di import Provide
+from litestar.params import Dependency
 from litestar.status_codes import HTTP_200_OK
 
 
@@ -40,10 +38,11 @@ class UserController(Controller):
         responses={
             **COMMON_RESPONSES,
         },
-        dependencies={"filters": Provide(provide_filters)},
     )
     async def list_users(
-        self, user_service: UserService, filters: list[FilterTypes]
+        self,
+        user_service: UserService,
+        filters: Annotated[list[FilterTypes], Dependency(skip_validation=True)],
     ) -> ApiResponse[OffsetPagination[UserRead]]:
 
         results, total_count = await user_service.list_and_count(*filters)

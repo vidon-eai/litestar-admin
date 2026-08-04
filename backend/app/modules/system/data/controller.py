@@ -1,13 +1,11 @@
 from enum import Enum
+from typing import Annotated
 from uuid import UUID
 
 from advanced_alchemy.extensions.litestar import providers
 from advanced_alchemy.filters import FilterTypes
 from advanced_alchemy.service import OffsetPagination
 from app.common.response import COMMON_RESPONSES, ApiResponse
-from app.core.dependencies import (
-    provide_filters,
-)
 from app.db.models.dataset import Collection
 from app.modules.system.data.schema import (
     DataCreate,
@@ -16,7 +14,7 @@ from app.modules.system.data.schema import (
 )
 from app.modules.system.data.service import DataService
 from litestar import Controller, delete, get, patch, post
-from litestar.di import Provide
+from litestar.params import Dependency
 from litestar.status_codes import HTTP_200_OK
 
 
@@ -41,15 +39,12 @@ class DataController(Controller):
         responses={
             **COMMON_RESPONSES,
         },
-        dependencies={
-            "filters": Provide(provide_filters),
-        },
     )
     async def list_datas(
         self,
         collection_id: UUID,
         data_service: DataService,
-        filters: list[FilterTypes],
+        filters: Annotated[list[FilterTypes], Dependency(skip_validation=True)],
     ) -> ApiResponse[OffsetPagination[DataRead]]:
 
         results, total_count = await data_service.list_and_count(

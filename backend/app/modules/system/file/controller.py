@@ -2,6 +2,7 @@ import mimetypes
 import os
 import uuid
 from enum import Enum
+from typing import Annotated
 
 from advanced_alchemy.extensions.litestar import providers
 from advanced_alchemy.filters import FilterTypes
@@ -10,18 +11,14 @@ from app.common.response import (
     COMMON_RESPONSES,
     ApiResponse,
 )
-from app.core.dependencies import (
-    provide_filters,
-)
 from app.modules.system.collection.service import CollectionService
 from app.modules.system.file.schema import FileRead, UploadFileFormData
 from app.modules.system.file.service import FileService
 from app.modules.system.user.schema import UserRead
 from app.plugins.storage.service import StorageService
 from litestar import Controller, Response, delete, get, post
-from litestar.di import Provide
 from litestar.exceptions import HTTPException, NotFoundException
-from litestar.params import MultipartBody
+from litestar.params import Dependency, MultipartBody
 
 
 class FileOrderFields(Enum):
@@ -48,14 +45,11 @@ class FileController(Controller):
         responses={
             **COMMON_RESPONSES,
         },
-        dependencies={
-            "filters": Provide(provide_filters),
-        },
     )
     async def list_files(
         self,
         file_service: FileService,
-        filters: list[FilterTypes],
+        filters: Annotated[list[FilterTypes], Dependency(skip_validation=True)],
     ) -> ApiResponse[OffsetPagination[FileRead]]:
 
         results, total_count = await file_service.list_and_count(*filters)
