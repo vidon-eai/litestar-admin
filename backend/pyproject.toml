@@ -13,6 +13,7 @@ dependencies = [
     "asyncpg>=0.31.0",
     "cryptography>=46.0.7",
     "langchain-docling>=2.0.0",
+    "langchain-ollama>=1.1.0",
     "langchain-text-splitters>=1.1.2",
     "litestar[jwt,sqlalchemy,standard]>=2.21.1",
     "loguru>=0.7.3",

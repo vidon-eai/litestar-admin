@@ -1,9 +1,8 @@
 from contextlib import asynccontextmanager
 
+from app import plugins
 from app.cli.commands import cli
 from app.common.enums import StorageTypeEnum
-from app.plugins.route_log.plugin import RouteLoggerPlugin
-from app.plugins.storage.plugin import StoragePlugin
 from litestar import Litestar
 
 
@@ -20,6 +19,7 @@ async def spy_on_plugins(app: Litestar):
 
 def create_app() -> Litestar:
     from app.config.setting import app_setting
+    from app.plugins.rag.config import RAGConfig
     from app.plugins.storage.config import StorageConfig
 
     storage_config = {
@@ -45,8 +45,14 @@ def create_app() -> Litestar:
     return Litestar(
         plugins=[
             ApplicationCore(),
-            StoragePlugin(config=StorageConfig(**storage_config)),
-            RouteLoggerPlugin(),
+            plugins.StoragePlugin(config=StorageConfig(**storage_config)),
+            plugins.RAGPlugin(
+                config=RAGConfig(
+                    llm_model=app_setting.LLM_MODEL,
+                    embedding_model=app_setting.EMBEDDING_MODEL,
+                )
+            ),
+            plugins.RouteLoggerPlugin(),
         ],
     )
 

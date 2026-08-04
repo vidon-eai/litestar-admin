@@ -27,12 +27,12 @@ class StorageConfig:
     secret_access_key: str | None = None
     region: str | None = None
 
-    def create_storage_service(self) -> StorageService:
+    def create_service(self) -> StorageService:
         return StorageService(self)
 
     def create_app_state_items(self) -> dict[str, Any]:
         return {
-            self.storage_app_state_key: self.create_storage_service(),
+            self.storage_app_state_key: self.create_service(),
         }
 
     def update_app_state(self, app: "Litestar") -> None:

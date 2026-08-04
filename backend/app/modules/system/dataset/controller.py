@@ -23,6 +23,7 @@ from app.modules.system.dataset.schema import (
 )
 from app.modules.system.dataset.service import DatasetService
 from app.modules.system.user.schema import UserRead
+from app.plugins.rag.service import RAGService
 from app.plugins.storage.service import StorageService
 from app.utils.parser.docling_parser import DoclingParser
 from litestar import Controller, delete, get, patch, post
@@ -241,4 +242,14 @@ class DatasetController(Controller):
         return ApiResponse(
             data=data,
             detail="文檔切片導入知識庫成功",
+        )
+
+    @post(
+        "/chat",
+        sync_to_thread=False,
+    )
+    def chat(self, rag_service: RAGService, data: dict[str, str]) -> ApiResponse[str]:
+        return ApiResponse(
+            data=rag_service.chat(data["question"]),
+            detail="問答成功",
         )

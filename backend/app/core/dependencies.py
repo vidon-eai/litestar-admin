@@ -116,4 +116,4 @@ def provide_filters(
     return build_query_filters(params)
 
 
-__all__ = [provide_user, provide_filters]
+__all__ = ["provide_user", "provide_filters"]

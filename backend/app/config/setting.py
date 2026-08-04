@@ -117,6 +117,11 @@ class StorageSetting(BaseSettings):
     S3_REGION: str | None = Field(default=None)
 
 
+class RAGSetting(BaseSettings):
+    LLM_MODEL: str = Field(default="qwen2.5:7b")
+    EMBEDDING_MODEL: str = Field(default="qwen3-embedding:8b")
+
+
 class LoggingSetting(BaseSettings):
     LOG_LEVEL: str = Field(default="DEBUG")
 
@@ -131,7 +136,9 @@ class LoggingSetting(BaseSettings):
     )
 
 
-class AppSetting(DatabaseSetting, APIDocSetting, LoggingSetting, StorageSetting):
+class AppSetting(
+    DatabaseSetting, APIDocSetting, LoggingSetting, StorageSetting, RAGSetting
+):
     model_config = SettingsConfigDict(
         env_file=f"{ENV_DIR}/.env.{os.getenv('ENVIRONMENT', 'dev')}",
         env_file_encoding="utf-8",
