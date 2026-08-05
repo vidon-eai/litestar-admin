@@ -17,6 +17,7 @@ class RAGConfig:
 
     llm_model: str = "qwen2.5:7b"
     embedding_model: str = "qwen3-embedding:8b"
+    postgres_connection_string: str | None = None
 
     def create_service(self) -> RAGService:
         return RAGService(self)

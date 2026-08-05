@@ -50,6 +50,7 @@ def create_app() -> Litestar:
                 config=RAGConfig(
                     llm_model=app_setting.LLM_MODEL,
                     embedding_model=app_setting.EMBEDDING_MODEL,
+                    postgres_connection_string=app_setting.SQLALCHEMY_DATABASE_URI,
                 )
             ),
             plugins.RouteLoggerPlugin(),

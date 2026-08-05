@@ -26,6 +26,7 @@ async def db_connection() -> None:
     try:
         async with app_setting.DB_CONFIG.get_engine().begin() as conn:
             await conn.execute(text("SELECT 1"))
+            await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector;"))
         log.info("✅ 資料庫連接成功！")
     except Exception as e:
         log.info(f"❌ 資料庫連接失敗: {e}")

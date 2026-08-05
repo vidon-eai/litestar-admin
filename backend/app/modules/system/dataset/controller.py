@@ -246,10 +246,26 @@ class DatasetController(Controller):
 
     @post(
         "/chat",
-        sync_to_thread=False,
     )
-    def chat(self, rag_service: RAGService, data: dict[str, str]) -> ApiResponse[str]:
+    async def chat(
+        self, rag_service: RAGService, data: dict[str, str]
+    ) -> ApiResponse[str]:
+        model_provider = data.get("model_provider")
+        question = data.get("question")
+        result = await rag_service.chat(question, model_provider)
         return ApiResponse(
-            data=rag_service.chat(data["question"]),
+            data=result,
+            detail="問答成功",
+        )
+
+    @post(
+        "/add_documents",
+    )
+    async def add_documents(
+        self, rag_service: RAGService, data: dict[str, str]
+    ) -> ApiResponse[str]:
+        await rag_service.add_docs(data["collection"])
+        return ApiResponse(
+            data=None,
             detail="問答成功",
         )
