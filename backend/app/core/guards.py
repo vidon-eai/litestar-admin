@@ -39,6 +39,5 @@ auth = OAuth2PasswordBearerAuth[User](
         "^/api/v1/schema",
         "/api/v1/auth/login",
         "/api/v1/auth/logout",
-        "/api/v1/datasets",
     ],
 )

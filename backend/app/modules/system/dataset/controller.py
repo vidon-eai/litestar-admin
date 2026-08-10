@@ -30,8 +30,19 @@ from litestar import Controller, delete, get, patch, post
 from litestar.exceptions import HTTPException, NotFoundException
 from litestar.params import Dependency
 from litestar.status_codes import HTTP_200_OK
+from pydantic import BaseModel, Field
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8002/api/v1")
+
+
+class ChatRequest(BaseModel):
+    question: str = Field(
+        ..., description="使用者提問內容", examples=["什麼是 RAG 技術？"]
+    )
+    collection: str = Field(
+        ..., description="使用者提問內容", examples=["什麼是 RAG 技術？"]
+    )
+    llm: str = Field(..., description="使用者提問內容", examples=["什麼是 RAG 技術？"])
 
 
 class DatasetController(Controller):
@@ -174,7 +185,9 @@ class DatasetController(Controller):
         collection_id: UUID,
         collection_service: CollectionService,
         data_service: DataService,
+        dataset_service: DatasetService,
         storage_service: StorageService,
+        rag_service: RAGService,
         current_user: UserRead,
     ) -> ApiResponse[list[Any]]:
 
@@ -238,6 +251,8 @@ class DatasetController(Controller):
             )
         await data_service.delete_where(collection_id=collection.id)
         await data_service.create_many(data)
+        dataset = await dataset_service.get_one(id=collection.dataset_id)
+        await rag_service.embed(dataset.name, splits)
 
         return ApiResponse(
             data=data,
@@ -248,24 +263,10 @@ class DatasetController(Controller):
         "/chat",
     )
     async def chat(
-        self, rag_service: RAGService, data: dict[str, str]
+        self, rag_service: RAGService, data: ChatRequest
     ) -> ApiResponse[str]:
-        model_provider = data.get("model_provider")
-        question = data.get("question")
-        result = await rag_service.chat(question, model_provider)
+        result = await rag_service.chat(data.question, data.collection, data.llm)
         return ApiResponse(
             data=result,
-            detail="問答成功",
-        )
-
-    @post(
-        "/add_documents",
-    )
-    async def add_documents(
-        self, rag_service: RAGService, data: dict[str, str]
-    ) -> ApiResponse[str]:
-        await rag_service.add_docs(data["collection"])
-        return ApiResponse(
-            data=None,
             detail="問答成功",
         )

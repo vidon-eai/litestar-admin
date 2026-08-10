@@ -8,7 +8,10 @@ from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling_core.types.doc.base import ImageRefMode
 from langchain_core.documents import Document
 from langchain_docling.loader import DoclingLoader, ExportType
-from langchain_text_splitters import MarkdownHeaderTextSplitter
+from langchain_text_splitters import (
+    MarkdownHeaderTextSplitter,
+    RecursiveCharacterTextSplitter,
+)
 
 EXPORT_TYPE = ExportType.MARKDOWN
 IMAGE_RESOLUTION_SCALE = 2
@@ -96,7 +99,9 @@ class DoclingParser:
                 ("##", "Header_2"),
                 ("###", "Header_3"),
             ],
+            strip_headers=False,
         )
+
         splits: list[Document] = []
         for doc in documents:
             # 進行切片
@@ -112,4 +117,9 @@ class DoclingParser:
 
                 splits.append(split)
 
-        return splits
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1000, chunk_overlap=100
+        )
+        final_chunks = text_splitter.split_documents(splits)
+
+        return final_chunks
