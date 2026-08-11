@@ -40,9 +40,11 @@ class ChatRequest(BaseModel):
         ..., description="使用者提問內容", examples=["什麼是 RAG 技術？"]
     )
     collection: str = Field(
-        ..., description="使用者提問內容", examples=["什麼是 RAG 技術？"]
+        ..., description="使用者提問內容", examples=["Vector_index_datasetid_Node"]
     )
-    llm: str = Field(..., description="使用者提問內容", examples=["什麼是 RAG 技術？"])
+    llm: str = Field(
+        ..., description="模型", examples=["ollama:qwen2.5:7b-instruct-q4_K_M"]
+    )
 
 
 class DatasetController(Controller):
@@ -251,8 +253,8 @@ class DatasetController(Controller):
             )
         await data_service.delete_where(collection_id=collection.id)
         await data_service.create_many(data)
-        dataset = await dataset_service.get_one(id=collection.dataset_id)
-        await rag_service.embed(dataset.name, splits)
+        collection_name = str(collection.dataset_id).replace("-", "_")
+        await rag_service.embed(f"Vector_index_{collection_name}_Node", splits)
 
         return ApiResponse(
             data=data,

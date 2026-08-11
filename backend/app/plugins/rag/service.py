@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 from langchain.agents import create_agent
 from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
-from langchain_core.runnables.config import RunnableConfig
 from langchain_milvus import Milvus
 from langchain_ollama import OllamaEmbeddings
 
@@ -38,13 +37,15 @@ DOC_PATHS = [
 
 
 class RAGService:
+    llm_provider: str = "ollama:qwen2.5:7b-instruct-q4_K_M"
+
     def __init__(self, config: "RAGConfig"):
         self.config = config
-        self.llm = init_chat_model(
-            model="ollama:qwen2.5:7b-instruct-q4_K_M", temperature=0
-        )
         self.embeddings = OllamaEmbeddings(model=config.embedding_model)
         self._init_milvus_database()
+
+    def get_emdedding(self, provider: str) -> OllamaEmbeddings:
+        return OllamaEmbeddings(model=provider)
 
     def get_vector_store(self, collection: str) -> Milvus:
         vector_store = Milvus(
@@ -71,23 +72,15 @@ class RAGService:
         try:
             existing_databases = db.list_database()
 
-            # 2. 只在資料庫不存在時才建立，若存在則直接略過刪除動作
             if db_name not in existing_databases:
                 db.create_database(db_name)
                 print(f"Database '{db_name}' created successfully.")
-            else:
-                print(f"Database '{db_name}' already exists. Skipping initialization.")
 
         except MilvusException as e:
             print(f"An error occurred: {e}")
 
     def _get_llm(self, provider: str):
         return init_chat_model(model=provider, temperature=0)
-
-    def model_config(self, provider: str) -> RunnableConfig:
-        if not provider:
-            raise ValueError("Please select a model provider for the LLM model.")
-        return RunnableConfig(model=provider)
 
     async def embed(self, collection: str, docs: list[Document]):
         vector_store = self.get_vector_store(collection)
