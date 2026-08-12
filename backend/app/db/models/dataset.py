@@ -7,31 +7,10 @@ from sqlalchemy import TEXT, ForeignKey, String
 from sqlalchemy.dialects import mysql
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+# 相容性文字型態設定：
+# - PostgreSQL / SQLite：使用標準 TEXT（PostgreSQL TEXT 可支援高達 1GB 文字）
+# - MySQL / MariaDB：改用 LONGTEXT 以突破標準 TEXT 約 64KB 的儲存上限，避免長文本溢位
 LongText = TEXT().with_variant(mysql.LONGTEXT(), "mysql", "mariadb")
-
-
-# class LongText(TypeDecorator[str | None]):
-#     impl = TEXT
-#     cache_ok = True
-
-#     def process_bind_param(self, value: str | None, dialect: Dialect) -> str | None:
-#         if value is None:
-#             return value
-#         return value
-
-#     def load_dialect_impl(self, dialect: Dialect) -> TypeEngine[Any]:
-#         if dialect.name == "postgresql":
-#             return dialect.type_descriptor(TEXT())
-#         elif dialect.name == "mysql":
-#             return dialect.type_descriptor(LONGTEXT())
-#         else:
-#             return dialect.type_descriptor(TEXT())
-
-#     def process_result_value(self, value: str | None, dialect: Dialect) -> str | None:
-#         if value is None:
-#             return value
-#         return value
-
 
 TABLE_PREFIX = "rag"
 
@@ -40,13 +19,33 @@ if TYPE_CHECKING:
     from app.db.models import File
 
 
-class Dataset(UUIDv7AuditBase, UserMixin):
+class VectorIndexMixin:
+    vector_index_prefix: str = "Vector_index"
+    vector_index_suffix: str = "Node"
+
+    @property
+    def vector_index_name(self) -> str:
+        raw_id = getattr(self, "dataset_id", None) or getattr(self, "id", None)
+        if not raw_id:
+            return ""
+        formatted_id = str(raw_id).replace("-", "_")
+        return f"{self.vector_index_prefix}_{formatted_id}_{self.vector_index_suffix}"
+
+
+class Dataset(UUIDv7AuditBase, UserMixin, VectorIndexMixin):
     __tablename__ = f"{TABLE_PREFIX}_dataset"
 
     name: Mapped[str] = mapped_column(String(255), nullable=False, comment="知識庫名")
     description: Mapped[str | None] = mapped_column(
         String(255), default=None, nullable=True, comment="知識庫描述"
     )
+
+    # embedding_model: Mapped[str] = mapped_column(
+    #     String(255), nullable=True, comment="Embedding模型"
+    # )
+    # embedding_model_provider: Mapped[str] = mapped_column(
+    #     String(255), nullable=True, comment="Embedding模型供應商"
+    # )
 
     collections: Mapped[list["Collection"]] = relationship(
         "Collection",
@@ -60,7 +59,7 @@ class Dataset(UUIDv7AuditBase, UserMixin):
     )
 
 
-class Collection(UUIDv7AuditBase, UserMixin):
+class Collection(UUIDv7AuditBase, UserMixin, VectorIndexMixin):
     __tablename__ = f"{TABLE_PREFIX}_collection"
 
     dataset_id: Mapped[UUID] = mapped_column(
@@ -90,7 +89,7 @@ class Collection(UUIDv7AuditBase, UserMixin):
     )
 
 
-class Data(UUIDv7AuditBase, UserMixin):
+class Data(UUIDv7AuditBase, UserMixin, VectorIndexMixin):
     __tablename__ = f"{TABLE_PREFIX}_data"
 
     dataset_id: Mapped[UUID] = mapped_column(

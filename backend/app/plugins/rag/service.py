@@ -42,9 +42,9 @@ class RAGService:
     def __init__(self, config: "RAGConfig"):
         self.config = config
         self.embeddings = OllamaEmbeddings(model=config.embedding_model)
-        self._init_milvus_database()
+        # self._init_milvus_database()
 
-    def get_emdedding(self, provider: str) -> OllamaEmbeddings:
+    def get_embedding(self, provider: str) -> OllamaEmbeddings:
         return OllamaEmbeddings(model=provider)
 
     def get_vector_store(self, collection: str) -> Milvus:
@@ -52,7 +52,8 @@ class RAGService:
             embedding_function=self.embeddings,
             connection_args={
                 "uri": URI,
-                "token": "root:Milvus",
+                "user": "root",
+                "password": "Milvus",
                 "db_name": "milvus_demo",
             },
             collection_name=collection,

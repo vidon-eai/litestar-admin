@@ -39,8 +39,8 @@ class ChatRequest(BaseModel):
     question: str = Field(
         ..., description="使用者提問內容", examples=["什麼是 RAG 技術？"]
     )
-    collection: str = Field(
-        ..., description="使用者提問內容", examples=["Vector_index_datasetid_Node"]
+    dataset_id: str = Field(
+        ..., description="知識庫ID", examples=["Vector_index_datasetid_Node"]
     )
     llm: str = Field(
         ..., description="模型", examples=["ollama:qwen2.5:7b-instruct-q4_K_M"]
@@ -187,7 +187,6 @@ class DatasetController(Controller):
         collection_id: UUID,
         collection_service: CollectionService,
         data_service: DataService,
-        dataset_service: DatasetService,
         storage_service: StorageService,
         rag_service: RAGService,
         current_user: UserRead,
@@ -267,7 +266,9 @@ class DatasetController(Controller):
     async def chat(
         self, rag_service: RAGService, data: ChatRequest
     ) -> ApiResponse[str]:
-        result = await rag_service.chat(data.question, data.collection, data.llm)
+        dataset_id = str(data.dataset_id).replace("-", "_")
+        collection_name = f"Vector_index_{dataset_id}_Node"
+        result = await rag_service.chat(data.question, collection_name, data.llm)
         return ApiResponse(
             data=result,
             detail="問答成功",
