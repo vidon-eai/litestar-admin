@@ -1,10 +1,11 @@
 import asyncio
 from typing import TYPE_CHECKING
 
+from app.plugins.rag.vector_store.milvus_vector import MilvusConfig, MilvusVector
 from langchain.agents import create_agent
 from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
-from langchain_milvus import Milvus
+from langchain_core.vectorstores import VectorStore
 from langchain_ollama import OllamaEmbeddings
 
 if TYPE_CHECKING:
@@ -40,6 +41,7 @@ class RAGService:
     llm_provider: str = "ollama:qwen2.5:7b-instruct-q4_K_M"
 
     def __init__(self, config: "RAGConfig"):
+        print(config)
         self.config = config
         self.embeddings = OllamaEmbeddings(model=config.embedding_model)
         # self._init_milvus_database()
@@ -47,21 +49,19 @@ class RAGService:
     def get_embedding(self, provider: str) -> OllamaEmbeddings:
         return OllamaEmbeddings(model=provider)
 
-    def get_vector_store(self, collection: str) -> Milvus:
-        vector_store = Milvus(
-            embedding_function=self.embeddings,
-            connection_args={
-                "uri": URI,
-                "user": "root",
-                "password": "Milvus",
-                "db_name": "milvus_demo",
-            },
+    def get_vector_store(self, collection: str) -> VectorStore:
+        vector_store = MilvusVector(
             collection_name=collection,
-            index_params={"index_type": "FLAT", "metric_type": "L2"},
-            consistency_level="Strong",
-            drop_old=False,  # set to True if seeking to drop the collection with that name if it exists
+            config=MilvusConfig(
+                uri=URI,
+                user="root",
+                password="Milvus",
+                database="milvus_demo",
+                embeddings=self.embeddings,
+            ),
         )
-        return vector_store
+
+        return vector_store.get_vector_store()
 
     def _init_milvus_database(self):
         from pymilvus import MilvusException, connections, db

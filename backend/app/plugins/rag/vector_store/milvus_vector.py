@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Any
 
+from app.plugins.rag.vector_store.vector_base import BaseVectorStore
+from langchain_core.embeddings import Embeddings
 from langchain_milvus import Milvus
 
 
@@ -16,6 +18,11 @@ class MilvusConfig:
     password: str | None = None  # Password for authentication
     database: str = "default"  # Database name
 
+    drop_old: bool = False
+    auto_id: bool = True
+    consistency_level: str = "Strong"
+    embeddings: Embeddings | None = None
+
     def __post_init__(self):
         """
         Validate the configuration values after initialization.
@@ -30,8 +37,9 @@ class MilvusConfig:
                 raise ValueError("config MILVUS_PASSWORD is required")
 
 
-class MilvusVector:
-    def __init__(self, config: MilvusConfig):
+class MilvusVector(BaseVectorStore):
+    def __init__(self, collection_name: str, config: MilvusConfig):
+        super().__init__(collection_name)
         self._config = config
         self._client = self._init_client(config)
 
@@ -39,16 +47,26 @@ class MilvusVector:
         """
         Initialize and return a Milvus client.
         """
-        kwargs: dict[str, Any] = {"uri": config.uri, "db_name": config.database}
+        connection_args: dict[str, Any] = {
+            "uri": config.uri,
+            "db_name": config.database,
+        }
         if config.token:
-            kwargs["token"] = config.token
+            connection_args["token"] = config.token
         else:
-            kwargs["user"] = config.user or ""
-            kwargs["password"] = config.password or ""
-        if config.secure:
-            kwargs["secure"] = True
-            if config.server_pem_path:
-                kwargs["server_pem_path"] = config.server_pem_path
-            if config.server_name:
-                kwargs["server_name"] = config.server_name
-        return Milvus(**kwargs)
+            connection_args["user"] = config.user or ""
+            connection_args["password"] = config.password or ""
+
+        index_params = {"index_type": "FLAT", "metric_type": "L2"}
+        print("Vector Config:", config)
+        return Milvus(
+            embedding_function=config.embeddings,
+            connection_args=connection_args,
+            index_params=index_params,
+            drop_old=config.drop_old,
+            # auto_id=config.auto_id,
+            consistency_level=config.consistency_level,
+        )
+
+    def get_vector_store(self):
+        return self._client

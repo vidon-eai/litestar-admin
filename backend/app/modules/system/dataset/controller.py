@@ -268,6 +268,7 @@ class DatasetController(Controller):
     ) -> ApiResponse[str]:
         dataset_id = str(data.dataset_id).replace("-", "_")
         collection_name = f"Vector_index_{dataset_id}_Node"
+        print("Collection Name:", collection_name)
         result = await rag_service.chat(data.question, collection_name, data.llm)
         return ApiResponse(
             data=result,
