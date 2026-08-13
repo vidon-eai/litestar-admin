@@ -10,7 +10,6 @@ from langchain_core.documents import Document
 from langchain_docling.loader import DoclingLoader, ExportType
 from langchain_text_splitters import (
     MarkdownHeaderTextSplitter,
-    RecursiveCharacterTextSplitter,
 )
 
 EXPORT_TYPE = ExportType.MARKDOWN
@@ -99,7 +98,6 @@ class DoclingParser:
                 ("##", "Header_2"),
                 ("###", "Header_3"),
             ],
-            strip_headers=False,
         )
 
         splits: list[Document] = []
@@ -117,9 +115,4 @@ class DoclingParser:
 
                 splits.append(split)
 
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000, chunk_overlap=100
-        )
-        final_chunks = text_splitter.split_documents(splits)
-
-        return final_chunks
+        return splits

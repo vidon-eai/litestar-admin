@@ -9,6 +9,12 @@ from advanced_alchemy.filters import (
     FilterTypes,
 )
 from advanced_alchemy.service import OffsetPagination
+from litestar import Controller, delete, get, patch, post
+from litestar.exceptions import HTTPException, NotFoundException
+from litestar.params import Dependency
+from litestar.status_codes import HTTP_200_OK
+from pydantic import BaseModel, Field
+
 from app.common.response import (
     COMMON_RESPONSES,
     ApiResponse,
@@ -26,11 +32,6 @@ from app.modules.system.user.schema import UserRead
 from app.plugins.rag.service import RAGService
 from app.plugins.storage.service import StorageService
 from app.utils.parser.docling_parser import DoclingParser
-from litestar import Controller, delete, get, patch, post
-from litestar.exceptions import HTTPException, NotFoundException
-from litestar.params import Dependency
-from litestar.status_codes import HTTP_200_OK
-from pydantic import BaseModel, Field
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8002/api/v1")
 
@@ -141,10 +142,10 @@ class DatasetController(Controller):
         status_code=HTTP_200_OK,
     )
     async def delete_dataset(
-        self, dataset_service: DatasetService, dataset_id: UUID
+        self, dataset_service: DatasetService, rag_service: RAGService, dataset_id: UUID
     ) -> ApiResponse[None]:
         await dataset_service.delete(dataset_id)
-
+        rag_service.delete_vector(f"Vector_index_{str(dataset_id).replace("-", "_")}_Node")
         return ApiResponse(
             data=None,
             detail="知識庫刪除成功",
@@ -187,6 +188,7 @@ class DatasetController(Controller):
         collection_id: UUID,
         collection_service: CollectionService,
         data_service: DataService,
+        dataset_service: DatasetService,
         storage_service: StorageService,
         rag_service: RAGService,
         current_user: UserRead,
@@ -252,8 +254,8 @@ class DatasetController(Controller):
             )
         await data_service.delete_where(collection_id=collection.id)
         await data_service.create_many(data)
-        collection_name = str(collection.dataset_id).replace("-", "_")
-        await rag_service.embed(f"Vector_index_{collection_name}_Node", splits)
+        dataset = await dataset_service.get(collection.dataset_id)
+        await rag_service.embed(dataset.vector_index_name, splits)
 
         return ApiResponse(
             data=data,

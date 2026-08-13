@@ -16,7 +16,7 @@ class RAGConfig:
     app_state_key: str = "rag_service"
 
     llm_model: str = "qwen2.5:7b"
-    embedding_model: str = "qwen3-embedding:8b"
+    embedding_model: str = "bge-m3:latest"
     postgres_connection_string: str | None = None
 
     def create_service(self) -> RAGService:

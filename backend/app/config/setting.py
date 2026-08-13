@@ -122,6 +122,17 @@ class RAGSetting(BaseSettings):
     EMBEDDING_MODEL: str = Field(default="qwen3-embedding:8b")
 
 
+class MilvusConfig(BaseSettings):
+    MILVUS_URI: str = Field(..., description="Milvus server URI")
+    MILVUS_TOKEN: str | None = Field(default=None)
+    MILVUS_USER: str | None = Field(default=None)
+    MILVUS_PASSWORD: str | None = Field(default=None)
+    MILVUS_DATABASE: str = Field(default="default")
+    MILVUS_DROP_OLD: bool = Field(default=False)
+    MILVUS_AUTO_ID: bool = Field(default=True)
+    MILVUS_CONSISTENCY_LEVEL: str = Field(default="Strong")
+
+
 class LoggingSetting(BaseSettings):
     LOG_LEVEL: str = Field(default="DEBUG")
 
@@ -137,7 +148,12 @@ class LoggingSetting(BaseSettings):
 
 
 class AppSetting(
-    DatabaseSetting, APIDocSetting, LoggingSetting, StorageSetting, RAGSetting
+    DatabaseSetting,
+    APIDocSetting,
+    LoggingSetting,
+    StorageSetting,
+    RAGSetting,
+    MilvusConfig,
 ):
     model_config = SettingsConfigDict(
         env_file=f"{ENV_DIR}/.env.{os.getenv('ENVIRONMENT', 'dev')}",
