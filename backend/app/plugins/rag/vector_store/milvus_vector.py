@@ -2,12 +2,12 @@ import asyncio
 from dataclasses import dataclass
 from typing import Any
 
+from app.config.setting import app_setting
+from app.core.logger import log
+from app.plugins.rag.vector_store.base_vector import BaseVector
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_milvus import Milvus
-
-from app.config.setting import app_setting
-from app.core.logger import log
 
 
 @dataclass
@@ -40,7 +40,7 @@ class MilvusConfig:
                 raise ValueError("config MILVUS_PASSWORD is required")
 
 
-class MilvusVector:
+class MilvusVector(BaseVector):
     def __init__(
         self, collection_name: str, config: MilvusConfig, embeddings: Embeddings
     ):
@@ -82,17 +82,18 @@ class MilvusVector:
     def get_vector_store(self):
         return self._client
 
-    async def aadd_documents(self, documents: list[Document]):
+    async def aadd_documents(self, documents: list[Document], **kwargs: Any):
         batch_size = 30
         max_retries = 3
         cooldown = 0.5
         total_splits = len(documents)
-
+        index_ids = kwargs.get("index_ids", [])
         log.info(f"開始寫入 {total_splits} 個文本切片 (每批 {batch_size} 筆)...")
         pks: list[str] = []
         # 1. 批次切分迴圈，避免一次性拋送大量請求導致 Ollama 崩潰
         for i in range(0, total_splits, batch_size):
             batch = documents[i : i + batch_size]
+            batch_ids = index_ids[i : i + batch_size]
             current_range = (
                 f"{i + 1}-{min(i + batch_size, total_splits)}/{total_splits}"
             )
@@ -100,8 +101,8 @@ class MilvusVector:
             # 2. 自動重試機制
             for attempt in range(1, max_retries + 1):
                 try:
-                    ids = await self._client.aadd_documents(batch)
-                    pks.append(ids)
+                    ids = await self._client.aadd_documents(batch, ids=batch_ids)
+                    pks.extend(ids)
                     log.info(f"成功寫入批次 [{current_range}]")
                     break
                 except Exception as e:
@@ -122,9 +123,16 @@ class MilvusVector:
                 await asyncio.sleep(cooldown)
         return pks
 
-    def drop_vector(self):
+    def delete_collection(self):
         self._client.drop()
-        
+
+    def delete_documents(self, index_ids: list[str]):
+        return self._client.delete(index_ids)
+
+    async def asimilarity_search_with_score(self, query: str, k: int):
+        return await self._client.asimilarity_search_with_score(query, k=k)
+
+
 class MilvusVectorFactory:
     """
     Factory class for creating MilvusVector instances.

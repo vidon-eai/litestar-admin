@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 
+from app.plugins.rag.vector_store.milvus_vector import MilvusVectorFactory
 from langchain.agents import create_agent
 from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
+from langchain_core.messages import HumanMessage
 from langchain_ollama import OllamaEmbeddings
-
-from app.plugins.rag.vector_store.milvus_vector import MilvusVectorFactory
 
 if TYPE_CHECKING:
     from .config import RAGConfig
@@ -48,78 +48,38 @@ class RAGService:
     def get_embedding(self, provider: str) -> OllamaEmbeddings:
         return OllamaEmbeddings(model=provider)
 
-    def _init_milvus_database(self):
-        from pymilvus import MilvusException, connections, db
-
-        # 1. 建立連線
-        conn = connections.connect(host="127.0.0.1", port=19530)
-
-        db_name = "milvus_demo"
-        try:
-            existing_databases = db.list_database()
-
-            if db_name not in existing_databases:
-                db.create_database(db_name)
-                print(f"Database '{db_name}' created successfully.")
-
-        except MilvusException as e:
-            print(f"An error occurred: {e}")
-
     def _get_llm(self, provider: str):
         return init_chat_model(model=provider, temperature=0)
 
-    async def embed(self, collection_name: str, docs: list[Document]):
+    async def embed(
+        self, collection_name: str, docs: list[Document], index_ids: list[str]
+    ):
         vector_factory = MilvusVectorFactory()
         vector_store = vector_factory.init_vector(
             collection_name=collection_name, embeddings=self._embeddings
         )
-        return await vector_store.aadd_documents(docs)
-        # batch_size = 30
-        # max_retries = 3
-        # cooldown = 0.5
-        # total_splits = len(docs)
+        return await vector_store.aadd_documents(docs, index_ids=index_ids)
 
-        # print(f"開始寫入 {total_splits} 個文本切片 (每批 {batch_size} 筆)...")
-
-        # # 1. 批次切分迴圈，避免一次性拋送大量請求導致 Ollama 崩潰
-        # for i in range(0, total_splits, batch_size):
-        #     batch = docs[i : i + batch_size]
-        #     current_range = (
-        #         f"{i + 1}-{min(i + batch_size, total_splits)}/{total_splits}"
-        #     )
-
-        #     # 2. 自動重試機制
-        #     for attempt in range(1, max_retries + 1):
-        #         try:
-        #             await vector_store.aadd_documents(batch)
-        #             print(f"成功寫入批次 [{current_range}]")
-        #             break
-        #         except Exception as e:
-        #             print(
-        #                 f"寫入批次 [{current_range}] 失敗 (第 {attempt}/{max_retries} 次嘗試): {e}"
-        #             )
-        #             if attempt == max_retries:
-        #                 print(f"批次 [{current_range}] 已達最大重試次數，拋出異常。")
-        #                 raise e
-
-        #             # 指數級退讓等待，給 Ollama 內部進程恢復或清理記憶體的時間
-        #             wait_time = attempt * 2
-        #             print(f"等待 {wait_time} 秒後重新嘗試...")
-        #             await asyncio.sleep(wait_time)
-
-        #     # 3. 每批次成功後短暫停頓，保護 GPU / 記憶體資源
-        #     if cooldown > 0:
-        #         await asyncio.sleep(cooldown)
-
-    def delete_vector(self, collection_name: str):
+    def delete_collection(self, collection_name: str):
         vector_factory = MilvusVectorFactory()
         vector_store = vector_factory.init_vector(
             collection_name=collection_name, embeddings=self._embeddings
         )
-        vector_store.drop_vector()
+        vector_store.delete_collection()
 
-    async def search(self, query: str, collection: str):
-        vector_store = self.get_vector_store(collection)
+    def delete_documents(self, collection_name: str, index_ids: list[str]):
+        vector_factory = MilvusVectorFactory()
+        vector_store = vector_factory.init_vector(
+            collection_name=collection_name, embeddings=self._embeddings
+        )
+
+        return vector_store.delete_documents(index_ids=index_ids)
+
+    async def search(self, query: str, collection_name: str):
+        vector_factory = MilvusVectorFactory()
+        vector_store = vector_factory.init_vector(
+            collection_name=collection_name, embeddings=self._embeddings
+        )
         return await vector_store.asimilarity_search_with_score(query, k=4)
 
     async def chat(self, prompt: str, collection_name: str, provider: str):
@@ -153,13 +113,10 @@ class RAGService:
                 system_prompt=system_prompt,
             )
 
-            response = await agent.ainvoke({"messages": [("user", prompt)]})
+            response = await agent.ainvoke({"messages": [HumanMessage(content=prompt)]})
 
             return response
 
         except Exception as e:
             print(f"Error during chat: {e}")
             raise
-
-    def embed_query(self, text: str) -> list[float]:
-        return self.embeddings.embed_query(text)

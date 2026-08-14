@@ -9,12 +9,6 @@ from advanced_alchemy.filters import (
     FilterTypes,
 )
 from advanced_alchemy.service import OffsetPagination
-from litestar import Controller, delete, get, patch, post
-from litestar.exceptions import HTTPException, NotFoundException
-from litestar.params import Dependency
-from litestar.status_codes import HTTP_200_OK
-from pydantic import BaseModel, Field
-
 from app.common.response import (
     COMMON_RESPONSES,
     ApiResponse,
@@ -32,6 +26,11 @@ from app.modules.system.user.schema import UserRead
 from app.plugins.rag.service import RAGService
 from app.plugins.storage.service import StorageService
 from app.utils.parser.docling_parser import DoclingParser
+from litestar import Controller, delete, get, patch, post
+from litestar.exceptions import HTTPException, NotFoundException
+from litestar.params import Dependency
+from litestar.status_codes import HTTP_200_OK
+from pydantic import BaseModel, Field
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8002/api/v1")
 
@@ -142,10 +141,16 @@ class DatasetController(Controller):
         status_code=HTTP_200_OK,
     )
     async def delete_dataset(
-        self, dataset_service: DatasetService, rag_service: RAGService, dataset_id: UUID
+        self,
+        dataset_service: DatasetService,
+        rag_service: RAGService,
+        dataset_id: UUID,
     ) -> ApiResponse[None]:
+
         await dataset_service.delete(dataset_id)
-        rag_service.delete_vector(f"Vector_index_{str(dataset_id).replace("-", "_")}_Node")
+        rag_service.delete_collection(
+            f"Vector_index_{str(dataset_id).replace('-', '_')}_Node"
+        )
         return ApiResponse(
             data=None,
             detail="知識庫刪除成功",
@@ -243,9 +248,9 @@ class DatasetController(Controller):
             },
         )
 
-        data = []
+        split_data = []
         for split in splits:
-            data.append(
+            split_data.append(
                 {
                     "dataset_id": collection.dataset_id,
                     "collection_id": collection.id,
@@ -253,12 +258,13 @@ class DatasetController(Controller):
                 }
             )
         await data_service.delete_where(collection_id=collection.id)
-        await data_service.create_many(data)
+        data = await data_service.create_many(split_data)
+        index_ids = [str(item.id) for item in data]
         dataset = await dataset_service.get(collection.dataset_id)
-        await rag_service.embed(dataset.vector_index_name, splits)
+        await rag_service.embed(dataset.vector_index_name, splits, index_ids)
 
         return ApiResponse(
-            data=data,
+            data=split_data,
             detail="文檔切片導入知識庫成功",
         )
 
@@ -267,7 +273,7 @@ class DatasetController(Controller):
     )
     async def chat(
         self, rag_service: RAGService, data: ChatRequest
-    ) -> ApiResponse[str]:
+    ) -> ApiResponse[dict[str, Any] | Any]:
         dataset_id = str(data.dataset_id).replace("-", "_")
         collection_name = f"Vector_index_{dataset_id}_Node"
         print("Collection Name:", collection_name)
