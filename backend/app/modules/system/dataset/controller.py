@@ -261,7 +261,7 @@ class DatasetController(Controller):
         data = await data_service.create_many(split_data)
         index_ids = [str(item.id) for item in data]
         dataset = await dataset_service.get(collection.dataset_id)
-        await rag_service.embed(dataset.vector_index_name, splits, index_ids)
+        await rag_service.embed(dataset, splits, index_ids)
 
         return ApiResponse(
             data=split_data,
@@ -272,12 +272,14 @@ class DatasetController(Controller):
         "/chat",
     )
     async def chat(
-        self, rag_service: RAGService, data: ChatRequest
+        self,
+        rag_service: RAGService,
+        dataset_service: DatasetService,
+        data: ChatRequest,
     ) -> ApiResponse[dict[str, Any] | Any]:
-        dataset_id = str(data.dataset_id).replace("-", "_")
-        collection_name = f"Vector_index_{dataset_id}_Node"
-        print("Collection Name:", collection_name)
-        result = await rag_service.chat(data.question, collection_name, data.llm)
+        print("data =>:", data)
+        dataset = await dataset_service.get(data.dataset_id)
+        result = await rag_service.chat(data.question, dataset, data.llm)
         return ApiResponse(
             data=result,
             detail="問答成功",

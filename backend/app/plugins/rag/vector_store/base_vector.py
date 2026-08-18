@@ -3,6 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 
 from langchain_core.documents import Document
+from langchain_core.vectorstores import VectorStoreRetriever
 
 
 class BaseVector(ABC):
@@ -15,6 +16,10 @@ class BaseVector(ABC):
 
     @abstractmethod
     def delete_collection(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def retriever(self) -> VectorStoreRetriever:
         raise NotImplementedError
 
     @property

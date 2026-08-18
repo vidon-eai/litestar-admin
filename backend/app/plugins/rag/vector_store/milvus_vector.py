@@ -4,6 +4,7 @@ from typing import Any
 
 from app.config.setting import app_setting
 from app.core.logger import log
+from app.db.models.dataset import Dataset
 from app.plugins.rag.vector_store.base_vector import BaseVector
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
@@ -132,13 +133,18 @@ class MilvusVector(BaseVector):
     async def asimilarity_search_with_score(self, query: str, k: int):
         return await self._client.asimilarity_search_with_score(query, k=k)
 
+    def retriever(self, **kwargs):
+        return self._client.as_retriever(**kwargs)
 
-class MilvusVectorFactory:
+
+class VectorFactory:
     """
     Factory class for creating MilvusVector instances.
     """
 
-    def init_vector(self, collection_name: str, embeddings: Embeddings) -> MilvusVector:
+    def init_vector(self, dataset: Dataset, embeddings: Embeddings) -> MilvusVector:
+
+        collection_name = dataset.vector_index_name
 
         return MilvusVector(
             embeddings=embeddings,

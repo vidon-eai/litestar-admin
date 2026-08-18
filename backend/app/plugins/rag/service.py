@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
 
-from app.plugins.rag.vector_store.milvus_vector import MilvusVectorFactory
+from app.db.models.dataset import Dataset
+from app.plugins.rag.vector_store.milvus_vector import VectorFactory
+from app.plugins.rag.vector_store.vertor_factory import Vector
 from langchain.agents import create_agent
 from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
@@ -51,24 +53,24 @@ class RAGService:
     def _get_llm(self, provider: str):
         return init_chat_model(model=provider, temperature=0)
 
-    async def embed(
-        self, collection_name: str, docs: list[Document], index_ids: list[str]
-    ):
-        vector_factory = MilvusVectorFactory()
-        vector_store = vector_factory.init_vector(
-            collection_name=collection_name, embeddings=self._embeddings
-        )
-        return await vector_store.aadd_documents(docs, index_ids=index_ids)
+    async def embed(self, dataset: Dataset, docs: list[Document], index_ids: list[str]):
+        # vector_factory = VectorFactory()
+        # vector_store = vector_factory.init_vector(
+        #     collection_name=collection_name, embeddings=self._embeddings
+        # )
+
+        vertor = Vector(dataset=dataset, embedding_model="qwen3-embedding:8b")
+        return await vertor.aadd_documents(docs, index_ids=index_ids)
 
     def delete_collection(self, collection_name: str):
-        vector_factory = MilvusVectorFactory()
+        vector_factory = VectorFactory()
         vector_store = vector_factory.init_vector(
             collection_name=collection_name, embeddings=self._embeddings
         )
         vector_store.delete_collection()
 
     def delete_documents(self, collection_name: str, index_ids: list[str]):
-        vector_factory = MilvusVectorFactory()
+        vector_factory = VectorFactory()
         vector_store = vector_factory.init_vector(
             collection_name=collection_name, embeddings=self._embeddings
         )
@@ -76,22 +78,29 @@ class RAGService:
         return vector_store.delete_documents(index_ids=index_ids)
 
     async def search(self, query: str, collection_name: str):
-        vector_factory = MilvusVectorFactory()
+        vector_factory = VectorFactory()
         vector_store = vector_factory.init_vector(
             collection_name=collection_name, embeddings=self._embeddings
         )
         return await vector_store.asimilarity_search_with_score(query, k=4)
 
-    async def chat(self, prompt: str, collection_name: str, provider: str):
+    async def chat(self, prompt: str, dataset: Dataset, provider: str):
         try:
-            vector_factory = MilvusVectorFactory()
-            vector_store = vector_factory.init_vector(
-                collection_name=collection_name, embeddings=self._embeddings
-            )
-            retriever = vector_store.get_vector_store().as_retriever(
+            # vector_factory = VectorFactory()
+            # vector_store = vector_factory.init_vector(
+            #     collection_name=collection_name, embeddings=self._embeddings
+            # )
+
+            vector = Vector(dataset=dataset, embedding_model="qwen3-embedding:8b")
+            retriever = vector.as_retriever(
                 search_type="similarity",  # Could also use "mmr" for diversity
                 search_kwargs={"k": 4},
             )
+
+            # retriever = vector_store.get_vector_store().as_retriever(
+            #     search_type="similarity",  # Could also use "mmr" for diversity
+            #     search_kwargs={"k": 4},
+            # )
 
             retriever_tool = retriever.as_tool(
                 name="knowledge_base_search",
