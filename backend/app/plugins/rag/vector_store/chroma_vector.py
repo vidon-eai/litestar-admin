@@ -2,48 +2,35 @@ import asyncio
 from dataclasses import dataclass
 from typing import Any
 
-from app.config.setting import app_setting
+import chromadb
 from app.core.logger import log
 from app.db.models.dataset import Dataset
 from app.plugins.rag.vector_store.base_vector import BaseVector
+from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
-from langchain_milvus import Milvus
 
 
 @dataclass
-class MilvusConfig:
+class ChromaConfig:
     """
     Configuration class for Milvus connection.
     """
 
-    uri: str  # Milvus server URI
-    token: str | None = None  # Optional token for authentication
-    user: str | None = None  # Username for authentication
-    password: str | None = None  # Password for authentication
-    database: str = "default"  # Database name
+    type: str = "local"
 
-    drop_old: bool = False
-    auto_id: bool = True
-    consistency_level: str = "Strong"
+    # Running locally
+    path: str | None = None
 
-    def __post_init__(self):
-        """
-        Validate the configuration values after initialization.
-        Raises ValueError if required fields are missing.
-        """
-        if not self.uri:
-            raise ValueError("config MILVUS_URI is required")
-        if not self.token:
-            if not self.user:
-                raise ValueError("config MILVUS_USER is required")
-            if not self.password:
-                raise ValueError("config MILVUS_PASSWORD is required")
+    # Running Chroma server
+    host: str | None = None
+    port: int | None = None
+    ssl: bool = False
 
 
-class MilvusVector(BaseVector):
+class ChromaVector(BaseVector):
     def __init__(
-        self, collection_name: str, config: MilvusConfig, embeddings: Embeddings
+        self, collection_name: str, config: ChromaConfig, embeddings: Embeddings
     ):
         self._config = config
         self._collection_name = collection_name
@@ -52,32 +39,28 @@ class MilvusVector(BaseVector):
             raise ValueError("Embeddings is required")
 
         self._embeddings = embeddings
+
         self._client = self._init_client(config)
 
-    def _init_client(self, config: MilvusConfig) -> Milvus:
+    def _init_client(self, config: ChromaConfig) -> Chroma:
         """
-        Initialize and return a Milvus client.
+        Initialize and return a Chroma client.
         """
-        connection_args: dict[str, Any] = {
-            "uri": config.uri,
-            "db_name": config.database,
-        }
-        if config.token:
-            connection_args["token"] = config.token
-        else:
-            connection_args["user"] = config.user or ""
-            connection_args["password"] = config.password or ""
 
-        index_params = {"index_type": "FLAT", "metric_type": "L2"}
-        log.info("初始化 Milvus", self._embeddings, self._collection_name)
-        return Milvus(
+        if config.type == "local":
+            if config.path:
+                client = chromadb.PersistentClient(path=config.path)
+        elif config.type == "server":
+            if config.host and config.port:
+                client = chromadb.HttpClient(
+                    host=config.host, port=config.port, ssl=config.ssl
+                )
+
+        log.info("初始化 Chroma", self._embeddings, self._collection_name)
+        return Chroma(
+            client=client,
             embedding_function=self._embeddings,
             collection_name=self._collection_name,
-            connection_args=connection_args,
-            index_params=index_params,
-            drop_old=config.drop_old,
-            auto_id=config.auto_id,
-            consistency_level=config.consistency_level,
         )
 
     def get_vector_store(self):
@@ -125,7 +108,7 @@ class MilvusVector(BaseVector):
         return pks
 
     def delete_collection(self):
-        self._client.drop()
+        self._client.delete_collection()
 
     def delete_by_ids(self, index_ids: list[str]):
         return self._client.delete(index_ids)
@@ -142,21 +125,12 @@ class VectorFactory:
     Factory class for creating MilvusVector instances.
     """
 
-    def init_vector(self, dataset: Dataset, embeddings: Embeddings) -> MilvusVector:
+    def init_vector(self, dataset: Dataset, embeddings: Embeddings) -> ChromaVector:
 
         collection_name = dataset.vector_index_name
 
-        return MilvusVector(
+        return ChromaVector(
             embeddings=embeddings,
             collection_name=collection_name,
-            config=MilvusConfig(
-                uri=app_setting.MILVUS_URI,
-                token=app_setting.MILVUS_TOKEN,
-                user=app_setting.MILVUS_USER,
-                password=app_setting.MILVUS_PASSWORD,
-                database=app_setting.MILVUS_DATABASE,
-                auto_id=app_setting.MILVUS_AUTO_ID,
-                consistency_level=app_setting.MILVUS_CONSISTENCY_LEVEL,
-                drop_old=app_setting.MILVUS_DROP_OLD,
-            ),
+            config=ChromaConfig(type="local", path="./vector_db"),
         )

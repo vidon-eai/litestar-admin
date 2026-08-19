@@ -7,6 +7,11 @@ from langchain.embeddings import Embeddings
 from langchain_core.documents import Document
 from langchain_ollama import OllamaEmbeddings
 
+_BUILTIN_VECTOR_FACTORY_TARGETS = {
+    "milvus": "app.plugins.rag.vector_store.milvus_vector:VectorFactory",
+    "chroma": "app.plugins.rag.vector_store.chroma_vector:VectorFactory",
+}
+
 
 class AbstractVectorFactory(ABC):
     @abstractmethod
@@ -14,15 +19,19 @@ class AbstractVectorFactory(ABC):
         raise NotImplementedError
 
 
+def _load_builtin_factory(vector_type: str) -> type[AbstractVectorFactory]:
+    target = _BUILTIN_VECTOR_FACTORY_TARGETS.get(vector_type)
+    if not target:
+        raise ValueError(f"Vector store {vector_type!r} is not supported")
+    module_path, _, attr = target.partition(":")
+    module = importlib.import_module(module_path)
+
+    return getattr(module, attr)
+
+
 def get_vector_factory_class(vector_type: str) -> type[AbstractVectorFactory]:
 
-    module_name = f"app.plugins.rag.vector_store.{vector_type}_vector"
-
-    module = importlib.import_module(module_name)
-
-    factory_class = getattr(module, "VectorFactory")
-
-    return factory_class
+    return _load_builtin_factory(vector_type)
 
 
 class Vector:
@@ -44,3 +53,9 @@ class Vector:
 
     def as_retriever(self, **kwargs):
         return self._vector_store.retriever(**kwargs)
+
+    def delete_collection(self):
+        self._vector_store.delete_collection()
+
+    def delete_by_ids(self, ids: list[str]):
+        self._vector_store.delete_by_ids(ids)

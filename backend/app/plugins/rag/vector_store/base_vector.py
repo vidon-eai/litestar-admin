@@ -19,6 +19,10 @@ class BaseVector(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def delete_by_ids(self, ids: list[str]):
+        raise NotImplementedError
+
+    @abstractmethod
     def retriever(self) -> VectorStoreRetriever:
         raise NotImplementedError
 

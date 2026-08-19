@@ -147,10 +147,8 @@ class DatasetController(Controller):
         dataset_id: UUID,
     ) -> ApiResponse[None]:
 
-        await dataset_service.delete(dataset_id)
-        rag_service.delete_collection(
-            f"Vector_index_{str(dataset_id).replace('-', '_')}_Node"
-        )
+        dataset = await dataset_service.delete(dataset_id)
+        rag_service.delete_collection(dataset)
         return ApiResponse(
             data=None,
             detail="知識庫刪除成功",
