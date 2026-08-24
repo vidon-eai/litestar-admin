@@ -23,6 +23,7 @@ from app.modules.system.dataset.schema import (
 )
 from app.modules.system.dataset.service import DatasetService
 from app.modules.system.user.schema import UserRead
+from app.plugins.rag.parsing.loader import PyMuPDF4LLMLoader
 from app.plugins.rag.service import RAGService
 from app.plugins.rag.vector_store.service import VectorStoreService
 from app.plugins.storage.service import StorageService
@@ -235,17 +236,20 @@ class DatasetController(Controller):
 
         parser = DoclingParser(file_path=url)
 
-        documents = list(parser.load_documents())
+        parser = PyMuPDF4LLMLoader()
+        documents = parser.parse(url)
+        print(documents)
+        # documents = list(parser.load_documents())
 
-        await storage_service.delete_dir(f"{current_user.id}/datasets/{file.id}/images")
-        await parser.extract_images(documents, upload_fn=handle_image_upload)
-        splits = parser.parse(
-            documents,
-            extra_metadata={
-                "filename": file.name,
-                "source": file.location,
-            },
-        )
+        # await storage_service.delete_dir(f"{current_user.id}/datasets/{file.id}/images")
+        # await parser.extract_images(documents, upload_fn=handle_image_upload)
+        # splits = parser.parse(
+        #     documents,
+        #     extra_metadata={
+        #         "filename": file.name,
+        #         "source": file.location,
+        #     },
+        # )
 
         split_data = [
             {
@@ -253,7 +257,7 @@ class DatasetController(Controller):
                 "collection_id": collection.id,
                 "question": split.page_content,
             }
-            for split in splits
+            for split in documents
         ]
 
         dataset = collection.dataset
@@ -264,7 +268,7 @@ class DatasetController(Controller):
 
         data = await data_service.create_many(split_data)
         index_ids = [str(item.id) for item in data]
-        await vector_store_service.embed(dataset, splits, index_ids)
+        await vector_store_service.embed(dataset, documents, index_ids)
 
         return ApiResponse(
             data=split_data,

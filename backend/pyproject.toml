@@ -24,6 +24,7 @@ dependencies = [
     "opendal>=0.47.2",
     "pydantic>=2.12.5",
     "pydantic-settings>=2.7.0",
+    "pymupdf4llm>=1.28.2",
     "sqlalchemy>=2.0.49",
 ]
 

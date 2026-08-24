@@ -15,7 +15,7 @@ class VectorStoreConfig:
     dependency_key: str = "vector_store_service"
     app_state_key: str = "vector_store_service"
 
-    embedding_model: str = "bge-m3:latest"
+    embedding_model: str = "qwen3-embedding:8b"
 
     def create_service(self) -> VectorStoreService:
         return VectorStoreService(self)
