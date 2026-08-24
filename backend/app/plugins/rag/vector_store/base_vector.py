@@ -26,6 +26,16 @@ class BaseVector(ABC):
     def retriever(self) -> VectorStoreRetriever:
         raise NotImplementedError
 
+    @abstractmethod
+    def similarity_search(self, query: str, top_k: int, **kwargs) -> list[Document]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def asimilarity_search(
+        self, query: str, top_k: int, **kwargs
+    ) -> list[Document]:
+        raise NotImplementedError
+
     @property
     def collection_name(self):
         return self._collection_name

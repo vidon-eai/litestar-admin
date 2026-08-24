@@ -9,4 +9,5 @@ migrations/versions/*
 
 devops/
 backend/storage/
+backend/vector_db/
 docker/volumes/

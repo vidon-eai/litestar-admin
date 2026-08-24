@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, cast
 
-from .service import RAGService
+from .service import VectorStoreService
 
 if TYPE_CHECKING:
     from litestar import Litestar
@@ -11,12 +11,14 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class RAGConfig:
-    dependency_key: str = "rag_service"
-    app_state_key: str = "rag_service"
+class VectorStoreConfig:
+    dependency_key: str = "vector_store_service"
+    app_state_key: str = "vector_store_service"
 
-    def create_service(self) -> RAGService:
-        return RAGService(self)
+    embedding_model: str = "bge-m3:latest"
+
+    def create_service(self) -> VectorStoreService:
+        return VectorStoreService(self)
 
     def create_app_state_items(self) -> dict[str, Any]:
         return {
@@ -35,5 +37,5 @@ class RAGConfig:
         finally:
             pass
 
-    def provide_service(self, state: "State") -> RAGService:
-        return cast(RAGService, state.get(self.app_state_key))
+    def provide_service(self, state: "State") -> VectorStoreService:
+        return cast(VectorStoreService, state.get(self.app_state_key))

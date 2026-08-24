@@ -14,6 +14,7 @@ from app.modules.system.collection.schema import (
     CollectionWithDatas,
 )
 from app.modules.system.collection.service import CollectionService
+from app.plugins.rag.vector_store.service import VectorStoreService
 from litestar import Controller, delete, get, patch, post
 from litestar.params import Dependency
 from litestar.status_codes import HTTP_200_OK
@@ -127,10 +128,14 @@ class CollectionController(Controller):
     async def delete_collection(
         self,
         collection_service: CollectionService,
+        vector_store_service: VectorStoreService,
         collection_id: UUID,
     ) -> ApiResponse[None]:
-        await collection_service.delete(collection_id)
 
+        collection = await collection_service.delete(collection_id)
+        if collection.datas:
+            ids = [str(d.id) for d in collection.datas]
+            vector_store_service.delete_by_ids(collection.dataset, ids)
         return ApiResponse(
             data=None,
             detail="文檔刪除成功",

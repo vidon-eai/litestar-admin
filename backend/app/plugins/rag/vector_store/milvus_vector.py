@@ -130,8 +130,11 @@ class MilvusVector(BaseVector):
     def delete_by_ids(self, index_ids: list[str]):
         return self._client.delete(index_ids)
 
-    async def asimilarity_search_with_score(self, query: str, k: int):
-        return await self._client.asimilarity_search_with_score(query, k=k)
+    def similarity_search(self, query: str, top_k: int, **kwargs):
+        return self._client.similarity_search(query, k=top_k, **kwargs)
+
+    async def asimilarity_search(self, query: str, top_k: int, **kwargs):
+        return await self._client.asimilarity_search(query, k=top_k, **kwargs)
 
     def retriever(self, **kwargs):
         return self._client.as_retriever(**kwargs)

@@ -98,6 +98,7 @@ class DoclingParser:
                 ("##", "Header_2"),
                 ("###", "Header_3"),
             ],
+            strip_headers=False,
         )
 
         splits: list[Document] = []
@@ -106,7 +107,7 @@ class DoclingParser:
             doc_splits = splitter.split_text(doc.page_content)
 
             for split in doc_splits:
-                # 1. 保留原本 doc 的 metadata（如果有的话）
+                # # 1. 保留原本 doc 的 metadata（如果有的话）
                 split.metadata.update(doc.metadata)
 
                 # 2. 注入外部傳入的額外 metadata（如 file_id）

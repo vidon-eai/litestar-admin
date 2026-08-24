@@ -19,7 +19,6 @@ async def spy_on_plugins(app: Litestar):
 
 def create_app() -> Litestar:
     from app.config.setting import app_setting
-    from app.plugins.rag.config import RAGConfig
     from app.plugins.storage.config import StorageConfig
 
     storage_config = {
@@ -46,13 +45,7 @@ def create_app() -> Litestar:
         plugins=[
             ApplicationCore(),
             plugins.StoragePlugin(config=StorageConfig(**storage_config)),
-            plugins.RAGPlugin(
-                config=RAGConfig(
-                    llm_model=app_setting.LLM_MODEL,
-                    embedding_model=app_setting.EMBEDDING_MODEL,
-                    postgres_connection_string=app_setting.SQLALCHEMY_DATABASE_URI,
-                )
-            ),
+            plugins.RAGPlugin(),
             plugins.RouteLoggerPlugin(),
         ],
     )

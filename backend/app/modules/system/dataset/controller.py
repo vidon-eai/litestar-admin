@@ -24,6 +24,7 @@ from app.modules.system.dataset.schema import (
 from app.modules.system.dataset.service import DatasetService
 from app.modules.system.user.schema import UserRead
 from app.plugins.rag.service import RAGService
+from app.plugins.rag.vector_store.service import VectorStoreService
 from app.plugins.storage.service import StorageService
 from app.utils.parser.docling_parser import DoclingParser
 from litestar import Controller, delete, get, patch, post
@@ -143,12 +144,12 @@ class DatasetController(Controller):
     async def delete_dataset(
         self,
         dataset_service: DatasetService,
-        rag_service: RAGService,
+        vector_store_service: VectorStoreService,
         dataset_id: UUID,
     ) -> ApiResponse[None]:
 
         dataset = await dataset_service.delete(dataset_id)
-        rag_service.delete_collection(dataset)
+        vector_store_service.delete_collection(dataset)
         return ApiResponse(
             data=None,
             detail="知識庫刪除成功",
@@ -193,7 +194,7 @@ class DatasetController(Controller):
         data_service: DataService,
         dataset_service: DatasetService,
         storage_service: StorageService,
-        rag_service: RAGService,
+        vector_store_service: VectorStoreService,
         current_user: UserRead,
     ) -> ApiResponse[list[Any]]:
 
@@ -246,20 +247,24 @@ class DatasetController(Controller):
             },
         )
 
-        split_data = []
-        for split in splits:
-            split_data.append(
-                {
-                    "dataset_id": collection.dataset_id,
-                    "collection_id": collection.id,
-                    "question": split.page_content,
-                }
-            )
-        await data_service.delete_where(collection_id=collection.id)
+        split_data = [
+            {
+                "dataset_id": collection.dataset_id,
+                "collection_id": collection.id,
+                "question": split.page_content,
+            }
+            for split in splits
+        ]
+
+        dataset = collection.dataset
+        if collection.datas:
+            data_list = await data_service.delete_where(collection_id=collection.id)
+            old_index_ids = [str(item.id) for item in data_list]
+            vector_store_service.delete_by_ids(dataset, old_index_ids)
+
         data = await data_service.create_many(split_data)
         index_ids = [str(item.id) for item in data]
-        dataset = await dataset_service.get(collection.dataset_id)
-        await rag_service.embed(dataset, splits, index_ids)
+        await vector_store_service.embed(dataset, splits, index_ids)
 
         return ApiResponse(
             data=split_data,
@@ -273,11 +278,15 @@ class DatasetController(Controller):
         self,
         rag_service: RAGService,
         dataset_service: DatasetService,
+        vector_store_service: VectorStoreService,
         data: ChatRequest,
     ) -> ApiResponse[dict[str, Any] | Any]:
         print("data =>:", data)
         dataset = await dataset_service.get(data.dataset_id)
-        result = await rag_service.chat(data.question, dataset, data.llm)
+
+        retriever = vector_store_service.get_retriever(dataset)
+
+        result = await rag_service.chat(data.question, dataset, data.llm, retriever)
         return ApiResponse(
             data=result,
             detail="問答成功",
