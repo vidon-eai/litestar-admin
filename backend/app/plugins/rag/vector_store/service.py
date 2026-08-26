@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from app.db.models.dataset import Dataset
-from app.plugins.rag.vector_store.vertor_factory import Vector
+from app.plugins.rag.vector_store.vector_factory import Vector
 from langchain_core.documents import Document
 from langchain_ollama import OllamaEmbeddings
 
@@ -26,8 +26,8 @@ class VectorStoreService:
         return retriever
 
     async def embed(self, dataset: Dataset, docs: list[Document], index_ids: list[str]):
-        vertor = Vector(dataset=dataset, embedding_model=self._embedding_model)
-        return await vertor.aadd_documents(docs, index_ids=index_ids)
+        vector = Vector(dataset=dataset, embedding_model=self._embedding_model)
+        return await vector.aadd_documents(docs, index_ids=index_ids)
 
     def delete_collection(self, dataset: Dataset):
         vector_store = Vector(dataset=dataset, embedding_model=self._embedding_model)

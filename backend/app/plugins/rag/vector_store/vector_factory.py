@@ -3,8 +3,8 @@ from abc import ABC, abstractmethod
 
 from app.db.models.dataset import Dataset
 from app.plugins.rag.vector_store.base_vector import BaseVector
-from langchain.embeddings import Embeddings
 from langchain_core.documents import Document
+from langchain_core.embeddings import Embeddings
 from langchain_ollama import OllamaEmbeddings
 
 _BUILTIN_VECTOR_FACTORY_TARGETS = {
@@ -19,19 +19,19 @@ class AbstractVectorFactory(ABC):
         raise NotImplementedError
 
 
-def _load_builtin_factory(vector_type: str) -> type[AbstractVectorFactory]:
-    target = _BUILTIN_VECTOR_FACTORY_TARGETS.get(vector_type)
+def _load_builtin_factory(type: str) -> type[AbstractVectorFactory]:
+    target = _BUILTIN_VECTOR_FACTORY_TARGETS.get(type)
     if not target:
-        raise ValueError(f"Vector store {vector_type!r} is not supported")
+        raise ValueError(f"Vector store {type!r} is not supported")
     module_path, _, attr = target.partition(":")
     module = importlib.import_module(module_path)
 
     return getattr(module, attr)
 
 
-def get_vector_factory_class(vector_type: str) -> type[AbstractVectorFactory]:
+def get_vector_factory_class(type: str) -> type[AbstractVectorFactory]:
 
-    return _load_builtin_factory(vector_type)
+    return _load_builtin_factory(type)
 
 
 class Vector:

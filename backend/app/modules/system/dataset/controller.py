@@ -23,11 +23,10 @@ from app.modules.system.dataset.schema import (
 )
 from app.modules.system.dataset.service import DatasetService
 from app.modules.system.user.schema import UserRead
-from app.plugins.rag.parsing.loader import PyMuPDF4LLMLoader
+from app.plugins.rag.parsing.service import ParserService
 from app.plugins.rag.service import RAGService
 from app.plugins.rag.vector_store.service import VectorStoreService
 from app.plugins.storage.service import StorageService
-from app.utils.parser.docling_parser import DoclingParser
 from litestar import Controller, delete, get, patch, post
 from litestar.exceptions import HTTPException, NotFoundException
 from litestar.params import Dependency
@@ -193,7 +192,7 @@ class DatasetController(Controller):
         collection_id: UUID,
         collection_service: CollectionService,
         data_service: DataService,
-        dataset_service: DatasetService,
+        parser_service: ParserService,
         storage_service: StorageService,
         vector_store_service: VectorStoreService,
         current_user: UserRead,
@@ -234,11 +233,10 @@ class DatasetController(Controller):
                 except Exception:
                     return None
 
-        parser = DoclingParser(file_path=url)
+        # parser = DoclingParser(file_path=url)
 
-        parser = PyMuPDF4LLMLoader()
-        documents = parser.parse(url)
-        print(documents)
+        documents = parser_service.parse(url)
+        # print(documents)
         # documents = list(parser.load_documents())
 
         # await storage_service.delete_dir(f"{current_user.id}/datasets/{file.id}/images")
