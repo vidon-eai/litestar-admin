@@ -9,11 +9,17 @@
             "args": [
                 "start"
             ],
-            "python": "${workspaceFolder}/backend/.venv/Scripts/python.exe",
+            // 默认指向 Linux/macOS 的虚拟环境路径
+            "python": "${workspaceFolder}/backend/.venv/bin/python",
             "cwd": "${workspaceFolder}/backend",
             "jinja": true,
             "justMyCode": true,
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+
+            // 专门针对 Windows 系统覆盖 python 路径
+            "windows": {
+                "python": "${workspaceFolder}/backend/.venv/Scripts/python.exe"
+            }
         }
     ]
 }

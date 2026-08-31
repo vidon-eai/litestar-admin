@@ -42,7 +42,6 @@ class PyMuPDF4LLMLoader(BaseLoader):
         chunks = pymupdf4llm.to_markdown(str(source_path), **kwargs)
 
         if self._config.page_chunks and isinstance(chunks, list):
-            # 使用列表推導式提升效能並修正 Return 位置 Bug
             return [
                 Document(
                     page_content=chunk["text"],

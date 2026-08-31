@@ -19,9 +19,13 @@ class VectorStoreService:
 
     def get_retriever(self, dataset: Dataset, **kwargs):
         vector = Vector(dataset=dataset, embedding_model=self._embedding_model)
+
+        search_type = kwargs.get("search_type", "similarity")
+        search_kwargs = kwargs.get("search_kwargs", {"k": 4})
+
         retriever = vector.as_retriever(
-            search_type="similarity",
-            search_kwargs={"k": 4},
+            search_type=search_type,
+            search_kwargs=search_kwargs,
         )
         return retriever
 

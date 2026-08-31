@@ -1,6 +1,4 @@
-import asyncio
 import os
-import uuid
 from typing import Annotated, Any
 from uuid import UUID
 
@@ -213,42 +211,7 @@ class DatasetController(Controller):
         if not url:
             raise HTTPException(status_code=500, detail="生成文件 URL 失敗")
 
-        semaphore = asyncio.Semaphore(5)
-
-        async def handle_image_upload(content: bytes, extension: str) -> str | None:
-            async with semaphore:
-                try:
-                    file_uuid = uuid.uuid4()
-                    if not current_user:
-                        raise NotFoundException(detail="用戶不存在")
-                    user_id = current_user.id
-                    file_key = f"{user_id}/datasets/{collection.dataset_id}/{file.id}/images/{file_uuid}.{extension}"
-
-                    success = await storage_service.put(file_key, content)
-                    if not success:
-                        raise HTTPException(status_code=500, detail="圖片上傳失敗")
-
-                    # 替换为前端可以直接访问的图片预览接口路由路径
-                    return f"{API_BASE_URL}/files/preview/{file_key}"
-                except Exception:
-                    return None
-
-        # parser = DoclingParser(file_path=url)
-
         documents = parser_service.parse(url)
-        # print(documents)
-        # documents = list(parser.load_documents())
-
-        # await storage_service.delete_dir(f"{current_user.id}/datasets/{file.id}/images")
-        # await parser.extract_images(documents, upload_fn=handle_image_upload)
-        # splits = parser.parse(
-        #     documents,
-        #     extra_metadata={
-        #         "filename": file.name,
-        #         "source": file.location,
-        #     },
-        # )
-
         split_data = [
             {
                 "dataset_id": collection.dataset_id,
