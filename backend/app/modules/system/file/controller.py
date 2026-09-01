@@ -1,7 +1,8 @@
-import mimetypes
 import os
+import urllib.parse
 import uuid
 from enum import Enum
+from pathlib import Path
 from typing import Annotated
 
 from advanced_alchemy.extensions.litestar import providers
@@ -84,9 +85,12 @@ class FileController(Controller):
     ) -> ApiResponse[FileRead]:
         dataset_id = data.dataset_id
         content = await data.file.read()
-        filename = data.file.filename
+        raw_filename = data.file.filename
         content_type = data.file.content_type
-        extension = os.path.splitext(filename)[1].lstrip(".").lower()
+
+        file_path = Path(raw_filename)
+        extension = file_path.suffix.lstrip(".").lower()
+        filename = file_path.stem  # 纯文件名（不含扩展名）
         filesize = len(content)
         file_uuid = uuid.uuid4()
         file_key = (
@@ -94,6 +98,8 @@ class FileController(Controller):
             + "/datasets/"
             + str(dataset_id)
             + "/"
+            + filename
+            + "_"
             + str(file_uuid)
             + "."
             + extension
@@ -104,7 +110,7 @@ class FileController(Controller):
         file = await file_service.create(
             {
                 "created_by": current_user.id,
-                "name": filename,
+                "name": raw_filename,
                 "location": file_key,
                 "size": filesize,
                 "type": content_type,
@@ -142,9 +148,13 @@ class FileController(Controller):
         if not content:
             raise NotFoundException(detail="文件不存在")
 
+        encoded_filename = urllib.parse.quote(file.name)
+
         return Response(
             content=content,
-            headers={"Content-Disposition": f'attachment; filename="{file.name}"'},
+            headers={
+                "Content-Disposition": f"attachment; filename*=UTF-8''{encoded_filename}"
+            },
             media_type="application/octet-stream",
         )
 
@@ -172,42 +182,3 @@ class FileController(Controller):
 
         await file_service.delete(file_id)
         return ApiResponse(data=None, detail="文件刪除成功")
-
-    @get(
-        "/preview/{file_key:path}",
-        summary="預覽圖片/文件",
-        description="根據存储 file_key 直接返回文件流或重定向至 S3 預覽链接",
-        exclude_from_auth=True,
-    )
-    async def preview_file(
-        self,
-        file_key: str,
-        storage_service: StorageService,
-    ) -> Response[bytes]:
-        # 1. 如果是 S3 存储，直接获取预签名 URL 重定向
-        if storage_service.storage_type == "s3":
-            url = await storage_service.get_url(file_key)
-            if not url:
-                raise NotFoundException(detail="圖片不存在或無法生成預覽 URL")
-
-        # 2. 如果是本地存储，从存储中读取内容字节流
-        content = await storage_service.get(file_key)
-        if not content:
-            raise NotFoundException(detail="圖片不存在")
-
-        # 动态推断 Content-Type (例如 image/png, image/jpeg)
-        media_type, _ = mimetypes.guess_type(file_key)
-        if not media_type:
-            media_type = "image/png"  # 默认降级格式
-
-        return Response(
-            content=content,
-            media_type=media_type,
-            headers={
-                "Content-Disposition": f'inline; filename="{os.path.basename(file_key)}"',
-                "Cache-Control": "public, max-age=86400",
-                # 显式允许前端跨域加载图片
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, OPTIONS",
-            },
-        )

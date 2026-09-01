@@ -31,7 +31,7 @@ def get_loader_factory_class(type: str) -> type[AbstractLoaderFactory]:
 
 
 class Loader:
-    def __init__(self, type: str = "pymupdf4llm"):
+    def __init__(self, type: str = "docling"):
         self._type = type
         self._loader = self._init_loader()
 
