@@ -4,6 +4,7 @@ from app import plugins
 from app.cli.commands import cli
 from app.common.enums import StorageTypeEnum
 from litestar import Litestar
+from litestar.config.cors import CORSConfig
 
 
 @asynccontextmanager
@@ -48,6 +49,7 @@ def create_app() -> Litestar:
             plugins.RAGPlugin(),
             plugins.RouteLoggerPlugin(),
         ],
+        cors_config=CORSConfig(),
     )
 
 
