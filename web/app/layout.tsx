@@ -44,7 +44,7 @@ export default function RootLayout({
             <SidebarProvider>
               <TooltipProvider>
                 <AppSidebar />
-                <main className="flex max-h-screen min-h-screen w-full flex-col px-2">
+                <main className="mx-auto flex max-h-screen min-h-screen w-full max-w-3xl flex-col px-2">
                   {children}
                 </main>
               </TooltipProvider>

@@ -1,11 +1,14 @@
-'use client'
+"use client"
 
 import { datasetOptions } from "@/services/dataset"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
+interface KnowledgeListProps {
+  datasetId: string
+}
 
-export function KnowledgeList() {
-  const { data } = useSuspenseQuery(datasetOptions)
+export function KnowledgeList({ datasetId }: KnowledgeListProps) {
+  const { data } = useSuspenseQuery(datasetOptions(datasetId))
   return (
     <div className="flex h-full flex-col justify-center">
       <div className="flex-1">
@@ -15,7 +18,6 @@ export function KnowledgeList() {
           </div>
         ))}
       </div>
-    
     </div>
   )
 }

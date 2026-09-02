@@ -22,21 +22,50 @@ export const login = async (username: string, password: string) => {
   return response
 }
 
-export const datasetOptions = queryOptions({
+export const fetchDatasets = async () => {
+  const authResponse = await login("admin", "password")
+
+  const response = await customFetch<ApiResponse<DatasetDetail>>(`/datasets`, {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${authResponse.access_token}`,
+    },
+  })
+
+  return response
+}
+
+export const datasetListOptions = queryOptions({
+  // 將 dataset_id 加入 queryKey，避免不同 dataset 的快取互相衝突
   queryKey: ["datasets"],
   queryFn: async () => {
-    const authResponse = await login("admin", "password")
-
-    const dataset_id = '01a05bcb-089b-7d01-a0fa-b7f3d3b9ddd8'
-    const response = await customFetch<ApiResponse<DatasetDetail>>(`/datasets/${dataset_id}/documents`, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        'Authorization': `Bearer ${authResponse.access_token}`
-      },
-    })
+    const response = await fetchDatasets()
 
     return response
   },
 })
+
+export const datasetOptions = (dataset_id: string) =>
+  queryOptions({
+    // 將 dataset_id 加入 queryKey，避免不同 dataset 的快取互相衝突
+    queryKey: ["datasets", dataset_id],
+    queryFn: async () => {
+      const authResponse = await login("admin", "password")
+
+      const response = await customFetch<ApiResponse<DatasetDetail>>(
+        `/datasets/${dataset_id}/documents`,
+        {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authResponse.access_token}`,
+          },
+        }
+      )
+
+      return response
+    },
+  })

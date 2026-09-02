@@ -1,17 +1,17 @@
-import { KnowledgeList } from "@/components/knowledge/list"
+import { DatasetDataTable } from "@/components/knowledge/data-table"
 import { getQueryClient } from "@/lib/react-query"
-import { datasetOptions } from "@/services/dataset"
+import { datasetListOptions } from "@/services/dataset"
 import { dehydrate, HydrationBoundary, noop } from "@tanstack/react-query"
 
 export default async function Page() {
   const queryClient = getQueryClient()
 
-  void queryClient.query(datasetOptions).catch(noop)
+  void queryClient.query(datasetListOptions).catch(noop)
 
   return (
     <div className="flex h-full flex-col justify-center">
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <KnowledgeList />
+        <DatasetDataTable />
       </HydrationBoundary>
     </div>
   )
