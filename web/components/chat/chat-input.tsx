@@ -13,7 +13,7 @@ import { sendMessage } from "@/services/chat"
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import { Shimmer } from "../ai-elements/shimmer"
-import { SelectDemo } from "./ dataset-select"
+import { SelectDataset, SelectModel } from "./dataset-select"
 
 const ChatInput = ({
   setMessages,
@@ -30,9 +30,12 @@ const ChatInput = ({
 }) => {
   const [text, setText] = useState<string>("")
   const [datasetId, setDatasetId] = useState<string>()
+  const [model, setModel] = useState<string>()
   const [status, setStatus] = useState<
     "submitted" | "streaming" | "ready" | "error"
   >("ready")
+
+
 
   const mutation = useMutation({
     mutationFn: sendMessage,
@@ -79,6 +82,7 @@ const ChatInput = ({
     mutation.mutate({
       question: message.text,
       dataset_id: datasetId,
+      llm: model,
     })
   }
 
@@ -99,7 +103,8 @@ const ChatInput = ({
         </PromptInputBody>
         <PromptInputFooter>
           <PromptInputTools>
-            <SelectDemo setDatasetId={setDatasetId} datasetId={datasetId} />
+            <SelectDataset setDatasetId={setDatasetId} datasetId={datasetId} />
+            <SelectModel setModel={setModel} model={model} />
           </PromptInputTools>
           <PromptInputSubmit
             disabled={status === "streaming"}

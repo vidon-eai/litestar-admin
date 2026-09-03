@@ -69,3 +69,25 @@ export const datasetOptions = (dataset_id: string) =>
       return response
     },
   })
+
+
+
+
+export const deleteDataset = async ({
+  dataset_id,
+}: {
+  dataset_id?: string
+}) => {
+  const authResponse = await login("admin", "password")
+
+  const response = await customFetch(`/datasets/${dataset_id}`, {
+    method: "DELETE",
+    headers: {
+      accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${authResponse.access_token}`,
+    }
+  })
+
+  return response
+}

@@ -9,7 +9,7 @@ import {
 import { fetchDatasets } from "@/services/dataset"
 import { useQuery } from "@tanstack/react-query"
 
-export function SelectDemo({
+export function SelectDataset({
   setDatasetId,
   datasetId,
 }: {
@@ -35,6 +35,40 @@ export function SelectDemo({
           {datasetsQuery.data?.data.items.map((dataset) => (
             <SelectItem key={dataset.id} value={dataset.id}>
               {dataset.name}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+  )
+}
+
+export function SelectModel({
+  setModel,
+  model,
+}: {
+  setModel: (value: string) => void
+  model?: string
+}) {
+  const modelOptions = [
+    { value: "ollama:qwen2.5:7b-instruct-q4_K_M", label: "Qwen 2.5B" },
+    { value: "ollama:qwen3:8b", label: "Qwen 3B" },
+  ]
+  return (
+    <Select
+      onValueChange={(val) => {
+        if (val) setModel(val)
+      }}
+      value={model || ""}
+    >
+      <SelectTrigger className="w-full max-w-48">
+        <SelectValue placeholder="Select a model" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {modelOptions.map((model) => (
+            <SelectItem key={model.value} value={model.value}>
+              {model.label}
             </SelectItem>
           ))}
         </SelectGroup>

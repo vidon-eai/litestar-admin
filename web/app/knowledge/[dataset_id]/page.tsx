@@ -16,7 +16,7 @@ export default async function Page({ params }: PageProps) {
   void queryClient.query(datasetOptions(dataset_id)).catch(noop)
 
   return (
-    <div className="flex h-full flex-col justify-center">
+    <div className="flex h-full flex-col justify-center p-4">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <KnowledgeList datasetId={dataset_id} />
       </HydrationBoundary>

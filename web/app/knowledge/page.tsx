@@ -9,7 +9,7 @@ export default async function Page() {
   void queryClient.query(datasetListOptions).catch(noop)
 
   return (
-    <div className="flex h-full flex-col justify-center">
+    <div className="p-4">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <DatasetDataTable />
       </HydrationBoundary>

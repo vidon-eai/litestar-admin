@@ -8,6 +8,7 @@ import { Metadata } from "next"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/shared/app-sidebar"
 import QueryProviders from "./providers"
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -44,9 +45,10 @@ export default function RootLayout({
             <SidebarProvider>
               <TooltipProvider>
                 <AppSidebar />
-                <main className="mx-auto flex max-h-screen min-h-screen w-full max-w-3xl flex-col px-2">
+                <main className="flex max-h-screen min-h-screen w-full flex-col px-2">
                   {children}
                 </main>
+                <Toaster />
               </TooltipProvider>
             </SidebarProvider>
           </ThemeProvider>
