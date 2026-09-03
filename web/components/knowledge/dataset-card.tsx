@@ -16,8 +16,7 @@ export default function DatasetCard({ dataset }) {
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: deleteDataset,
-    onMutate: () => {
-    },
+    onMutate: () => {},
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["datasets"] })
       toast.success("Dataset has been deleted")

@@ -51,8 +51,8 @@ export function SelectModel({
   model?: string
 }) {
   const modelOptions = [
-    { value: "ollama:qwen2.5:7b-instruct-q4_K_M", label: "Qwen 2.5B" },
-    { value: "ollama:qwen3:8b", label: "Qwen 3B" },
+    { value: "ollama:qwen2.5:7b-instruct-q4_K_M", label: "Qwen2.5:7B" },
+    { value: "ollama:qwen3:8b", label: "Qwen3:8B" },
   ]
   return (
     <Select

@@ -1,23 +1,22 @@
-import { customFetch } from "@/lib/fetcher"
+import { api, fetcher } from "@/lib/fetcher"
 import { ApiResponse, DatasetDetail } from "@/types"
 import { queryOptions } from "@tanstack/react-query"
 
-export const getDatasets = async () => customFetch("/datasets")
+export const getDatasets = async () => fetcher("/datasets")
 
 export const login = async (username: string, password: string) => {
   const formData = new URLSearchParams()
   formData.append("username", username)
   formData.append("password", password)
 
-  const response = await customFetch<{
+  const response = await api.post<{
     access_token: string
-  }>("/auth/login", {
+  }>("/auth/login", formData, {
     method: "POST",
     headers: {
       accept: "application/json",
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: formData,
   })
   return response
 }
@@ -25,7 +24,7 @@ export const login = async (username: string, password: string) => {
 export const fetchDatasets = async () => {
   const authResponse = await login("admin", "password")
 
-  const response = await customFetch<ApiResponse<DatasetDetail>>(`/datasets`, {
+  const response = await fetcher<ApiResponse<DatasetDetail>>(`/datasets`, {
     method: "GET",
     headers: {
       accept: "application/json",
@@ -54,7 +53,7 @@ export const datasetOptions = (dataset_id: string) =>
     queryFn: async () => {
       const authResponse = await login("admin", "password")
 
-      const response = await customFetch<ApiResponse<DatasetDetail>>(
+      const response = await fetcher<ApiResponse<DatasetDetail>>(
         `/datasets/${dataset_id}/documents`,
         {
           method: "GET",
@@ -70,9 +69,6 @@ export const datasetOptions = (dataset_id: string) =>
     },
   })
 
-
-
-
 export const deleteDataset = async ({
   dataset_id,
 }: {
@@ -80,13 +76,13 @@ export const deleteDataset = async ({
 }) => {
   const authResponse = await login("admin", "password")
 
-  const response = await customFetch(`/datasets/${dataset_id}`, {
+  const response = await fetcher(`/datasets/${dataset_id}`, {
     method: "DELETE",
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",
       Authorization: `Bearer ${authResponse.access_token}`,
-    }
+    },
   })
 
   return response

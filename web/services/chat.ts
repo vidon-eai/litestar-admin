@@ -1,4 +1,4 @@
-import { customFetch } from "@/lib/fetcher"
+import { fetcher } from "@/lib/fetcher"
 import { login } from "./dataset"
 
 const DATASET_ID = "01a06267-e871-7b43-89e1-7598df9bf25f"
@@ -14,7 +14,7 @@ export const sendMessage = async ({
 }) => {
   const authResponse = await login("admin", "password")
 
-  const response = await customFetch(`/datasets/chat`, {
+  const response = await fetcher(`/datasets/chat`, {
     method: "POST",
     headers: {
       accept: "application/json",
