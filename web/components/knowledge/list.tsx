@@ -1,22 +1,23 @@
 "use client"
 
-import { datasetOptions } from "@/services/dataset"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useDataset } from "@/hooks/use-dataset"
+import { useParams } from "next/navigation"
 
-interface KnowledgeListProps {
-  datasetId: string
-}
+export function KnowledgeList() {
+  const { dataset_id } = useParams()
+  const { data: dataset, isError, error, isLoading } = useDataset(dataset_id + "")
 
-export function KnowledgeList({ datasetId }: KnowledgeListProps) {
-  const { data } = useSuspenseQuery(datasetOptions(datasetId))
+  if(isError) {
+    return error.message
+  }
+
+  if(isLoading) return <>Loading...</>
+
   return (
-    <div className="flex h-full flex-col justify-center">
+    <div className="flex h-full ">
       <div className="flex-1">
-        {data.data.collections.map((collection) => (
-          <div key={collection.id} className="mb-4">
-            <h2 className="text-lg font-semibold">{collection.name}</h2>
-          </div>
-        ))}
+        {dataset?.data?.name}
+      
       </div>
     </div>
   )

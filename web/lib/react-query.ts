@@ -9,6 +9,7 @@ function makeQueryClient() {
     defaultOptions: {
       queries: {
         staleTime: 60 * 1000,
+        retry: 0
       },
       dehydrate: {
         // include pending queries in dehydration

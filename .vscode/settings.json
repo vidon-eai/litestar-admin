@@ -12,5 +12,8 @@
   "python.languageServer": "Pylance",
   "python.analysis.autoImportCompletions": true,
   "python.analysis.typeCheckingMode": "basic",
-  "python.analysis.extraPaths": ["./backend"]
+  "python.analysis.extraPaths": ["./backend"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
 }

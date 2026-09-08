@@ -9,26 +9,24 @@ import {
   CardTitle,
 } from "../ui/card"
 import { IconTrash } from "@tabler/icons-react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { deleteDataset } from "@/services/dataset"
+import { Dataset } from "@/dtos/dataset.dto"
+import { useDeleteDataset } from "@/hooks/use-dataset"
 import { toast } from "sonner"
-export default function DatasetCard({ dataset }) {
-  const queryClient = useQueryClient()
-  const mutation = useMutation({
-    mutationFn: deleteDataset,
-    onMutate: () => {},
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["datasets"] })
-      toast.success("Dataset has been deleted")
-    },
-    onError: () => {
-      toast.error("Failed to delete dataset")
-    },
-  })
+export default function DatasetCard({
+  dataset,
+  setDataset,
+}: {
+  dataset: Dataset
+  setDataset: (dataset: Dataset) => void
+}) {
+  const deleteDatasetMutation = useDeleteDataset()
 
-  const handleDelete = () => {
-    mutation.mutate({
-      dataset_id: dataset.id,
+  const handleDeleteDataset = () => {
+    deleteDatasetMutation.mutate(dataset.id, {
+      onSuccess: (data) => {
+        console.log(data)
+        toast.success("Dataset has been deleted")
+      },
     })
   }
 
@@ -40,13 +38,13 @@ export default function DatasetCard({ dataset }) {
           {dataset.description || "No description provided."}
         </CardDescription>
         <CardAction>
-          <Button variant="destructive" onClick={handleDelete}>
+          <Button variant="destructive" onClick={handleDeleteDataset}>
             <IconTrash />
           </Button>
         </CardAction>
       </CardHeader>
       <CardFooter className="flex items-center justify-between">
-        <div></div>
+        <Button onClick={() => setDataset(dataset)}>Select</Button>
         <Button asChild>
           <Link href={`/knowledge/${dataset.id}`}>View</Link>
         </Button>

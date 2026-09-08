@@ -1,0 +1,22 @@
+{
+  "plugins": ["import"],
+  "rules": {
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",   // Node.js 內建模組 (如 fs, path)
+          "external",  // 第三方套件 (如 react, next)
+          "internal",  // 專案內部絕對路徑 (如 @/components)
+          ["parent", "sibling"], // 相對路徑
+          "index"
+        ],
+        "alphabetize": {
+          "order": "asc",        // 按字母 A-Z 順序升遞
+          "caseInsensitive": true // 忽略大小寫
+        },
+        "newlines-between": "always" // 不同分組之間自動空一行
+      }
+    ]
+  }
+}

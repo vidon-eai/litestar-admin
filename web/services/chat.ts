@@ -1,5 +1,5 @@
 import { fetcher } from "@/lib/fetcher"
-import { login } from "./dataset"
+import { login } from "./dataset.service"
 
 const DATASET_ID = "01a06267-e871-7b43-89e1-7598df9bf25f"
 
@@ -28,5 +28,13 @@ export const sendMessage = async ({
     }),
   })
 
-  return response
+  return response as {
+    data: {
+      messages: {
+        type: string
+        tool_calls: string[]
+        content: string
+      }[]
+    }
+  }
 }

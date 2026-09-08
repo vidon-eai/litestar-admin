@@ -3,17 +3,16 @@
 import {
   PromptInput,
   PromptInputBody,
+  PromptInputFooter,
   type PromptInputMessage,
   PromptInputSubmit,
   PromptInputTextarea,
-  PromptInputFooter,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input"
 import { sendMessage } from "@/services/chat"
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import { Shimmer } from "../ai-elements/shimmer"
-import { SelectDataset, SelectModel } from "./dataset-select"
 
 const ChatInput = ({
   setMessages,
@@ -35,8 +34,6 @@ const ChatInput = ({
     "submitted" | "streaming" | "ready" | "error"
   >("ready")
 
-
-
   const mutation = useMutation({
     mutationFn: sendMessage,
     onMutate: () => {
@@ -53,7 +50,7 @@ const ChatInput = ({
       setText("")
     },
     onSuccess: (data) => {
-      const message = data?.data.messages.find(
+      const message = data?.data?.messages?.find(
         (m) => m.type === "ai" && m.tool_calls.length === 0
       )
       setMessages?.((prevMessages) => [
@@ -103,8 +100,6 @@ const ChatInput = ({
         </PromptInputBody>
         <PromptInputFooter>
           <PromptInputTools>
-            <SelectDataset setDatasetId={setDatasetId} datasetId={datasetId} />
-            <SelectModel setModel={setModel} model={model} />
           </PromptInputTools>
           <PromptInputSubmit
             disabled={status === "streaming"}
